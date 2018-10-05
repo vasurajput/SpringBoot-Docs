@@ -3,49 +3,65 @@ Spring Boot Notes
 
 
 Make War in Spring Boot:
+=========================
 1-In your main class SpringBootServletInitializer extendsthis
 2-Add the Following Depenedency In Your pom.xml 
+
  <dependency>
  <groupId>org.springframework.boot</groupId>
  <artifactId>spring-boot-starter-tomcat</artifactId>
  <scope>provided</scope>
  </dependency>
+ 
 3-Change  <packaging>war</packaging> instead of  <packaging>jar</packaging>
 
+#############################################################################################################
+
 Use Jsp in Spring boot
+=====================
 1-Include jar in pom.xml
+
 <dependency>
-			<groupId>org.apache.tomcat.embed</groupId>
-			<artifactId>tomcat-embed-jasper</artifactId>
-			<scope>provided</scope>
+<groupId>org.apache.tomcat.embed</groupId>
+<artifactId>tomcat-embed-jasper</artifactId>
+<scope>provided</scope>
 </dependency>
+
 2-Create a folder inside src/main/webapp/WEB-INF/jsp
 3-And make a jsp file inside that eg:- index.jsp
 4-Make Sure you have following entry inside application.properties file
+
 spring.mvc.view.prefix=/WEB-INF/jsp/
 spring.mvc.view.suffix=.jsp
+
+
 5-Make a controller and return that inisde that
 Eg:
 @RequestMapping("/first")
-	public String getFirstJspPage() {
-		System.out.println("inside first controller");
-		return "index";           // here index is the name of jsp file
-	}
+public String getFirstJspPage() {
+System.out.println("inside first controller");
+return "index";           // here index is the name of jsp file
+}
 
+##########################################################################################
 
 Use Bootstrap and and jquery using spring boot jars
+===================================================
+
 1-Paste following dependency inside your pom.xml file
+
 <dependency>
-			<groupId>org.webjars</groupId>
-			<artifactId>bootstrap</artifactId>
-			<version>3.3.6</version>
+<groupId>org.webjars</groupId>
+<artifactId>bootstrap</artifactId>
+<version>3.3.6</version>
 </dependency>
 
 <dependency>
-			<groupId>org.webjars</groupId>
-			<artifactId>jquery</artifactId>
-			<version>1.9.1</version>
+<groupId>org.webjars</groupId>
+<artifactId>jquery</artifactId>
+<version>1.9.1</version>
 </dependency>
+
 2-Include the foolowing line inside your jsp page
   <link href="webjars/bootstrap/3.3.6/css/bootstrap.min.css"
 	rel="stylesheet">              // use this inside head tag
@@ -53,44 +69,59 @@ Use Bootstrap and and jquery using spring boot jars
 <script src="webjars/jquery/1.9.1/jquery.min.js"></script>
 <script src="webjars/bootstrap/3.3.6/js/bootstrap.min.js"></script>   //use both this script above closing of body tag </body> now you are ready to use bootstrap and jquery in jsp pages
 
+
+###############################################################################
+
 How To use angular js in SpringBoot:
+===================================
+
 1-Add the following jar in pom.xml
+
 <dependency>
-			<groupId>org.webjars</groupId>
-			<artifactId>angularjs</artifactId>
-			<version>1.7.0</version>
+<groupId>org.webjars</groupId>
+<artifactId>angularjs</artifactId>
+<version>1.7.0</version>
 </dependency>
+
 2-Add the following lines in your any JSP page
 <script src="js/mycontroller.js"></script>
 In above script js is the folder inside src/main/resources/static/js
+
 3-Now make a file called mycontrolles.js inside that js folder and make the module and controller like below
 var app=angular.module('myapp',[]);
 app.controller('myctrl',function($scope){
-	$scope.firstname="vasu";
+$scope.firstname="vasu";
 });
+
 4-Now use this module and controller inside your jsp ,now you are ready to work with Angular Js
 <html ng-app="myapp">
 <body ng-controller = "myctrl">
 <input type="text" ng-model="vasu">
-	<h3>{{vasu}}</h3>
+<h3>{{vasu}}</h3>
 </body>
 </html>
 
+#######################################################################################
 
 Use H2 database JPA with spring boot
+====================================
+
 1-Incluse folloing jar in pom.xml 
 <dependency>
  <groupId>org.springframework.boot</groupId>
  <artifactId>spring-boot-starter-data-jpa</artifactId>
 </dependency>
+
 <dependency>
   <groupId>com.h2database</groupId>
   <artifactId>h2</artifactId>
- </dependency>
+</dependency>
+
 2-Add following lines in your application.properties file
 spring.jpa.show-sql=true            //display sql logs
 spring.h2.console.enabled=true          
 spring.h2.console.path=/h2-console      // for h2 web-console
+
 3-Create a entity class like below
 @Entity
 @Table(name = "carTable")
@@ -103,12 +134,20 @@ public class Car {
     private String name;
 private String lastName;
 // getter-setter , default constructor, parameterized constructor
+
 4-Now simply run the main application as java , your table will be automatically created for check thet go to below url:
 http://localhost:8082/h2-console
+
 5-Use jdbc:h2:mem:testdb as the JDBC URL ,here you ‘ll get all the tables.
 
+
+#########################################################################################
+
 @jdbcTemplate in SpringBoot
+============================
+
 For using jdbcTemplate in spring boot just autowired it like below:
+
 @Autowired
 Private jdbcTemplate myTemplate;
 
@@ -117,8 +156,10 @@ Syntax:
  myTemplate.update(Query comes here, parameter set object array comes here);
 Eg:
  myTemplate.update(“insert into demo values(?,?,?”,new Object[]{1,”vasu”});
+ 
 For select All:  
 Mytemplate.query(“select * from demo”, new BeanPropertyRowMapper(demo));
+
 For Select Using Id: 
 Mytemplate.queryForObject(“select * from demo where id =?”,new BeanPropertyRowMApper<Person>(Person.Class)};
 
@@ -128,20 +169,26 @@ Synatx
 => Create a class and implements RowMapper<BeanClassName>
 => Overrides mapRow method
 => get DB return data using ResultSet of mapRow  and set it to your bean class accordingly
+	
+	######################################################################################
 
 JPA
+===
 Jpa (Java Persistance Api) is an interface and Hibernate a class , hibenate implements Jpa
 The basic needs to connect to database in jpa are:
 => repositry
 => transaction
 => how to connect to database 
+
 So the solution of above three is
 1-@Repositry
 2-@Transactional
 3-Use EntityManager to get database connection in JPA, Entity manager is the interface to the persistanceContext
+
 Eg:
 @persistanceContext
 EntityManager entityManager;
+
 4-Now do jdbc task using entityManager.
 Eg:
 entityManager.find(demo,Ineteger);
@@ -150,6 +197,7 @@ entityManager.find(demo,Ineteger);
 Generally these are the annotaion of hibernate not jpa but we can use these here
 => @updatedTiimeStamp annotaion used to modifie when we last update these row
 => @createdTimeStamp annotaion used to tell us when we create these row
+
 Eg:
 @updatedTiimeStamp
 Private LocalDateTime lastUpdateDate;
@@ -161,6 +209,7 @@ Entity manager has feature to create NamedQuery like below:
                 entityManager.createNamedQuery(“”,.class);
 => but we cant’use multiple time @NamedQuery in same Entity Class
 => to prevent above we use @NamedQueries annotaion
+
 Eg:
 @NamedQueries(value={
 @NamedQuery(name=””, query=””),
@@ -169,10 +218,17 @@ Eg:
 @NamedQuery(name=””, query=””),
 })
 
+
+###############################################################################
+
 Native Query in JPA
+====================
+
 IF you want to use real sql query then this feature is also provided by the JPA ,so you can use the createNativeQuery method of EntityManager class
+
 Eg:
          entityManager.createNativeQuery(“select * from demo”,demo.class);
+	 
 => for parameter query
 Query query =  entityManager.createNativeQuery(“select * from demo where id = ?”,demo.class);
 Query.setParameter(1,123);
@@ -183,24 +239,32 @@ Query.setParameter(“id”,123);
 Note: make sure when you use native query you don’use of persistancecontext
 
 
+#######################################################################
 
 Crud Using Entity Manager
+============================
+
 Entity manager have merge method for both insert and update first it checks if data is present than update it if not than insert that
 => entityManager.remove method is used to delete the object
 => to select all data use JPQL(java persistance query language) 
+
 Eg:
 TypedQuery<demo> obj = entityManager.createnamedQuery(“find_all_demo”,demo.class);
 Retun Obj.getResultList();
 => now create NamedQuery find_all_demo in demo @Entity Class.
+	
 Eg:
 @Entity
 @NamedQuery(“find_all_demo”,”select d from demo d”);
 Public class Demo(){}
 
-
+#######################################################################
 
 Enable H2 Db console
+=====================
+
 => add below line in application.properties file
+
 Spring.h2.console.enabled=true
 Spring.jpa.properties.hibernate.generate_statistics=true
 Logging.level.org.hibernate.stat=debug
@@ -209,7 +273,11 @@ Logging.level.org.hibernate.type=debug   //for display parameter which set to pr
 Spring.jpa.properties.hibernate.format_sql=true // do not use this in production
 
 
+#################################################################################3
+
 Making Crud Repositry Using Spring Boot JPA
+=============================================
+
 1-Create an interface and extends the CrudRepository<EntityClassName, PrimaryKetType(eg:Integer,Long)>
 
 @Repository
@@ -231,6 +299,7 @@ public class CarCommandLine implements CommandLineRunner {
         carRepositry.save(new Car("jaguar", "meri hi hai"));
     }
 }
+
 3-Simply run main class and check database you will get the entry there
 
 NOTE:
@@ -273,6 +342,7 @@ Other starter project like spring parents are
 // For more google spring website there are more starter projects
 
 Note : in many Spring Boot rest application you see that you return a list but it' ll automatically converted in JSON this process is done by MessageConverters  i.e autoconfigured in spring boot and one of them are jackson-databind jar
+
 Eg:- List<Question> object -> JSON
 JSON -> Objetc
 
@@ -285,15 +355,18 @@ eg:
 
 Devtools in SpringBoot :  InSpringboot project if we do small changes then to see that results we have to restart server so to prevent this we use devtools
 dependency for Devtools
+
 <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-devtools</artifactId>
-            <optional>true</optional>
+<groupId>org.springframework.boot</groupId>
+ <artifactId>spring-boot-devtools</artifactId>
+ <optional>true</optional>
 </dependency>
+
 Note : we don't use <version></version> here because it will take version automattically from spring parent
 
 @RequestBody  :  This anntation is used to map content of request to your class objects
 eg:  Suppose you have a java class and you are using @PostMapping and you send request from postman and your request data in json format then it will automatically mapp your jsonobject to your class object
+
 syntax : 
 @PostMapping("/surveys/{surveyid}/questions")
   public List<Question> addQuestionToServey(@PathVariable String surveyid , @RequestBody Question question)
@@ -302,6 +375,7 @@ syntax :
 
 
 @PostMapping : used to post data in spring boot
+
 eg:
  @PostMapping("/surveys/{surveyid}/questions")
  public ResponseEntity addQuestionToServey(@PathVariable String surveyid, @RequestBody Question question) {
@@ -331,17 +405,22 @@ requestData:
 
 ContentNegotiation =>:   Accept:application/xml
 Deliver XML responses  from Rest Service
+
 dependency :
 <dependency>
-            <groupId>com.fasterxml.jackson.dataformat</groupId>
-            <artifactId>jackson-dataformat-xml</artifactId>
+<groupId>com.fasterxml.jackson.dataformat</groupId>
+<artifactId>jackson-dataformat-xml</artifactId>
 </dependency>
+
 How To Run :  Simply make a get request and go to postman and add a header
    Accept              application/xml
 Now Spring Bind the result List<Question> data in xml formate instead of JSON
 
+###########################################################################
 
 SpringBoot Actuator and Hal Browser :=>
+===========================================
+
 Used For Monitoring Your Rest Services and Hal Browser provide URI around the Actuator Services
 Dependencies:
 <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-actuator -->
@@ -350,39 +429,47 @@ Dependencies:
     <artifactId>spring-boot-starter-actuator</artifactId>
 </dependency>
 <dependency>
-            <groupId>org.springframework.data</groupId>
-            <artifactId>spring-data-rest-hal-browser</artifactId>
+  <groupId>org.springframework.data</groupId>
+  <artifactId>spring-data-rest-hal-browser</artifactId>
  </dependency>
 
-
+########################################################################################
 
 NOTE :  SpringBoot by default contains three different embedded Servers
 1- tomcat          2- jetty           3-  undertow
 if you want to use jetty insted of tomcat then just do the following steps:
 1- do changes in your pom.xml
+
  <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.springframework.boot</groupId>
-                    <artifactId>spring-boot-starter-tomcat</artifactId>
-                </exclusion>
-            </exclusions>
+  <groupId>org.springframework.boot</groupId>
+  <artifactId>spring-boot-starter-web</artifactId>
+  <exclusions>
+    <exclusion>
+    <groupId>org.springframework.boot</groupId>
+     <artifactId>spring-boot-starter-tomcat</artifactId>
+     </exclusion>
+   </exclusions>
  </dependency>
+ 
 2- add the dependency for jetty or undertow
+
 <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-jetty</artifactId>
+   <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-jetty</artifactId>
  </dependency>
 
 NOTE : =>  FOR MORE JUST GOOGLE HOW TO SWITCH TO UNDERTOW
 
+###################################################################
 
 How to Use Property Value inside your service :
+==================================================
+
 1- Go to applicatios.properties file and make a entry like
-               welcome.message = "hello vasu chai pi lo"
+       welcome.message = "hello vasu chai pi lo"
+       
 2- TO use this property value inside you service just use @Value annotation
+
 eg: 
 @Value("${welcome.message} ")
 private String myCustomMessage;
@@ -394,28 +481,41 @@ welocme.message=hi my name is vasu and ${app.name}
 so now when you use the welocme.message it 'll print
 hi my name is vasu and  i love konika
 
+#####################################################################
+
 How to use YAML file in Spring Boot : 
+======================================
+
 1- For this create a new yaml file inside resources folder name application.yaml
 2- make entry in yaml file like below 
        logging:
            level:
                  org.springframework :INFO
                   org.springframework.web.servlet: DEBUG
+		  
+ ############################################################################
 
 Profiles in SpringBoot :
+=========================
 1- Go to application.properties file and make following entry
    spring.profiles.active=prod
+   
 2- make a properties file inside resources folder with name syntax applcation-your_profile_name.properties
     application.prod.properties
+    
 NOTE:  Now application.prod.properties has taken more prefrence than application.properties file for example if i use logging level DEBUG in application.properties and make logging level INFO in application.prod.properties then Spring Boot use INFO logging because profile take higest precedence than simple application.properties file
 
 Usage=> use For Configure Resources - Databases, Queues, External Services
 
 
 Better way For Configuration than @Value annotaion  use @ConfigurationProperties :
+================================================================================
+
 The Only Draw back is that if we have to use more properties than we have to use @Value many time So to prevent this we use the following Steps:
+
 1- Create a class inside package configuration
 2- Use the @ConfigurationProperties("basic") annotaion
+
 @Component
 @ConfigurationProperties("vasu")
 public class BasicConfiguration {
@@ -446,20 +546,22 @@ public class ConfigurationController {
     }
 }
 
-
+##################################################################################
 
 Spring Boot with JPA (java persistance API) :=>
+==============================================
+
 1- For Using JPA in Spring Boot we have to use 2 jars
 
  <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-jpa</artifactId>
+   <groupId>org.springframework.boot</groupId>
+   <artifactId>spring-boot-starter-data-jpa</artifactId>
  </dependency>
 
  <!-- one of the embedde database is h2 by default present if we add this jar -->
  <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
+   <groupId>com.h2database</groupId
+   <artifactId>h2</artifactId>
  </dependency>
 
 2-  Now create a Entity Class inside com.vasu.JPA package
@@ -494,7 +596,12 @@ public class UserCommandLine implements CommandLineRunner {
     }
 }
 
+
+########################################################
+
 Save and Get Data From SpringBoot DB Using JPA :
+=====================================================
+
 1- we just use save methos of CrudRepositry to save data in DB in our case we have done the followings:
 public interface UserRepositry extends CrudRepository<User, Integer> {
      List<User> findByName(String name);
@@ -529,20 +636,32 @@ public class UserCommandLine implements CommandLineRunner {
 NOTE : after running this programe you can see the h2 database console on the following url
 http://localhost:8082/h2-console
 
+#######################################################################
+
 Spring Boot Security
+======================
 1-  Add the following dependecy
 <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-security</artifactId>
+<groupId>org.springframework.boot</groupId>
+ <artifactId>spring-boot-starter-security</artifactId>
 </dependency>
 
 Now it will automatically apply basic authentication now if you access in any url you have to type username and password
 by defult username = user
 by defaault password = see your console log it will present there
+
+###########################################################
+
 Make Custom Banner in SpringBoot
+====================================
+
 Simplly create a file name banner.txt inside resource folder and past the text that you want to display as banner, there are many website than can generate online text for your banner
 
+################################################
+
 Select All data using @jdbcTemplate
+======================================
+
 => 1 ) use Following code
 List<Users> query = jdbctemplate.query("select * from users", new UserMapper());
 for (Users u : query) {
@@ -632,17 +751,22 @@ accounts.client.timeout=4000
 NOTE:
  Don't forget to add @EnableConfigurationProperties in one of your Spring configuration classes because the @ConfigurationProperties annotation won't work unless you have enabled it by adding the @EnableConfigurationProperties annotation.
 
+#########################################################################
 
 # Post Data To SpringBoot Rest Using AJAX
+============================================
 Steps:
 1-Create a Rest Api And Annotate that with @PostMapping and take parameter as @RequestBody BeanClassName BeanClassObj
 2-Create a Bean Class like any name I give it student with getter-setter
 3-Write Ajax Script To Call End Point and Post Data
 Implementation Of Steps:
+
 1-
 @PostMapping("/rest/ajax")
 public ResponseEntity ajaxDemo(@RequestBody FormBean payload, HttpServletRequest request) {  // code come here}
+
 NOTE:= you can get path for ajax post using request.getRequestURI() method if you get 404 on post using Ajax.
+
 2-
 public class FormBean {
  private String name;
@@ -650,6 +774,7 @@ private String email;
 private String subject;
 private String query;
 //getter-setter default parameterized and toString method
+
 3-
 function onFormSubmit() {
     console.log("ajax working");
