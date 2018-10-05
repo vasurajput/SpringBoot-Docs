@@ -1,0 +1,14 @@
+On windows if you get error like port 8080 is already running then you can kill the process using following command
+=================================================================================================================
+
+1)  netstat -ano | findstr :8080
+2)  taskkill /PID 2336 /F
+
+
+
+For open tomcat manager make sure to Edit /conf/tomcat-user.xml file and do following entry in that
+============================================================================================
+
+<role rolename="manager-gui"/>
+<user password="tomcat" roles="manager-gui" username="tomcat"/>
+
