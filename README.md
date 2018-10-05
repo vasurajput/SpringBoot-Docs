@@ -18,7 +18,7 @@ Make War in Spring Boot:
 #############################################################################################################
 
 Use Jsp in Spring boot
-=====================
+=========================
 1-Include jar in pom.xml
 
 <dependency>
@@ -162,20 +162,26 @@ Mytemplate.query(“select * from demo”, new BeanPropertyRowMapper(demo));
 
 For Select Using Id: 
 Mytemplate.queryForObject(“select * from demo where id =?”,new BeanPropertyRowMApper<Person>(Person.Class)};
+	
+##############################################################################
 
 RowMapper in SpringBoot JDBC
+============================
+
 Suppose in above jdbc we mapp our class to return database table using BeanPropertyRowMApper, Suppose you don’t have same mapping means your bean name notmatch to your DB result so we can use the RowMapper
 Synatx
 => Create a class and implements RowMapper<BeanClassName>
 => Overrides mapRow method
 => get DB return data using ResultSet of mapRow  and set it to your bean class accordingly
 	
-	######################################################################################
+##########################################################################################
 
 JPA
-===
+====
+
 Jpa (Java Persistance Api) is an interface and Hibernate a class , hibenate implements Jpa
 The basic needs to connect to database in jpa are:
+
 => repositry
 => transaction
 => how to connect to database 
