@@ -2,8 +2,9 @@
 Spring Boot Notes
 
 
-Make War in Spring Boot:
-=========================
+                                                     Make War in Spring Boot:
+                                                     =========================
+						     
 1-In your main class SpringBootServletInitializer extendsthis
 2-Add the Following Depenedency In Your pom.xml 
 
@@ -17,8 +18,8 @@ Make War in Spring Boot:
 
 #############################################################################################################
 
-Use Jsp in Spring boot
-=========================
+                                              Use Jsp in Spring boot
+                                             =========================
 1-Include jar in pom.xml
 
 <dependency>
@@ -45,8 +46,8 @@ return "index";           // here index is the name of jsp file
 
 ##########################################################################################
 
-Use Bootstrap and and jquery using spring boot jars
-===================================================
+                                           Use Bootstrap and and jquery using spring boot jars
+                                           ===================================================
 
 1-Paste following dependency inside your pom.xml file
 
@@ -72,8 +73,8 @@ Use Bootstrap and and jquery using spring boot jars
 
 ###############################################################################
 
-How To use angular js in SpringBoot:
-===================================
+                                            How To use angular js in SpringBoot:
+                                           ===================================
 
 1-Add the following jar in pom.xml
 
@@ -103,8 +104,8 @@ $scope.firstname="vasu";
 
 #######################################################################################
 
-Use H2 database JPA with spring boot
-====================================
+                                           Use H2 database JPA with spring boot
+                                           ====================================
 
 1-Incluse folloing jar in pom.xml 
 <dependency>
@@ -143,8 +144,8 @@ http://localhost:8082/h2-console
 
 #########################################################################################
 
-@jdbcTemplate in SpringBoot
-============================
+                                            @jdbcTemplate in SpringBoot (For More Study Use TutorialPoint.com )
+                                          =====================================================================
 
 For using jdbcTemplate in spring boot just autowired it like below:
 
@@ -165,8 +166,8 @@ Mytemplate.queryForObject(“select * from demo where id =?”,new BeanPropertyR
 	
 ##############################################################################
 
-RowMapper in SpringBoot JDBC
-============================
+                                      RowMapper in SpringBoot JDBC
+                                      ============================
 
 Suppose in above jdbc we mapp our class to return database table using BeanPropertyRowMApper, Suppose you don’t have same mapping means your bean name notmatch to your DB result so we can use the RowMapper
 Synatx
@@ -176,8 +177,8 @@ Synatx
 	
 ##########################################################################################
 
-JPA
-====
+                                                              JPA
+                                                              ====
 
 Jpa (Java Persistance Api) is an interface and Hibernate a class , hibenate implements Jpa
 The basic needs to connect to database in jpa are:
@@ -227,8 +228,8 @@ Eg:
 
 ###############################################################################
 
-Native Query in JPA
-====================
+                                                      Native Query in JPA
+                                                     ====================
 
 IF you want to use real sql query then this feature is also provided by the JPA ,so you can use the createNativeQuery method of EntityManager class
 
@@ -247,8 +248,8 @@ Note: make sure when you use native query you don’use of persistancecontext
 
 #######################################################################
 
-Crud Using Entity Manager
-============================
+                                               Crud Using Entity Manager
+                                               ============================
 
 Entity manager have merge method for both insert and update first it checks if data is present than update it if not than insert that
 => entityManager.remove method is used to delete the object
@@ -266,8 +267,8 @@ Public class Demo(){}
 
 #######################################################################
 
-Enable H2 Db console
-=====================
+                                                 Enable H2 Db console
+                                                =====================
 
 => add below line in application.properties file
 
@@ -281,8 +282,8 @@ Spring.jpa.properties.hibernate.format_sql=true // do not use this in production
 
 #################################################################################3
 
-Making Crud Repositry Using Spring Boot JPA
-=============================================
+                                       Making Crud Repositry Using Spring Boot JPA
+                                       =============================================
 
 1-Create an interface and extends the CrudRepository<EntityClassName, PrimaryKetType(eg:Integer,Long)>
 
@@ -424,8 +425,8 @@ Now Spring Bind the result List<Question> data in xml formate instead of JSON
 
 ###########################################################################
 
-SpringBoot Actuator and Hal Browser :=>
-===========================================
+                                 SpringBoot Actuator and Hal Browser :=>
+                                ===========================================
 
 Used For Monitoring Your Rest Services and Hal Browser provide URI around the Actuator Services
 Dependencies:
@@ -468,8 +469,8 @@ NOTE : =>  FOR MORE JUST GOOGLE HOW TO SWITCH TO UNDERTOW
 
 ###################################################################
 
-How to Use Property Value inside your service :
-==================================================
+                                  How to Use Property Value inside your service :
+                                ==================================================
 
 1- Go to applicatios.properties file and make a entry like
        welcome.message = "hello vasu chai pi lo"
@@ -489,8 +490,8 @@ hi my name is vasu and  i love konika
 
 #####################################################################
 
-How to use YAML file in Spring Boot : 
-======================================
+                                     How to use YAML file in Spring Boot : 
+                                   ======================================
 
 1- For this create a new yaml file inside resources folder name application.yaml
 2- make entry in yaml file like below 
@@ -501,8 +502,8 @@ How to use YAML file in Spring Boot :
 		  
  ############################################################################
 
-Profiles in SpringBoot :
-=========================
+                                         Profiles in SpringBoot :
+                                        =========================
 1- Go to application.properties file and make following entry
    spring.profiles.active=prod
    
@@ -554,8 +555,8 @@ public class ConfigurationController {
 
 ##################################################################################
 
-Spring Boot with JPA (java persistance API) :=>
-==============================================
+                                      Spring Boot with JPA (java persistance API) :=>
+                                     ==============================================
 
 1- For Using JPA in Spring Boot we have to use 2 jars
 
@@ -605,8 +606,8 @@ public class UserCommandLine implements CommandLineRunner {
 
 ########################################################
 
-Save and Get Data From SpringBoot DB Using JPA :
-=====================================================
+                                        Save and Get Data From SpringBoot DB Using JPA :
+                                      =====================================================
 
 1- we just use save methos of CrudRepositry to save data in DB in our case we have done the followings:
 public interface UserRepositry extends CrudRepository<User, Integer> {
@@ -644,8 +645,8 @@ http://localhost:8082/h2-console
 
 #######################################################################
 
-Spring Boot Security
-======================
+                                              Spring Boot Security
+                                            ======================
 1-  Add the following dependecy
 <dependency>
 <groupId>org.springframework.boot</groupId>
@@ -658,15 +659,15 @@ by defaault password = see your console log it will present there
 
 ###########################################################
 
-Make Custom Banner in SpringBoot
-====================================
+                                     Make Custom Banner in SpringBoot
+                                   ====================================
 
 Simplly create a file name banner.txt inside resource folder and past the text that you want to display as banner, there are many website than can generate online text for your banner
 
 ################################################
 
-Select All data using @jdbcTemplate
-======================================
+                                        Select All data using @jdbcTemplate
+                                     ======================================
 
 => 1 ) use Following code
 List<Users> query = jdbctemplate.query("select * from users", new UserMapper());
@@ -759,8 +760,8 @@ NOTE:
 
 #########################################################################
 
-# Post Data To SpringBoot Rest Using AJAX
-============================================
+                                         # Post Data To SpringBoot Rest Using AJAX
+                                        ============================================
 Steps:
 1-Create a Rest Api And Annotate that with @PostMapping and take parameter as @RequestBody BeanClassName BeanClassObj
 2-Create a Bean Class like any name I give it student with getter-setter
@@ -807,6 +808,7 @@ console.log("error");
 
 
 ########################### Different Ways To Make Post Request In Spring Boot ###########################
+
 	private static final org.slf4j.Logger logger = LoggerFactory.getLogger("RequestController.class");
 	JSONParser parser = new JSONParser();
 
@@ -873,6 +875,7 @@ console.log("error");
 	}
 	
 ######################################## END #######################################################
+
 
 ################################### Upload And Get Image In Spring Boot ############################
 Steps:
