@@ -804,3 +804,72 @@ console.log("error");
 });
 }
 
+
+
+########################### Different Ways To Make Post Request In Spring Boot ###########################
+	private static final org.slf4j.Logger logger = LoggerFactory.getLogger("RequestController.class");
+	JSONParser parser = new JSONParser();
+
+	@GetMapping("/simple")
+	public String test() {
+		return "success";
+	}
+
+	// url will be [ http://localhost:8080/requestDemo/param/131 ]
+	@GetMapping("/param/{orgid}")
+	public String paramAttributeDemo(@PathVariable("orgid") String oId) {
+		logger.info("orgId= " + oId);
+		return "success";
+	}
+
+	/*
+	 * url = http://localhost:8080/requestDemo/requestParam/ 
+	 * select x-www-form-urlencoded on postman
+	 *  key = id value = anythng
+	 *  basicaly used for getting html form name attribute value
+	 */
+	@PostMapping("/requestParam")
+	public String requestParamDemo(@RequestParam("id") String id) {
+		logger.info("id= " + id);
+		return "success";
+	}
+
+	// Use Model class For Mapping for Send(POST) The String as Json here keys name
+	// must be same as Model Object otherwise it will print 0 as value
+	/*
+	 * simplly send(POST) the below data { "totalorganization":"", "totaldevice":"",
+	 * "totalauthentication":"123" } //make sure you select [application/json
+	 * formate]
+	 * 
+	 */
+	@PostMapping("/requestModel")
+	public String requestModelDemo(@RequestBody DashboardModel demo) {
+		logger.info("Request= " + demo.getTotalauthentication());
+		return "success";
+	}
+
+	// For Simplly Send The String as Json No bound on keys
+	/*
+	 * Used This When You accept only json without any key
+	 * simplly send(POST) the below data { "totalorganization":"", "totaldevice":"",
+	 * "totalauthentication":"123" }
+	 * 
+	 */
+	@PostMapping("/requestModel1")
+	public String requestModelDemo1(@RequestBody String payload) {
+		logger.info("Request payload");
+		try {
+			logger.info("*** before ***");
+			logger.info(payload);
+			JSONObject jobj = (JSONObject) parser.parse(payload);
+			logger.info("*** after ***");
+			logger.info(jobj.toJSONString());
+			logger.info(jobj.get("totalauthentication").toString());
+		} catch (Exception e) {
+			logger.error("Error", e);
+		}
+
+		return "success";
+	}
+	
+######################################## END #######################################################
