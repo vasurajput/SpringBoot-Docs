@@ -873,3 +873,112 @@ console.log("error");
 	}
 	
 ######################################## END #######################################################
+
+################################### Upload And Get Image In Spring Boot ############################
+Steps:
+1- Simplly create a POJO Class and Make a field byte[] image and annotated it with annotation @Lob
+Eg:
+==
+        @Lob
+	@Column(name = "Image")
+	private byte[] image;
+	
+2- We Use JPA To Save and Retrieve Image In This Example
+3- Make Service , DAO interface that extends CrudRepositry And Controolers.
+4- Make Controller like below
+=============================
+
+// When We HardCode the File Location
+=====================================
+@GetMapping("/saveImage")
+	public ImageHibernate saveImageController() {
+		logger.info("***** SaveImageController ******");
+		try {
+			File file = new File("C:\\Users\\rv\\Documents\\IMG-20171111-WA0010.jpg");
+			byte[] saveImageFile = new byte[(int) file.length()];
+			ImageHibernate imageHibernate = new ImageHibernate();
+			imageHibernate.setName("vasu image");
+			imageHibernate.setImage(saveImageFile);
+
+			FileInputStream fileInputStream = new FileInputStream(file);
+			fileInputStream.read(saveImageFile);
+			fileInputStream.close();
+			
+			String saveImageService = imageService.saveImageService(imageHibernate);
+			logger.info("saveStatus= " + saveImageService);
+			byte[] encode = java.util.Base64.getEncoder().encode(saveImageFile);
+			logger.info("realImage= " + new String(encode));
+			// Reterive Image
+			imageHibernate.getImage();
+			return imageHibernate;
+		} catch (Exception e) {
+			logger.info("inside main Exception");
+			logger.error("Error", e);
+			return null;
+		}
+	}
+
+// When Post Image Using Form Or Postman
+//if send from postman then select form-data radio-button and give key name and select key as file then upload file
+===========================================
+
+	@PostMapping("/saveImageByPost")
+	public ImageHibernate saveImageUsingPost(@RequestParam("file1") MultipartFile file) {
+		logger.info("Post File ");
+		try {
+			logger.info("DataFilename= "+file.getOriginalFilename());
+			logger.info("Extension= "+ file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf(".")));
+			logger.info("bytes= " + file.getBytes());
+			byte[] encode = java.util.Base64.getEncoder().encode(file.getBytes());
+			logger.info("realImage= " + new String(encode));
+			
+			ImageHibernate imageHibernate = new ImageHibernate();
+			imageHibernate.setName("koku image");
+			imageHibernate.setImage(file.getBytes());
+			String saveImageService = imageService.saveImageService(imageHibernate);
+			
+			//reterive image
+			logger.info("fileData= "+new String(imageHibernate.getImage()));
+			byte[] encode1 = java.util.Base64.getEncoder().encode(imageHibernate.getImage());
+			logger.info("realImageGetting= " + new String(encode1));
+			// Reterive Image
+			imageHibernate.getImage();
+			return imageHibernate;
+		} catch (Exception e) {
+			logger.error("Error", e);
+		}
+
+		return null;
+
+	}
+
+5- Make Service Like Below To Save Images
+========================================
+@Service
+public class ImageService {
+
+	@Autowired
+	private ImageDao imageDao;
+
+	private static final Logger logger = LoggerFactory.getLogger("ImageService.class");
+
+	public String saveImageService(ImageHibernate imageHibernateObj) {
+		try {
+			imageDao.save(imageHibernateObj);
+			Iterable<ImageHibernate> findAll = imageDao.findAll();
+			for (ImageHibernate hibernate : findAll) {
+				logger.info("fileName= " + hibernate.getName() + " && id= " + hibernate.getId());
+				logger.info("byteCode= "+ hibernate.getImage());
+				byte[] encodeImage = java.util.Base64.getEncoder().encode(hibernate.getImage());
+				logger.info("imageByte= " + new String(encodeImage));
+			}
+			return "succesfully Save Image";
+		} catch (Exception e) {
+			logger.error("Error", e);
+			return "Error in image insertion";
+		}
+	}
+}
+
+
+########################################## END ####################################################################
