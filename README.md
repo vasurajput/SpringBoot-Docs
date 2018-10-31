@@ -1086,3 +1086,41 @@ public class Https {
 Now When you run your application on port 8080 it will redirect to 8442 that is ssl port
 
 ######################################## END #########################################################################
+
+###################################### Hit Api Using AngularJs Http ##########################################
+1- Make A Controller like below
+================================
+
+app.controller("secondController", function ($scope, $http) {
+    $(function () {
+        alert("second controller");
+        $http({
+            url: "getStudentDetailController",
+            method: "GET"
+        }).then(function (response) {
+            console.log("**** Success Result ****");
+            console.log(response);
+            $scope.name = response.data.name;
+            $scope.lasname = response.data.lastName;
+            console.log("name= " + $scope.name + " lastName= " + $scope.lasname);
+        }, function (error) {
+            console.log("**** Error Result ****");
+            console.log(error);
+        });
+    });
+});
+
+2- Make A Controller like below
+================================
+
+    @GetMapping("/getStudentDetailController")
+    @ResponseBody                         // it is must otherwise you will get server error because it will return jsp page otherwise
+    public String demo() {
+        logger.info("Call Get All Students Detail");
+        JSONObject jobj = new JSONObject();
+        jobj.put("name", "vasu");
+        jobj.put("lastName", "rajput");
+        return jobj.toJSONString();
+    }
+    
+############################################## END ######################################
