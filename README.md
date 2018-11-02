@@ -1124,3 +1124,14 @@ app.controller("secondController", function ($scope, $http) {
     }
     
 ############################################## END ######################################
+########################## MYSQL basic Properties ###############################
+
+# database connection
+spring.jpa.hibernate.ddl-auto=update
+spring.datasource.url=jdbc:mysql://localhost:3306/vasu
+spring.datasource.username=root
+spring.datasource.password=12345@
+spring.datasource.driver-class-name=com.mysql.jdbc.Driver
+spring.jpa.properties.hibernate.dialect = org.hibernate.dialect.MySQL5Dialect
+logging.level.org.hibernate.SQL=DEBUG
+logging.level.org.hibernate.type.descriptor.sql.BasicBinder=TRACE
