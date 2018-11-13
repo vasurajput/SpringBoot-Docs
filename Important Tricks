@@ -12,3 +12,9 @@ For open tomcat manager make sure to Edit /conf/tomcat-user.xml file and do foll
 <role rolename="manager-gui"/>
 <user password="tomcat" roles="manager-gui" username="tomcat"/>
 
+For Facebook authentication useful link 
+==============================================
+https://developers.facebook.com/docs/facebook-login/access-tokens/debugging-and-error-handling
+
+https://stackoverflow.com/questions/8605703/how-to-verify-facebook-access-token
+
