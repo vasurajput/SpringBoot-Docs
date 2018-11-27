@@ -1135,6 +1135,7 @@ spring.datasource.driver-class-name=com.mysql.jdbc.Driver
 spring.jpa.properties.hibernate.dialect = org.hibernate.dialect.MySQL5Dialect
 logging.level.org.hibernate.SQL=DEBUG
 logging.level.org.hibernate.type.descriptor.sql.BasicBinder=TRACE
+hibernate.hbm2ddl.auto=create-drop
 
 # for logging
 logging.level.org.springframework.web=ERROR
