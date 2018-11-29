@@ -4,6 +4,10 @@ On windows if you get error like port 8080 is already running then you can kill 
 1)  netstat -ano | findstr :8080
 2)  taskkill /PID 2336 /F
 
+Maven Jar in Eclipse Available at
+===================================
+C:\YOUR_PROJECT_NAME\.metadata\.plugins\org.eclipse.wst.server.core\tmp0\wtpwebapps\YOUR_PROJECT_NAME\WEB-INF\
+
 
 
 For open tomcat manager make sure to Edit /conf/tomcat-user.xml file and do following entry in that
