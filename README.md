@@ -1150,3 +1150,298 @@ logging.pattern.file=="%d{HH:mm:ss.SSS} [%thread] %-5level  %class{36}.%M %L  - 
 
 # use For Exact Naming Of Column and Table in Hibernate otherwise hibernate add _ in camelcase names
 spring.jpa.hibernate.naming.physical-strategy=org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+
+
+=============================================================================
+# OneToOne Mapping
+===================
+Address.class
+
+@Entity
+@Table(name = "Address")
+public class Address {
+
+    @Id
+    @Column(name = "AddressId")
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private long addressId;
+
+    @Column(name = "City")
+    private String city;
+
+    @Column(name = "Name")
+    private String state;
+
+    @Column(name = "Country")
+    private String country;
+
+    @Column(name = "PinCode")
+    private String pinCode;
+
+    @OneToOne(targetEntity = Employee.class)
+    private Employee employee;
+    
+    
+ Employee.class
+ =================
+ @Entity
+@Table(name = "Employee")
+public class Employee {
+
+    @Id
+    @Column(name = "ID")
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private long id;
+
+    @Column(name = "NAME")
+    private String name;
+
+    @Column(name = "MOBILE_NUMBER")
+    private String mobileNumber;
+
+    @Column(name = "EMAIL")
+    private String email;
+
+    @Column(name = "EMPLOYEE_IMAGE")
+    private byte[] employeeImage;
+
+    @OneToOne(targetEntity = Address.class, cascade = CascadeType.ALL)
+    private Address address;
+    
+  OUTPUT:
+  ========
+  mysql> desc employee;
++-------------------+--------------+------+-----+---------+-------+
+| Field             | Type         | Null | Key | Default | Extra |
++-------------------+--------------+------+-----+---------+-------+
+| ID                | bigint(20)   | NO   | PRI | NULL    |       |
+| EMAIL             | varchar(255) | YES  |     | NULL    |       |
+| EMPLOYEE_IMAGE    | tinyblob     | YES  |     | NULL    |       |
+| MOBILE_NUMBER     | varchar(255) | YES  |     | NULL    |       |
+| NAME              | varchar(255) | YES  |     | NULL    |       |
+| address_AddressId | bigint(20)   | YES  | MUL | NULL    |       |
++-------------------+--------------+------+-----+---------+-------+      
+mysql> desc address;
++-------------+--------------+------+-----+---------+-------+
+| Field       | Type         | Null | Key | Default | Extra |
++-------------+--------------+------+-----+---------+-------+
+| AddressId   | bigint(20)   | NO   | PRI | NULL    |       |
+| City        | varchar(255) | YES  |     | NULL    |       |
+| Country     | varchar(255) | YES  |     | NULL    |       |
+| PinCode     | varchar(255) | YES  |     | NULL    |       |
+| Name        | varchar(255) | YES  |     | NULL    |       |
+| employee_ID | bigint(20)   | YES  | MUL | NULL    |       |
++-------------+--------------+------+-----+---------+-------+
+
+
+=================================================================================================================
+#OneToManyMapping
+===================
+Question.class
+=============
+@Entity
+@Table(name = "Questions")
+public class Question {
+
+    @Id
+    @Column(name = "ID")
+    @GeneratedValue(strategy = GenerationType.TABLE)
+    private long id;
+
+    @Column(name = "QuestionName")
+    private String qName;
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "qid")
+    @OrderColumn(name = "type")
+    private List<Answer> answer;
+    
+ Answers.class
+ =============
+ @Entity
+@Table(name = "Answers")
+public class Answer {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.TABLE)
+    @Column(name = "ID")
+    private long id;
+
+    @Column(name = "AnswerName")
+    private String answerName;
+
+    @Column(name = "PostedBy")
+    private String postedBy;
+    
+    OUTPUT:
+    ===========
+    mysql> desc questions;
++--------------+--------------+------+-----+---------+-------+
+| Field        | Type         | Null | Key | Default | Extra |
++--------------+--------------+------+-----+---------+-------+
+| ID           | bigint(20)   | NO   | PRI | NULL    |       |
+| QuestionName | varchar(255) | YES  |     | NULL    |       |
++--------------+--------------+------+-----+---------+-------+
+
+mysql> desc answers;
++------------+--------------+------+-----+---------+-------+
+| Field      | Type         | Null | Key | Default | Extra |
++------------+--------------+------+-----+---------+-------+
+| ID         | bigint(20)   | NO   | PRI | NULL    |       |
+| AnswerName | varchar(255) | YES  |     | NULL    |       |
+| PostedBy   | varchar(255) | YES  |     | NULL    |       |
+| qid        | bigint(20)   | YES  | MUL | NULL    |       |
+| type       | int(11)      | YES  |     | NULL    |       |
++------------+--------------+------+-----+---------+-------+
+
+
+=========================================================================================================
+#ManyToOne
+=================
+Employee.class
+=================
+
+@Entity
+@Table(name = "Employee1")
+public class Employee1 {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "EmployeeId")
+    private long employeeId;
+
+    @Column(name = "Name")
+    private String name;
+
+    @Column(name = "Email")
+    private String email;
+
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private Address1 address;
+    
+    =======================================================================
+  #Address.class
+  ====================
+  
+  @Entity
+@Table(name = "Address")
+public class Address {
+
+    @Id
+    @Column(name = "AddressId")
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private long addressId;
+
+    @Column(name = "City")
+    private String city;
+
+    @Column(name = "Name")
+    private String state;
+
+    @Column(name = "Country")
+    private String country;
+
+    @Column(name = "PinCode")
+    private String pinCode;
+
+    @OneToOne(targetEntity = Employee.class)
+    private Employee employee;
+    
+ ===================================================
+ OUTPUT
+ ==========
+ 
+ mysql> select * from address1;
++----+-------+---------+-------+---------------------+
+| ID | City  | Country | State | employee_EmployeeId |
++----+-------+---------+-------+---------------------+
+|  7 | Delhi | India   | Delhi |                NULL |
++----+-------+---------+-------+---------------------+
+1 row in set (0.00 sec)
+
+mysql> select * from employee1;
++------------+------------------+---------------+------------+
+| EmployeeId | Email            | Name          | address_ID |
++------------+------------------+---------------+------------+
+|          6 | vasu@gmail.com   | Vasu Rajput   |          7 |
+|          8 | konika@gmail.com | Konika Rajput |          7 |
++------------+------------------+---------------+------------+
+
+============================================================================
+#ManyToMany
+=============
+Note:- Here three table created one extra table for get info of question and ans table
+
+Question.class
+==============
+@Entity
+@Table(name = "Question1")
+public class Question1 {
+
+    @Id
+    @Column(name = "QId")
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private long qid;
+
+    @Column(name = "QName")
+    private String qname;
+
+    @ManyToMany(targetEntity = Answer1.class, cascade = CascadeType.ALL)
+    @JoinTable(name = "Questions_Answers",
+            joinColumns = {
+                @JoinColumn(name = "Q_Id"),},
+            inverseJoinColumns = {
+                @JoinColumn(name = "ANS_ID")})
+    private List<Answer1> answerList;
+    
+ ===============================================
+ Answer.class
+ ============
+ 
+ 
+ 	@Entity
+@Table(name = "Answer1")
+public class Answer1 {
+
+    @Id
+    @Column(name = "AnsId")
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private long ansId;
+
+    @Column(name = "Answer")
+    private String answer;
+
+    @Column(name = "PostedBy")
+    private String postedBy;
+    
+ =======================================================
+ #Output
+ =============
+ 
+ mysql> desc question1;
++-------+--------------+------+-----+---------+-------+
+| Field | Type         | Null | Key | Default | Extra |
++-------+--------------+------+-----+---------+-------+
+| QId   | bigint(20)   | NO   | PRI | NULL    |       |
+| QName | varchar(255) | YES  |     | NULL    |       |
++-------+--------------+------+-----+---------+-------+
+2 rows in set (0.01 sec)
+
+mysql> desc answer1;
++----------+--------------+------+-----+---------+-------+
+| Field    | Type         | Null | Key | Default | Extra |
++----------+--------------+------+-----+---------+-------+
+| AnsId    | bigint(20)   | NO   | PRI | NULL    |       |
+| Answer   | varchar(255) | YES  |     | NULL    |       |
+| PostedBy | varchar(255) | YES  |     | NULL    |       |
++----------+--------------+------+-----+---------+-------+
+3 rows in set (0.01 sec)
+
+mysql> desc questions_answers;
++--------+------------+------+-----+---------+-------+
+| Field  | Type       | Null | Key | Default | Extra |
++--------+------------+------+-----+---------+-------+
+| Q_Id   | bigint(20) | NO   | MUL | NULL    |       |
+| ANS_ID | bigint(20) | NO   | MUL | NULL    |       |
++--------+------------+------+-----+---------+-------+
+2 rows in set (0.01 sec)
