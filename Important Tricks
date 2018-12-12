@@ -4,6 +4,11 @@ On windows if you get error like port 8080 is already running then you can kill 
 1)  netstat -ano | findstr :8080
 2)  taskkill /PID 2336 /F
 
+
+JAVA LINUX PATH
+==================
+/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.131-0.b11.el6_9.x86_64/jre/lib/security/
+
 Maven Jar in Eclipse Available at
 ===================================
 C:\YOUR_PROJECT_NAME\.metadata\.plugins\org.eclipse.wst.server.core\tmp0\wtpwebapps\YOUR_PROJECT_NAME\WEB-INF\
