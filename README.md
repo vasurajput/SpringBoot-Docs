@@ -1445,3 +1445,84 @@ mysql> desc questions_answers;
 | ANS_ID | bigint(20) | NO   | MUL | NULL    |       |
 +--------+------------+------+-----+---------+-------+
 2 rows in set (0.01 sec)
+
+
+=========================== Send Email In Spring Boot ===========================
+================================================================
+#Steps1:  Add This dependency in pom.xml
+=======
+ <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-mail</artifactId>
+  </dependency>
+  
+#Step 2: Go to application.properties file and write following property
+========
+
+spring.mail.host=smtp.gmail.com
+spring.mail.port=587
+spring.mail.username=Your Email Id 
+spring.mail.password=*********
+spring.mail.properties.mail.smtp.starttls.enable=true
+spring.mail.properties.mail.smtp.starttls.required=true
+spring.mail.properties.mail.smtp.auth=true
+spring.mail.properties.mail.smtp.connectiontimeout=5000
+spring.mail.properties.mail.smtp.timeout=5000
+spring.mail.properties.mail.smtp.writetimeout=5000
+
+#Step3: create a service class and paste the code
+=======
+
+MimeMessage message = mailSender.createMimeMessage();
+MimeMessageHelper messageHelper = new MimeMessageHelper(message);
+messageHelper.setTo("demo@demo.com");
+messageHelper.setSubject("Testing");
+messageHelper.setText("Nice Try");
+mailSender.send(message);
+logger.info("succesfullySendEmail");
+
+
+
+=============================== Enable Swagger in spring boot ==========
+========================================================================
+Basically swagger2 is used for Documentation in Spring boot
+
+Steps:
+Step1: Add Below dependency in pom.xml
+=========
+
+<dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger2</artifactId>
+            <version>2.8.0</version>
+</dependency>
+		
+        <!-- https://mvnrepository.com/artifact/io.springfox/springfox-swagger-ui -->
+<dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger-ui</artifactId>
+            <version>2.8.0</version>
+</dependency>
+
+Step2: Enable swaager using @EnableSwagger2 annotation and create a docker for your base package that will show all the Api in Documentation like below:
+
+@SpringBootApplication
+@EnableScheduling
+@EnableSwagger2
+public class SchedulerApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(SchedulerApplication.class, args);
+    }
+
+    @Bean
+    public Docket productApi() {
+        return new Docket(DocumentationType.SPRING_WEB.SWAGGER_2).select()
+				.apis(RequestHandlerSelectors.basePackage("com.vasu.Scheduler")).build();
+    }
+
+}
+
+
+#Step3 : Now go to http://localhost:8080/swagger-ui.html url you will get your complete Api Documnetation Here
+==========
