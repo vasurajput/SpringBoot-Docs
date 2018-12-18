@@ -1472,6 +1472,8 @@ spring.mail.properties.mail.smtp.writetimeout=5000
 
 #Step3: create a service class and paste the code
 =======
+@Autowired
+JavaMailSender mailSender;
 
 MimeMessage message = mailSender.createMimeMessage();
 MimeMessageHelper messageHelper = new MimeMessageHelper(message);
