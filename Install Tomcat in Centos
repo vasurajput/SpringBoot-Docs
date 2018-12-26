@@ -1,0 +1,12 @@
+1- Go to apache tomcat website and copy the tar version link
+
+wget http://www-eu.apache.org/dist/tomcat/tomcat-7/v7.0.85/bin/apache-tomcat-7.0.85.tar.gz
+
+2- Now Extract This jar
+
+tar -xvf apache-tomcat-7.0.85.tar.gz
+
+3- go to /usr/local/tomcat/apache-tomcat-8.5.37/bin and start tomcat using
+
+sh startup.sh
+
