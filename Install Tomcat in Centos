@@ -10,3 +10,12 @@ tar -xvf apache-tomcat-7.0.85.tar.gz
 
 sh startup.sh
 
+NOTE:-    Some time you are not able to access manager of tomcat if you use fresh Centos so you have to make a new file inside
+/usr/local/tomcat/apache-tomcat-8/conf/Catilina/localhost
+
+Name it manager.xml and make following entry
+
+<Context privileged="true" antiResourceLocking="false" 
+         docBase="${catalina.home}/webapps/manager">
+    <Valve className="org.apache.catalina.valves.RemoteAddrValve" allow="^.*$" />
+</Context>
