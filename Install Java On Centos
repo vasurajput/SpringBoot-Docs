@@ -1,0 +1,20 @@
+1)- For Install Java First check if you have any instance already install or not using
+
+rpm -aq | grep -i jre
+rpm -aq | grep -i jdk
+
+2)- if yes then remove this first
+
+yum remove jre1.8-1.8.0_191-fcs.i586
+
+3) Now Install jdk on your root
+
+wget --no-cookies --no-check-certificate --header "Cookie: gpw_e24=http%3A%2F%2Fwww.oracle.com%2F; oraclelicense=accept-securebackup-cookie" "https://download.oracle.com/otn-pub/java/jdk/8u191-b12/2787e4a523244c269598db4e85c51e0c/jdk-8u191-linux-x64.rpm"
+
+4) now install this rpm package
+
+rpm -ivh jdk-8u191-linux-x64.rpm
+
+5) now check version
+
+java -version
