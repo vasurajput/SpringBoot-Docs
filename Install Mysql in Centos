@@ -3,3 +3,89 @@ to check you password of mysql use below command
 
 grep 'temporary password' /var/log/mysqld.log
 
+
+https://linode.com/docs/databases/mysql/how-to-install-mysql-on-centos-6/
+
+
+
+upgrade
+-----------
+https://opensourcedbms.com/dbms/how-to-upgrade-mysql-5-5-to-mysql-5-6-on-centos-6-3-red-hat-fedora/
+
+
+change Root Password Forcefully
+------------
+https://www.a2hosting.in/kb/developer-corner/mysql/reset-mysql-root-password
+
+
+
+
+Remove Mysql
+-------------
+#yum remove mysql-client mysql-server mysql-common mysql-devel
+
+#rm -rf /var/lib/mysql/
+#rm -rf /etc/my.cnf
+
+
+Install Steps Using rpm
+------------------
+
+cd /etc/yum.repos.d
+
+wget rpm
+
+rpm -ivh .rpm
+
+yum install mysql-server
+
+systemctl start mysqld
+
+systemctl status mysqld
+
+mysal_secure_installation
+
+
+//For Reset Password first time
+=====================
+ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password AS '*0D3CED9BEC10A777AEC23CCC353A8C08A633045E';
+
+OR
+===
+ALTER USER 'root'@'localhost' IDENTIFIED BY 'MyNewPass';
+
+//For check default password set by MySql
+==============================
+grep 'temporary password' /var/log/mysqld.log
+
+
+
+
+//For Reset Password FirstTime
+UPDATE mysql.user SET Password=PASSWORD('123456')WHERE User='root';
+SET GLOBAL validate_password_policy = 0;  OR  SET GLOBAL validate_password.policy=LOW
+SET PASSWORD = PASSWORD('123456');
+
+
+//you may get  invalid variable validate_password plugin error if change password policy using SET GLOBAL validate_password_policy = 0; command then use below
+===========================
+
+
+Link=> https://github.com/MoonlitNight/shell/issues/1
+
+mysql> select plugin_name, plugin_status from information_schema.plugins where plugin_name like 'validate%';
+Empty set (0.00 sec)
+
+mysql> install plugin validate_password soname 'validate_password.so';
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> select plugin_name, plugin_status from information_schema.plugins where plugin_name like 'validate%';
++-------------------+---------------+
+| plugin_name | plugin_status |
++-------------------+---------------+
+| validate_password | ACTIVE |
++-------------------+---------------+
+
+
+
+
