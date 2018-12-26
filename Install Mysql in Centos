@@ -1,0 +1,5 @@
+to check you password of mysql use below command
+============================================
+
+grep 'temporary password' /var/log/mysqld.log
+
