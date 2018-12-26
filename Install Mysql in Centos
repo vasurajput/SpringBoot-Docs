@@ -3,6 +3,9 @@ to check you password of mysql use below command
 
 grep 'temporary password' /var/log/mysqld.log
 
+Download Link URL
+===================
+https://dev.mysql.com/downloads/repo/yum/
 
 https://linode.com/docs/databases/mysql/how-to-install-mysql-on-centos-6/
 
