@@ -19,3 +19,10 @@ Name it manager.xml and make following entry
          docBase="${catalina.home}/webapps/manager">
     <Valve className="org.apache.catalina.valves.RemoteAddrValve" allow="^.*$" />
 </Context>
+
+
+If You get 
+Cannot find /usr/local/tomcat9/bin/setclasspath.sh
+Error while start or stop tomcat just use
+
+unset CATALINA_HOME command 
