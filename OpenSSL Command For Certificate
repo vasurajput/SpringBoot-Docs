@@ -35,3 +35,23 @@ https://docs.oracle.com/cd/E19509-01/820-3503/6nf1il6er/index.html
 
 https://www.owasp.org/index.php/Using_the_Java_Secure_Socket_Extensions
 
+
+####################### CHANGE Pem To Jks file of let's Encrypt certificate ################
+Link:= https://www.cloudera.com/documentation/enterprise/5-10-x/topics/cm_sg_openssl_jks.html
+Syntax:
+1):
+openssl pkcs12 -export -in /opt/cloudera/security/pki/hostname.pem \
+-inkey /opt/cloudera/security/pki/hostname.key -out /tmp/hostname.p12 \
+-name hostname -passin pass:password -passout pass:password
+
+Example:
+
+openssl pkcs12 -export -in fullchain.pem \
+-inkey privkey.pem -out vasu.p12 \
+-name tomcat -passin pass:vasu@123# -passout pass:vasu@123#
+
+2):
+keytool -importkeystore -srckeystore vasu.p12 -srcstoretype PKCS12 \
+-srcstorepass vasu@123# -alias tomcat -deststorepass vasu@123# \
+-destkeypass vasu@123# -destkeystore vasu.jks
+
