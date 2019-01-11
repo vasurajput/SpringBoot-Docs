@@ -1,0 +1,67 @@
+Links To Follow:
+=============
+https://www.digitalocean.com/community/tutorials/how-to-set-up-apache-virtual-hosts-on-centos-6
+https://medium.com/@raupach/how-to-install-lets-encrypt-with-tomcat-3db8a469e3d2
+
+
+1):-  Make Sure you have installed httpd in your server if you don' have this you can install it using below command
+
+sudo yum install httpd
+
+2):-  create a folder with your domain name inside /var/www/ folder 
+ eg:-   var/www/vasurajput.co.in
+
+3):-   create a folder with name public_html inside var/www/vasurajput.co.in it will work as your root folder
+   eg:-  var/www/vasurajput.co.in/public_html
+   
+4):-   Move All war files to inside var/www/vasurajput.co.in/public_html folder
+
+    eg:-     META-INF  org  WEB-INF
+    
+ 5): - Grant permission to below folder
+ 
+   eg: -  sudo chown -R apache:apache var/www/vasurajput.co.in/public_html
+   
+  6):- sudo chmod 755 /var/www
+  
+  NOw Create Virtual host
+  =============
+  
+  7):- sudo vim /etc/httpd/conf/httpd.conf
+  
+  8):- Make Below Entry at very bottom of file
+  
+  <VirtualHost *:80>
+     ServerAdmin vashurajput005@gmail.com
+     DocumentRoot /var/www/vasurajput.co.in/public_html
+     ServerName www.vasurajput.co.in
+     ServerAlias vasurajput.co.in
+</VirtualHost>
+
+<VirtualHost *:443>
+     ServerAdmin vashurajput005@gmail.com
+     DocumentRoot /var/www/vasurajput.co.in/public_html
+     ServerName www.vasurajput.co.in
+     ServerAlias vasurajput.co.in
+     SSLEngine on
+     SSLCertificateFile /etc/letsencrypt/live/www.vasurajput.co.in/fullchain.pem
+     SSLCertificateKeyFile /etc/letsencrypt/live/www.vasurajput.co.in/privkey.pem
+     SSLCertificateChainFile /etc/letsencrypt/live/www.vasurajput.co.in/chain.pem
+    # ErrorLog /var/www/vasurajput.co.in/error.log
+    # CustomLog /var/www/vasurajput.co.in/requests.log
+</VirtualHost>
+
+9):- sudo systemctl stop httpd
+
+10):- sudo systemctl start httpd
+
+Till this step you have succesfully Created The Virtual Host For Your Domain
+
+Now Create Let's Encrypt Certificate Using Below  Link
+==============
+https://certbot.eff.org/lets-encrypt/centos6-apache
+
+Now Make Change To Your Server.xml file of apache for this follow the given link
+======================
+
+https://medium.com/@raupach/how-to-install-lets-encrypt-with-tomcat-3db8a469e3d2
