@@ -3,3 +3,24 @@ Usefull links
 https://www.digitalocean.com/community/tutorials/how-to-set-up-apache-virtual-hosts-on-centos-6
 
 https://stackoverflow.com/questions/38673684/how-to-know-whether-apache-is-install-or-not-from-centos-7
+
+
+<VirtualHost *:80>
+     ServerAdmin vashurajput005@gmail.com
+     DocumentRoot /var/www/vasurajput.co.in/public_html
+     ServerName www.vasurajput.co.in
+     ServerAlias vasurajput.co.in
+</VirtualHost>
+
+<VirtualHost *:443>
+     ServerAdmin vashurajput005@gmail.com
+     DocumentRoot /var/www/vasurajput.co.in/public_html
+     ServerName www.vasurajput.co.in
+     ServerAlias vasurajput.co.in
+     SSLEngine on
+     SSLCertificateFile /etc/letsencrypt/live/www.vasurajput.co.in/fullchain.pem
+     SSLCertificateKeyFile /etc/letsencrypt/live/www.vasurajput.co.in/privkey.pem
+     SSLCertificateChainFile /etc/letsencrypt/live/www.vasurajput.co.in/chain.pem
+    # ErrorLog /var/www/vasurajput.co.in/error.log
+    # CustomLog /var/www/vasurajput.co.in/requests.log
+</VirtualHost>
