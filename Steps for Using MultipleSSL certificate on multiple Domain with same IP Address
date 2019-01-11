@@ -61,6 +61,8 @@ Now Create Let's Encrypt Certificate Using Below  Link
 ==============
 https://certbot.eff.org/lets-encrypt/centos6-apache
 
+https://dzone.com/articles/spring-boot-secured-by-lets-encrypt
+
 Now Make Change To Your Server.xml file of apache for this follow the given link
 ======================
 
