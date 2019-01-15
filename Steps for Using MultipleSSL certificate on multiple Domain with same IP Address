@@ -67,3 +67,23 @@ Now Make Change To Your Server.xml file of apache for this follow the given link
 ======================
 
 https://medium.com/@raupach/how-to-install-lets-encrypt-with-tomcat-3db8a469e3d2
+
+
+=============
+
+Paste Following Code in server.xml to configure SNI
+==================
+
+<Connector port="443" protocol="org.apache.coyote.http11.Http11NioProtocol"
+               maxThreads="150" SSLEnabled="true" defaultSSLHostConfigName="topo.matre.info">
+        <SSLHostConfig hostName="www.vasurajput.co.in" >
+            <Certificate certificateKeystoreFile="/etc/letsencrypt/live/www.vasurajput.co.in/vasu.jks" certificateKeystorePassword="vasu@123#"
+                        certificateKeyPassword="vasu@123#"
+                         type="RSA" />
+        </SSLHostConfig>
+        <SSLHostConfig hostName="topo.matre.info" >
+            <Certificate certificateKeystoreFile="/etc/letsencrypt/live/topo.matre.info/vasu.jks" certificateKeystorePassword="vasu@123#"
+                        certificateKeyPassword="vasu@123#"
+                         type="RSA" />
+        </SSLHostConfig>
+    </Connector>
