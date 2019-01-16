@@ -5,6 +5,10 @@ On windows if you get error like port 8080 is already running then you can kill 
 2)  taskkill /PID 2336 /F
 
 
+If You cant get permission for download or upload file from centos mobxtrem because of permission use command
+===========================
+sudo chmod 755 directoryName
+
 JAVA LINUX PATH
 ==================
 /usr/lib/jvm/java-1.8.0-openjdk-1.8.0.131-0.b11.el6_9.x86_64/jre/lib/security/
