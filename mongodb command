@@ -1,0 +1,2 @@
+# for import collection use below command
+mongoimport --db dbName --collection collectionName --file C:\Users\rv\Desktop\SpringBot\JspDemo\databank\db\mongodb\ccc.json
