@@ -1,2 +1,8 @@
 # for import collection use below command
 mongoimport --db dbName --collection collectionName --file C:\Users\rv\Desktop\SpringBot\JspDemo\databank\db\mongodb\ccc.json
+
+#for simple search
+db.users_contacts.find( {birthdate:{$ne:null}} );
+
+#find with and command
+db.users_contacts.find({$and:[ {birthdate:{$ne:null}} , {createdBy:12} ]});
