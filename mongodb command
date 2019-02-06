@@ -1,6 +1,9 @@
 # for import collection use below command
 mongoimport --db dbName --collection collectionName --file C:\Users\rv\Desktop\SpringBot\JspDemo\databank\db\mongodb\ccc.json
 
+#For Export Collection to another collection
+mongoexport --db WRITE_YOUR_DB_NAME --collection COLLECTION_NAME --out C:\Users\rv\Desktop\d.json
+
 #for simple search
 db.users_contacts.find( {birthdate:{$ne:null}} );
 
