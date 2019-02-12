@@ -4,6 +4,9 @@ mongoimport --db dbName --collection collectionName --file C:\Users\rv\Desktop\S
 #For Export Collection to another collection
 mongoexport --db WRITE_YOUR_DB_NAME --collection COLLECTION_NAME --out C:\Users\rv\Desktop\d.json
 
+#For CrudOperation with Spring boot
+http://appsdeveloperblog.com/spring-boot-and-mongotemplate-tutorial-with-mongodb/
+
 #for simple search
 db.users_contacts.find( {birthdate:{$ne:null}} );
 
