@@ -5,6 +5,8 @@ https://docs.spring.io/spring-data/data-document/docs/current/reference/html/#d0
 https://github.com/didinj/springboot-mongodb-security
 https://www.baeldung.com/role-and-privilege-for-spring-security-registration
 http://www.mkyong.com/spring-security/spring-security-form-login-using-database/
+https://stackoverflow.com/questions/37615034/spring-security-spring-boot-how-to-set-roles-for-users
+
 
 # for import collection use below command
 mongoimport --db dbName --collection collectionName --file C:\Users\rv\Desktop\SpringBot\JspDemo\databank\db\mongodb\ccc.json
