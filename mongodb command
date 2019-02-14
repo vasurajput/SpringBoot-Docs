@@ -3,6 +3,8 @@ https://docs.spring.io/spring-data/data-document/docs/current/reference/html/#d0
 
 #Springboot Security with mongodb use below example
 https://github.com/didinj/springboot-mongodb-security
+https://www.baeldung.com/role-and-privilege-for-spring-security-registration
+http://www.mkyong.com/spring-security/spring-security-form-login-using-database/
 
 # for import collection use below command
 mongoimport --db dbName --collection collectionName --file C:\Users\rv\Desktop\SpringBot\JspDemo\databank\db\mongodb\ccc.json
