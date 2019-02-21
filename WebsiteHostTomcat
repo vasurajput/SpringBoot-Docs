@@ -1,0 +1,40 @@
+1- create a folder inside your apache tomcat with anyname let's say vishu, Now create a folder with name ROOT inside vishu
+2- copy all content of war file inside /vishu/ROOT
+3- Now go to server.xml file and do following changes
+
+<Host name="vasurajput.co.in"  appBase="vasu"
+            unpackWARs="true" autoDeploy="true">
+<Alias>www.vasurajput.co.in</Alias>
+        <!-- SingleSignOn valve, share authentication between web applications
+                          Documentation at: /docs/config/valve.html -->
+        <!--
+                     <Valve className="org.apache.catalina.authenticator.SingleSignOn" />
+        -->
+
+        <!-- Access log processes all example.
+                          Documentation at: /docs/config/valve.html
+             Note: The pattern used is equivalent to using pattern="common" -->
+        <Valve className="org.apache.catalina.valves.AccessLogValve" directory="logs"
+               prefix="localhost_access_log" suffix=".txt"
+               pattern="%h %l %u %t &quot;%r&quot; %s %b" />
+
+      </Host>
+      
+   5- 
+   <Connector port="443" protocol="org.apache.coyote.http11.Http11NioProtocol"
+               maxThreads="150" SSLEnabled="true" defaultSSLHostConfigName="www.vasurajput.co.in">
+        <SSLHostConfig hostName="www.vasurajput.co.in" >
+
+<Certificate certificateFile="/etc/letsencrypt/live/www.vasurajput.co.in/fullchain.pem"
+                        certificateKeyFile="/etc/letsencrypt/live/www.vasurajput.co.in/privkey.pem"
+                        certificateChainFile="/etc/letsencrypt/live/www.vasurajput.co.in/chain.pem"
+                         type="RSA" />
+</SSLHostConfig>
+</Connector>
+
+
+6-
+
+<Connector port="80" protocol="HTTP/1.1"
+               connectionTimeout="20000"
+               redirectPort="443" />
