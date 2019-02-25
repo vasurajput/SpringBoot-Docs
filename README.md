@@ -1528,3 +1528,41 @@ public class SchedulerApplication {
 
 #Step3 : Now go to http://localhost:8080/swagger-ui.html url you will get your complete Api Documnetation Here
 ==========
+
+
+#NOTE:- Suppose you want to use two differnet end points with same name then use params attribute as follows
+=================================================
+
+@RequestMapping(value = "/login", method = RequestMethod.GET, params = "error")
+ @GetMapping(value = "/login", params = "")
+ 
+ # Jstl JSP tag in spring boot
+ =============================
+ Just add below dependency and you can use jstl libraries
+ 
+  <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>jstl</artifactId>
+            <version>1.2</version>
+  </dependency>
+  
+  
+ # For log4j in spring boot follow below steps:
+ =====================================
+ 1- add below dependency 
+ 
+  <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.16</version>
+ </dependency>
+ 
+ 2- create file log4j.properties file in class path and resource file and make following entry
+ 
+#log4j.rootCategory=INFO, A1
+#log4j.appender.A1=org.apache.log4j.FileAppender
+#log4j.appender.A1.File=/var/log/vasu.log
+#log4j.appender.A1.layout=org.apache.log4j.PatternLayout
+#log4j.appender.A1.layout.ConversionPattern=%d{DATE} %F|%L : %m%n
+
+ 
