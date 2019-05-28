@@ -1,0 +1,17 @@
+Simple Login Example
+==============================
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        Button btn = (Button) findViewById(R.id.loginBtn);
+        final EditText userName = (EditText) findViewById(R.id.userName);
+        final EditText password = (EditText) findViewById(R.id.password);
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(getBaseContext(), "Your userName is "+ userName.getText().toString() + " and Password is "+ password.getText().toString() , Toast.LENGTH_SHORT ).show();
+            }
+        });
+    }
