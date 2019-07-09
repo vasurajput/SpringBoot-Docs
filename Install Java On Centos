@@ -19,3 +19,11 @@ rpm -ivh jdk-8u191-linux-x64.rpm
 5) now check version
 
 java -version
+
+############################## FOR UBUNTU ###############################
+=> Install Any Version in Ubuntu use below link
+https://stackoverflow.com/questions/55920389/e-package-oracle-java8-installer-has-no-installation-candidate
+
+=> remove Java from ubuntu use below link
+https://novicestuffs.wordpress.com/2017/04/25/how-to-uninstall-java-from-linux/
+
