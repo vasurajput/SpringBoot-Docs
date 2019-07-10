@@ -26,3 +26,12 @@ Cannot find /usr/local/tomcat9/bin/setclasspath.sh
 Error while start or stop tomcat just use
 
 unset CATALINA_HOME command 
+
+########## Download Tomcat in ubuntu #############
+1- got to tomcat website
+2- download tar and extract it
+3- move all jars to specific location /opt/tomcat
+4- go to bin folder and run command
+
+                   or follow given link
+https://www.liquidweb.com/kb/how-to-install-apache-tomcat-7-on-ubuntu-14-04/
