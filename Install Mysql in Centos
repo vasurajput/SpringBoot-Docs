@@ -93,4 +93,5 @@ mysql> select plugin_name, plugin_status from information_schema.plugins where p
 
 
 
-
+################ User Creation Link MySql ##########################
+https://stackoverflow.com/questions/39281594/error-1698-28000-access-denied-for-user-rootlocalhost/39282732
