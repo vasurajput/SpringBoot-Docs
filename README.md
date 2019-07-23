@@ -1565,4 +1565,108 @@ public class SchedulerApplication {
 #log4j.appender.A1.layout=org.apache.log4j.PatternLayout
 #log4j.appender.A1.layout.ConversionPattern=%d{DATE} %F|%L : %m%n
 
+
+
+########################## Eureka Server #######################
+1- Add below dependency
+
+                 <dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-netflix-eureka-server</artifactId>
+		</dependency>
+		
+2- Enable it in your main class using below annotation
+
+@SpringBootApplication
+@EnableEurekaServer
+
+3- Make Below Entry in your application.properties file
+
+spring.application.name=netflix-eureka-server
+server.port=8761
+eureka.client.register-with-eureka=false
+eureka.client.fetch-registry=false
+
+
+########################## Eureka Client #######################
+1- Add below dependency 
+
+               <dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+			<version>2.1.1.RELEASE</version>
+		</dependency>
+		
+2- Enable it in your main class using below annotation
+
+@SpringBootApplication
+@EnableEurekaClient
+
+3- Give Eureka Server Url in your application.properties file
+
+eureka.client.service-url.default-zone=http://localhost:8761/eureka
+
+########################## API GATEWAY (Zull Server ) #######################
+Use as a Filter
+
+1- Add below dependency
+
+                <dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-netflix-zuul</artifactId>
+		</dependency>
  
+2 - Enable in your main Class Using below annotations
+
+@SpringBootApplication
+@EnableZuulProxy
+@EnableDiscoveryClient
+
+3- Make below entry in your application.properties file
+
+spring.application.name=netflix-zull-api-gateway-server
+server.port=8765
+eureka.client.service-url.default-zone=http://localhost:8761/eureka
+
+For Looging Example Using Zull
+=============================
+1- create a class and extends ZuulFilter
+
+@Component
+public class ZullLoggingFilter extends ZuulFilter {
+	
+	private static final Logger logger = LoggerFactory.getLogger(ZullLoggingFilter.class);
+
+
+	@Override
+	public boolean shouldFilter() {
+		return true;
+	}
+
+	@Override
+	public Object run() throws ZuulException {
+		HttpServletRequest request = RequestContext.getCurrentContext().getRequest();
+		logger.info("vvv::  requst="+request + " ,uri= "+request.getRequestURI());
+		return null;
+	}
+
+	@Override
+	public String filterType() {
+		return "pre";               //May be "pre","post","error"
+	}
+
+	@Override
+	public int filterOrder() {
+		return 1;
+	}
+
+}
+
+2- To execute application using Zull we have to hit URL in given formate
+     
+     htttp://localhost:{ZULL_PORT}/{CLIENT_SERVICE_NAME}/{CLIENT_URL}
+     Eg=>  http://localhost:8765/currency-exchange-service/currency-exchange/from/AUD/to/INR
