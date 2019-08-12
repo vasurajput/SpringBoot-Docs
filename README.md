@@ -1670,3 +1670,36 @@ public class ZullLoggingFilter extends ZuulFilter {
      
      htttp://localhost:{ZULL_PORT}/{CLIENT_SERVICE_NAME}/{CLIENT_URL}
      Eg=>  http://localhost:8765/currency-exchange-service/currency-exchange/from/AUD/to/INR
+     
+     
+ ############### Installing RabbitMQ ######################
+
+For Installing RabbitMQ we have To Install "ER Lang" First
+
+1- sudo apt-get update
+2- sudo apt-get install erlang
+
+3- sudo apt-get install rabbitmq-server
+4- sudo systemctl enable rabbitmq-server 
+5- sudo systemctl start rabbitmq-server 
+6- sudo systemctl status rabbitmq-server 
+
+RabbitMq provide Nice Dashboard for it we have to enable Plugins using command
+
+7- sudo rabbitmq-plugins enable rabbitmq_management
+
+open Now:  http://localhost:15672
+
+By Default
+ username=guest
+ password=guest
+
+# For Creating your own user
+
+8- sudo rabbitmqctl add-user admin[This is userName] admin[ This is password]      
+9- sudo rabbitmqctl set_user_tags admin administrator   
+10- sudo rabbitmqctl set_permissions -p / admin "." "." "." 
+
+No again Login 
+  username - admin
+  password - admin
