@@ -1,5 +1,5 @@
 /home/vasurajput/.subversion/config
-
+gnome-keyring
 
 On windows if you get error like port 8080 is already running then you can kill the process using following command
 =================================================================================================================
