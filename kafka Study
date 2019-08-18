@@ -1,0 +1,21 @@
+Create Topics
+===============
+[root@s148-66-132-223 bin]# ./kafka-topics.sh --zookeeper localhost:2181 --topic first_topic --create --partitions 3 --replication-factor 1
+
+####### Show List of All Topics ######
+./kafka-topics.sh --zookeeper localhost:2181 --list
+
+######## Describe Topics ##########
+./kafka-topics.sh --zookeeper localhost:2181 --topic first_topic --describe
+
+######## Delete a Topic #####
+./kafka-topics.sh --zookeeper localhost:2181 --topic first_topic --delete
+
+##### Produce And Consumer in Kafka #####
+By default produce produce message and same message in fetch by consumer
+./kafka-console-producer.sh --broker-list localhost:9092 --topic first_topic
+
+./kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic first_topic
+
+##### for see all the messages of consumer topic that is send by produce use command #####
+./kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic first_topic --from-beginning
