@@ -74,3 +74,38 @@ spring.application.name=c2
 server.port=8082
 eureka.client.service-url.default-zone=http://localhost:8761/eureka
 
+
+    ####################################### Client Side Load Balancing (Ribbon) ##############################
+ 
+ 1- Add below dependency in your pom.xml file
+ 
+               <dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-ribbon</artifactId>
+			<version>1.4.6.RELEASE</version>
+		</dependency>
+
+2- Enable ribbon using annotation in you Feign Proxy interface
+
+@FeignClient(name = "c2")
+@RibbonClient(name = "c2")
+public interface RandomServiceProxy {
+
+	@GetMapping("client2")
+	public String test();
+}
+
+NOTE:   While Using @RibbonClient we don't use {url=""} Property with @FeignClient annotation. we define list of all servers
+           in application.properties file
+
+======================
+3- application.properties
+======================
+spring.application.name=c1
+server.port=8081
+eureka.client.service-url.default-zone=http://localhost:8761/eureka
+c2.ribbon.listOfServers=http://localhost:8082,http://localhost:8084
+
+where c2 is the name of service whose two instances are running on 8082,8084 Port.
+
+
