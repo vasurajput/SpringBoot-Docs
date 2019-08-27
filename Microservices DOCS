@@ -109,3 +109,82 @@ c2.ribbon.listOfServers=http://localhost:8082,http://localhost:8084
 where c2 is the name of service whose two instances are running on 8082,8084 Port.
 
 
+     ##################################### API Gateway #############################################
+============================================
+1- Add below dependency in your pom.xml file
+============================================
+
+               <dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-netflix-zuul</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+		</dependency>
+
+======================================
+2- Enable ZullProxy in your main class
+======================================
+
+@EnableZuulProxy
+@EnableDiscoveryClient
+@SpringBootApplication
+public class ApiGatewayApplication {
+
+	public static void main(String[] args) {
+		SpringApplication.run(ApiGatewayApplication.class, args);
+	}
+
+}
+
+========================================
+3- Create a class and extends zullFilter
+========================================
+
+@Component
+public class ZullLoggingFilter extends ZuulFilter {
+
+	private static final Logger logger = LoggerFactory.getLogger(ZullLoggingFilter.class);
+
+	@Override
+	public boolean shouldFilter() {
+
+		return true;
+	}
+
+	@Override
+	public Object run() throws ZuulException {
+		HttpServletRequest request = RequestContext.getCurrentContext().getRequest();
+		logger.info("vvv::  request= " + request);
+		logger.info("vvv::  request URI= " + request.getRequestURI());
+		return null;
+	}
+
+	@Override
+	public String filterType() {
+
+		return "pre";
+	}
+
+	@Override
+	public int filterOrder() {
+
+		return 1;
+	}
+
+}
+
+========================
+4- Run the Application
+=========================
+Invoke Url Using below Syntax:
+
+http://localhost:8765/{application-name}/{endPoint}
+Eg:=> http://localhost:8765/c1/testFeign
+
