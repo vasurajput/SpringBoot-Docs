@@ -1,0 +1,76 @@
+                               ################ Feign Clinet #################
+                               
+use below dependency in pom.xml file
+======================================
+
+    <dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-feign</artifactId>
+			<version>1.4.7.RELEASE</version>
+		</dependency>
+    
+                        ####### Steps on 1st Project ######
+========================================================
+1- use @EnableFeignClients annotation on your main class
+=========================================================
+
+@EnableEurekaClient
+@SpringBootApplication
+@EnableFeignClients("com.example.demo")
+public class C1Application {
+
+	public static void main(String[] args) {
+		SpringApplication.run(C1Application.class, args);
+	}
+
+}
+
+======================================================
+2- Create an Interface and use @FeignClient annotation
+======================================================
+
+@FeignClient(name = "c2", url = "http://localhost:8082/")
+public interface RandomServiceProxy {
+	@GetMapping("client2")
+	public String test();	
+}
+
+Note: => Here C2 is the name of Project2  spring.application.name value and we hardcode the URL here
+=>@GetMapping("client2") is the URL used in 2nd Project
+
+====================================================
+3- Use This interface to call another MicroService
+====================================================
+
+@RestController
+public class Ccontroller {
+	@Autowired
+	private RandomServiceProxy proxy;
+
+	@GetMapping("/testFeign")
+	public String testFeignClient() {
+		String testFeign = proxy.test();
+		System.out.println("testFeign= "+testFeign);
+		return testFeign;
+	}
+}
+
+
+                ########### Steps on Project2 ########
+1- Create a Controller class
+=============================
+@RestController
+public class Ccontroller {
+	@GetMapping("client2")
+	public String test() {
+		return "C2 eureka service";
+	}
+}
+
+===========================
+2- application.properties
+===========================
+spring.application.name=c2
+server.port=8082
+eureka.client.service-url.default-zone=http://localhost:8761/eureka
+
