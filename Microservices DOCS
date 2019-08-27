@@ -188,3 +188,15 @@ Invoke Url Using below Syntax:
 http://localhost:8765/{application-name}/{endPoint}
 Eg:=> http://localhost:8765/c1/testFeign
 
+
+
+#################################### Communication bw MicroServices using API Gateway ################################
+1- give name of @FeignClient in proxy class to your API Gateway
+2- give complete URL to your method in proxy class Eg:=> serviceName/endPoint
+
+@FeignClient(name = "API-GATEWAY")      //Name of API-Gateway
+@RibbonClient(name = "c2")
+public interface RandomServiceProxy {
+	@GetMapping("c2/client2")
+	public String test();
+}
