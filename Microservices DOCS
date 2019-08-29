@@ -200,3 +200,37 @@ public interface RandomServiceProxy {
 	@GetMapping("c2/client2")
 	public String test();
 }
+
+
+#################################  Zipkin Server ############################################################
+
+1- Add the below dependency in pom.xml file
+
+	<!-- https://mvnrepository.com/artifact/io.zipkin.java/zipkin-server -->
+		<dependency>
+			<groupId>io.zipkin.java</groupId>
+			<artifactId>zipkin-server</artifactId>
+			<version>2.12.8</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/io.zipkin.java/zipkin-autoconfigure-ui -->
+		<dependency>
+			<groupId>io.zipkin.java</groupId>
+			<artifactId>zipkin-autoconfigure-ui</artifactId>
+			<version>2.12.8</version>
+		</dependency>
+		
+2- Enable Zipkini server in your main class
+
+@EnableZipkinServer
+@SpringBootApplication
+public class Z1Application extends SpringBootServletInitializer{
+	public static void main(String[] args) {
+		SpringApplication.run(Z1Application.class, args);
+	}
+}
+
+3- Add below properties in your properties file
+
+spring.main.web-application-type=none
+spring.application.name=zipkin-server
+server.port=9411
