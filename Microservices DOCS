@@ -234,3 +234,54 @@ public class Z1Application extends SpringBootServletInitializer{
 spring.main.web-application-type=none
 spring.application.name=zipkin-server
 server.port=9411
+
+
+#################################################### Hystrix ###################################################
+Basically we use Hystrix to provide custom Response of any third party do not provide response in a given period of time.
+
+1- For This we Have to include below dependency in our pom.xml file {simplly get from starter.spring.io no need of maven repo}
+======================================
+                <dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-netflix-hystrix</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-netflix-hystrix-dashboard</artifactId>
+		</dependency>
+		
+2- Enable Hystrix in your main class
+=====================================
+@SpringBootApplication
+@EnableHystrix
+public class Hystrix1Application {
+
+	public static void main(String[] args) {
+		SpringApplication.run(Hystrix1Application.class, args);
+	}
+}
+
+3- Define Hystix call back method for Rest Api to give custom Response
+======================================================================
+Description:=> Here we make a sleep of 3 second but we wait for 1 sec in our @HystrixCommand so we will get custom response after
+===========    1 sec.
+
+@RestController
+public class DemoController {
+
+	@GetMapping("/test")
+	@HystrixCommand(fallbackMethod = "fallback_hello", commandProperties = {
+			@HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "1000") })
+	public String test() {
+		try {
+			Thread.sleep(3000);
+			return "Nice Try";
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "Some Error";
+		}
+	}
+	private String fallback_hello() {
+		return "Request fails. It takes long time to response";
+	}
+}
