@@ -31,3 +31,14 @@ https://www.geeksforgeeks.org/top-10-algorithms-in-interview-questions/
 https://www.geeksforgeeks.org/top-25-interview-questions/
 https://www.geeksforgeeks.org/top-algorithms-and-data-structures-for-competitive-programming/
 https://www.geeksforgeeks.org/top-20-dynamic-programming-interview-questions/
+
+
+######################## Inorder Successor in BST ##############################
+Note:-> Applying Inorder traversal in BST will give Sort Data.
+
+1- First we check that given node has right child or not for which we have to find Inorder Successor. 
+   -> If has Right child
+      : then Just find the least Node that is always at the last node at left side that will be the ans
+   -> If not have right child
+      : Then find the given node from root and last left traversal turn node will be the ans( jb node find krenge root se to 
+      search krte time last left turn wal node ans hoga)
