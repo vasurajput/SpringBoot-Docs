@@ -1566,6 +1566,16 @@ public class SchedulerApplication {
 #log4j.appender.A1.layout.ConversionPattern=%d{DATE} %F|%L : %m%n
 
 
+=> For Rolling Files with size use below properties
+====================================================
+log4j.rootCategory=INFO, A1
+log4j.appender.A1=org.apache.log4j.RollingFileAppender
+log4j.appender.A1.File=/home/vasurajput/Videos/vasu.log
+log4j.appender.A1.layout=org.apache.log4j.PatternLayout
+log4j.appender.A1.layout.ConversionPattern=%d{DATE} %F|%L : %m%n
+log4j.appender.A1.MaxFileSize=3KB
+log4j.appender.A1.MaxBackupIndex=2
+
 
 ########################## Eureka Server #######################
 1- Add below dependency
