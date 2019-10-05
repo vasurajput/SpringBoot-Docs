@@ -1,0 +1,9 @@
+Download Android Studion in Ubuntu
+=====================================
+1- Download tar from Android wwebsite extract it and go to bin run ./studio.sh
+
+you may get error like 
+Gtk-Message: 12:41:06.853: Failed to load module "canberra-gtk-module"
+then use command 
+sudo apt-get install libcanberra-gtk*
+
