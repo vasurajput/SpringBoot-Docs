@@ -1719,5 +1719,11 @@ No again Login
   1- go to src folder of redis server
   2- Run command ./redis-server --protected-mode no 
   Note:- we use --protected-mode no  command because we don't provide user name in our application without this our application will make error
-  3- Follow below URL
+  3- Make Below entry in your application.properties file
+  =========================================================
+  server.port=9001
+  spring.redis.host=191.96.12.46
+  spring.redis.port=6379
+
+  4- Follow below URL
   https://spring.io/guides/gs/messaging-redis/
