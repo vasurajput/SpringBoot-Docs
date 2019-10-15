@@ -1727,3 +1727,7 @@ No again Login
 
   4- Follow below URL
   https://spring.io/guides/gs/messaging-redis/
+  
+  ################################## Docker Install in centos 7 ###################################
+  use below URL to install docker in cento 7
+  https://stackoverflow.com/questions/28483379/installing-docker-on-centos-6-6
