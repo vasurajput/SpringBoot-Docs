@@ -1713,3 +1713,11 @@ By Default
 No again Login 
   username - admin
   password - admin
+  
+  
+  ################## Message With Redis Server #####################
+  1- go to src folder of redis server
+  2- Run command ./redis-server --protected-mode no 
+  Note:- we use --protected-mode no  command because we don't provide user name in our application without this our application will make error
+  3- Follow below URL
+  https://spring.io/guides/gs/messaging-redis/
