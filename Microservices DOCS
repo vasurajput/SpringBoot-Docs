@@ -285,3 +285,59 @@ public class DemoController {
 		return "Request fails. It takes long time to response";
 	}
 }
+
+
+######################### Zuul Api Gateway ########################
+
+1- Add the below dependency in your pom.xml file
+                <dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-netflix-zuul</artifactId>
+		</dependency>
+		
+2- Enable zull using Annotation in your main class
+
+@EnableZuulProxy
+@EnableDiscoveryClient
+@SpringBootApplication
+public class ZullGatewayApplication {
+
+3- make below entry in your application.yml file
+
+spring:
+  application:
+    name: API-GATEWAY
+
+server:
+  port: 8080
+
+eureka:
+  client:
+    service-url:
+      default-zone: ${EUREKA_URI:http://localhost:8761/eureka}
+  instance:
+    prefer-ip-address: true
+
+zuul:
+  ignoredServices: '*'
+  prefix: /api
+  routes:
+    account-service:                           //Name of account appliation that written in application.yml file
+       path: /accounts/**                      //Write Anything that you want
+       serviceId: ACCOUNT-SERVICE              // Service Name of Account application that display on Eureka Server
+    web-application:
+       path: /webs/**
+       serviceId: WEB-APPLICATION
+  host:
+    socket-timeout-millis: 30000       
+
+
+4- Now Call Account Service URL using below url
+
+http://localhost:8080/api/accounts/account
+
+######################### Zuul Api Gateway END #############################
