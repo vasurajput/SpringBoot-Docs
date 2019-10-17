@@ -1738,6 +1738,7 @@ No again Login
   ######################### Microserice Logging  using ELK ####################################
   1- Install Elastic Search using below URL
       https://www.digitalocean.com/community/tutorials/how-to-install-and-configure-elasticsearch-on-centos-7
+      https://www.tecmint.com/install-elasticsearch-logstash-and-kibana-elk-stack-on-centos-rhel-7/
    
   After installing check status using 
     sudo service elasticsearch status 
