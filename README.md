@@ -1734,3 +1734,11 @@ No again Login
   
   For ubuntu
   sudo apt install docker.io  
+  
+  ######################### Microserice Logging  using ELK ####################################
+  1- Install Elastic Search using below URL
+      https://www.digitalocean.com/community/tutorials/how-to-install-and-configure-elasticsearch-on-centos-7
+   
+  After installing check status using 
+    sudo service elasticsearch status 
+  if stopped then statrt and go to URL http://localhost:9200/
