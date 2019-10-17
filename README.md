@@ -1731,3 +1731,6 @@ No again Login
   ################################## Docker Install in centos 7 ###################################
   use below URL to install docker in cento 7
   https://stackoverflow.com/questions/28483379/installing-docker-on-centos-6-6
+  
+  For ubuntu
+  sudo apt install docker.io  
