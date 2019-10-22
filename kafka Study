@@ -1,3 +1,12 @@
+Install Kafka
+===============
+1- Go to https://kafka.apache.org/downloads and click on Download at bottom of page
+2- Click On Binary Download  for Scala 2.12
+3- Click on Mirror image or on linux use wget <Link Of mirror Image>
+4- Now Untar using tar -xvf command
+5- Go to bin folder and check using ./kafka-topic.sh
+
+
 Create Topics
 ===============
 [root@s148-66-132-223 bin]# ./kafka-topics.sh --zookeeper localhost:2181 --topic first_topic --create --partitions 3 --replication-factor 1
