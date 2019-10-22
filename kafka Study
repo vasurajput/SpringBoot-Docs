@@ -43,6 +43,10 @@ By default produce produce message and same message in fetch by consumer
 ###### Producer with acks properties ##############
 ./kafka-console-producer.sh --broker-list localhost:9092 --topic first_topic --producer-property acks=all
 
+
+############# After send msg from JAVA producer command to display text as a consumer ################
+./kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic first_topic --group my-third-application
+
 ./kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic first_topic
 
 ##### for see all the messages of consumer topic that is send by produce use command #####
