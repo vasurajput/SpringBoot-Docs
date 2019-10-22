@@ -6,6 +6,22 @@ Install Kafka
 4- Now Untar using tar -xvf command
 5- Go to bin folder and check using ./kafka-topic.sh
 
+=> There are two main file inside config folder
+===================================================
+1- zookeper.properties           // helps to start zookeper
+2- Server.properties             // helps to start kafka server
+
+=> Before start kafka server you must start Zookeper
+====================================================
+start zookeper
+==============
+Go to bin folder
+./zookeeper-server-start.sh ../config/zookeeper.properties
+
+start kafka
+==========
+Go to bin folder
+./kafka-server-start.sh ../config/server.properties
 
 Create Topics
 ===============
