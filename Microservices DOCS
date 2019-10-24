@@ -188,6 +188,21 @@ Invoke Url Using below Syntax:
 http://localhost:8765/{application-name}/{endPoint}
 Eg:=> http://localhost:8765/c1/testFeign
 
+Note: There are some property For Api gateway that you can use in application.properties
+====
+zuul.routes.employeeUI.serviceId=DASHBOARD-SERVICE
+zuul.host.socket-timeout-millis=30000
+
+Suppose i have a MiceroService A and there is a endPoiint http://localhost:8080/dashboard
+So when i hit api using API Gateway and any request come with prefix employeeUI then it will redirect to MicroService A
+Eg=
+http://localhost:8080/dashboard      is same as    http://localhost:8084/employeeUI/dashboard
+
+Link To Study Above Topic =>  https://dzone.com/articles/microservices-communication-zuul-api-gateway-1
+
+
+
+
 
 
 #################################### Communication bw MicroServices using API Gateway ################################
