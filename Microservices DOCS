@@ -220,6 +220,38 @@ public class Config {
 	}
 }
 
+@Autowired
+Private RestTemplate restTemplate;
+
+Post Using RestTemplate:
+=======================
+             private ResponseEntity<String> postURLData(String URL, String params, Long no) {
+                        HttpHeaders headers = new HttpHeaders();
+			headers.setContentType(MediaType.APPLICATION_JSON);
+			org.springframework.http.HttpEntity<String> s = new org.springframework.http.HttpEntity<String>(params,headers);
+			ResponseEntity<String> postResponse = restTemplate.postForEntity(URL, s, String.class);
+			}
+Delete Using RestTemplate:
+=========================
+                        HttpHeaders headers = new HttpHeaders();
+			headers.setContentType(MediaType.APPLICATION_JSON);
+			org.springframework.http.HttpEntity<String> s = new org.springframework.http.HttpEntity<String>(params,headers);
+			ResponseEntity<String> deleteResponse = restTemplate.exchange(URL, HttpMethod.DELETE, s, String.class);
+			
+Get Usign RestTemplate:
+=======================
+                        String response = restTemplate.getForObject(url, String.class);
+			
+Make Array As Params:-> eg: [8477013437]
+===================
+private String getJsonArrayString(Long value)
+	{
+		Gson gson = new Gson();
+		JsonArray jsonArray = new JsonArray();
+		jsonArray.add(new JsonPrimitive(value));
+		return gson.toJson(jsonArray);
+	}
+
 ###################################   RestTemplate END #######################################################
 
 
