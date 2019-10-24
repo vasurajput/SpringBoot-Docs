@@ -188,6 +188,9 @@ Invoke Url Using below Syntax:
 http://localhost:8765/{application-name}/{endPoint}
 Eg:=> http://localhost:8765/c1/testFeign
 
+Note:- If you don't want to use Eureka Server then you have to hardcord the Url in application.propertirs file
+eg:   zuul.routes.student.url=http://localhost:8090       // where student is the name of microservice that runs on 8090
+
 Note: There are some property For Api gateway that you can use in application.properties
 ====
 zuul.routes.employeeUI.serviceId=DASHBOARD-SERVICE
