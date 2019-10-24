@@ -202,6 +202,25 @@ Link To Study Above Topic =>  https://dzone.com/articles/microservices-communica
 
 
 
+################################ RestTemplaet In Spring Boot ##################################
+We can't Autowired RestTemplate Directly in Spring Boot , To Autowired RestTemplate first we have to create a Ben for 
+RestTemplate using @Bean
+
+Eg:
+@Configuration
+public class Config {
+
+	@Bean
+	public RestTemplate template() {
+		HttpComponentsClientHttpRequestFactory httpRequestFactory = new HttpComponentsClientHttpRequestFactory();
+                httpRequestFactory.setConnectionRequestTimeout(4000);
+                httpRequestFactory.setConnectTimeout(4000);
+                httpRequestFactory.setReadTimeout(4000);
+		return new RestTemplate(httpRequestFactory);
+	}
+}
+
+###################################   RestTemplate END #######################################################
 
 
 
