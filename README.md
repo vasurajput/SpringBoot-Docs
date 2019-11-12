@@ -1743,3 +1743,102 @@ No again Login
   After installing check status using 
     sudo service elasticsearch status 
   if stopped then statrt and go to URL http://localhost:9200/
+  
+  
+  ###########################  OAuth 2 in Spring Boot #############################
+  To Get Access Token
+  =================
+  1- Add below dependency in pom.xml file
+  
+                <dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.security.oauth</groupId>
+			<artifactId>spring-security-oauth2</artifactId>
+			<version>2.0.10.RELEASE</version>
+		</dependency>
+		
+ 2- create class SpringSecurityConfiguration and extends WebSecurityConfigurerAdapter
+ 
+    @Configuration
+public class SpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
+
+	@Bean
+	@Override
+	public AuthenticationManager authenticationManagerBean() throws Exception {
+		return super.authenticationManagerBean();
+	}
+	
+	@Autowired
+	private PasswordEncoder passwordEncoder;
+
+	@Bean
+	@Override
+	public UserDetailsService userDetailsService() {
+		UserDetails user = User.builder().username("user").password(passwordEncoder.encode("secret")).roles("USER")
+				.build();
+		UserDetails userAdmin = User.builder().username("admin").password(passwordEncoder.encode("secret"))
+				.roles("ADMIN").build();
+		return new InMemoryUserDetailsManager(user, userAdmin);
+	}
+
+//	@Bean
+//	public PasswordEncoder passwordEncoder() {
+//		return new BCryptPasswordEncoder();
+//	}
+
+}
+
+3- create class AuthorizationServerConfig and extends AuthorizationServerConfigurerAdapter
+
+   @Configuration
+@EnableAuthorizationServer
+public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdapter {
+
+	@Autowired
+	private AuthenticationManager authenticationManager;
+
+	@Autowired
+	private TokenStore tokenStore;
+
+	@Override
+	public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
+		clients.inMemory().withClient("client")
+				.authorizedGrantTypes("password", "authorization_code", "refresh_token", "implicit")
+				.authorities("ROLE_CLIENT", "ROLE_TRUSTED_CLIENT", "USER").scopes("read", "write").autoApprove(true)
+				.secret(passwordEncoder().encode("password"));
+	}
+
+	@Bean
+	public PasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder();
+	}
+
+	@Override
+	public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
+		endpoints.authenticationManager(authenticationManager).tokenStore(tokenStore);
+	}
+
+	@Bean
+	public TokenStore tokenStore() {
+		return new InMemoryTokenStore();
+	}
+
+}
+
+
+4-  Open Postman 
+       First Choose Authorization -> Basic Auth -> give client UserName and Passowrd from Authorization class
+       Secondly Choose body -> form-data -> POST
+       key         value
+       grant_type   password
+       username     your username from websecurity class
+       password     password from websecurity class
+
