@@ -1841,4 +1841,9 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
        grant_type   password
        username     your username from websecurity class
        password     password from websecurity class
+       
+       
+############################# Spring Boot Security With MYSQl Security ###############
+Follow My Git URL fot this
+https://github.com/vasurajput/SpringBootSecurity/tree/master/SpringBootSecurityMYSql
 
