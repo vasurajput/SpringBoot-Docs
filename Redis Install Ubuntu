@@ -16,3 +16,28 @@ Link - https://redis.io/download
         
         
         
+  
+=========================================================================
+                # Set , Get , Delete keys in Redis
+    =====================================================
+    
+    1- Set keys
+    
+          set name vasu
+          set age 24
+          
+    2- show all keys use below command
+    
+          keys *
+          
+    3- Get key value use below command
+    
+           get name
+           get age
+           
+    4- Delete key use below command
+    
+            del name
+            del age
+        
+        
