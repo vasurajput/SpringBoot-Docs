@@ -103,8 +103,13 @@ $scope.firstname="vasu";
 </html>
 
 #######################################################################################
+Spring Boot JPA Study Link
+=============================
+https://docs.spring.io/spring-data/jpa/docs/current/reference/html/#transactions
+=====================================================================================================================
 
-                                           Use H2 database JPA with spring boot
+                                           Use H2 database 
+					   with spring boot
                                            ====================================
 
 1-Incluse folloing jar in pom.xml 
