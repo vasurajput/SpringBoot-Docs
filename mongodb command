@@ -1,3 +1,13 @@
+# To Uninstall All Instancce of MongoDB use below Commands
+
+yum remove mongodb*
+yum clean all
+yum install mongodb-org
+
+# Now Install From MongoDb Docs
+
+
+
 # Spring Docs For Mongo DB
 https://docs.spring.io/spring-data/data-document/docs/current/reference/html/#d0e3309
 
