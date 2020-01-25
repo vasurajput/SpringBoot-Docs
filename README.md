@@ -1852,3 +1852,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 Follow My Git URL fot this
 https://github.com/vasurajput/SpringBootSecurity/tree/master/SpringBootSecurityMYSql
 
+
+#################################  Install Zipkin in Ubuntu #########################
+curl -sSL https://zipkin.io/quickstart.sh | bash -s
+
