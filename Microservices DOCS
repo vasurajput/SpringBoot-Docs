@@ -468,4 +468,10 @@ spring.cloud.config.server.git.uri=file:///home/vasurajput/Pictures/JavaDream/Ja
 
 http://localhost:9091/vasu/default               // /vasu is same as name of our properties file eg: vasu.properties
 
+We Can Create file like profile in Git Serevr
+eg: create another properties file name vasu-dev.properties, vasu-qa.properties add them and commit them and hit the below URL
+
+http://localhost:9091/vasu/dev
+http://localhost:9091/vasu/qa
+
 
