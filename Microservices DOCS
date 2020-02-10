@@ -475,3 +475,73 @@ http://localhost:9091/vasu/dev
 http://localhost:9091/vasu/qa
 
 
+#######################################  CUSTOM EXCEPTION IN SPRING BOOT #########################################
+1- throw a Exception by Creating a class.
+for eg:
+===========
+ @RestController
+public class DemoController {
+	
+	static Map<Integer, String> dummyMap = new LinkedHashMap<Integer, String>();
+	
+	public DemoController() {
+		dummyMap.put(1, "Vasu Rajput");
+		dummyMap.put(2, "Vishu Rajput");
+		dummyMap.put(3, "Koku Rajput");
+		dummyMap.put(4, "Oshu Rajput");
+	}
+
+	@GetMapping("/test/{id}")
+	public String test(@PathVariable("id") Integer id) {
+		String name = dummyMap.get(id);
+		if(name == null) {
+			throw new UserNotFoundException("id- "+id);
+		}
+		return "Nice Try  "+name;
+	}
+}
+
+2-  Create a class UserNotFoundException that extends RunTimeException class
+eg:
+=====
+@ResponseStatus(HttpStatus.NOT_FOUND)
+public class UserNotFoundException extends RuntimeException {
+
+	public UserNotFoundException(String message) {
+		super(message);
+	}
+
+}
+
+3- Create a Class that define your Custom Response Standard
+eg:
+=====
+public class ExceptionResponse {
+
+	private Date timeStamp;
+	private String message;
+	private String detail;
+	//Constructor 
+	//getter setter
+	
+4- create a class CustomizedResponseEntityExceptionHandler that extends ResponseEntityExceptionHandler class
+for eg:
+=========
+@RestController
+@ControllerAdvice
+public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
+
+	@ExceptionHandler(Exception.class)
+	public final ResponseEntity<Object> handleAllExceptions(Exception ex, WebRequest request) throws Exception {
+		ExceptionResponse exceptionResponse = new ExceptionResponse(new Date(), ex.getMessage(),
+				request.getDescription(false));
+		return new ResponseEntity(exceptionResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+	
+	@ExceptionHandler(UserNotFoundException.class)
+	public final ResponseEntity<Object> handleUserNotFoundExceptions(Exception ex, WebRequest request) throws Exception {
+		ExceptionResponse exceptionResponse = new ExceptionResponse(new Date(), ex.getMessage(),
+				request.getDescription(false));
+		return new ResponseEntity(exceptionResponse, HttpStatus.NOT_FOUND);
+	}
+}
