@@ -1,0 +1,38 @@
+Install Docker in Centos 7:
+==============================
+ 1- sudo yum check-update
+ 2- curl -fsSL https://get.docker.com/ | sh
+ 3- sudo systemctl start docker
+ 
+Install docker-compose in centos;
+===================================
+  1- sudo curl -L "https://github.com/docker/compose/releases/download/1.25.3/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+  2- sudo chmod +x /usr/local/bin/docker-compose
+
+
+1- Now create any directory in any location
+2- create a file name docker-compose.yml and make below entry and save ot
+version: "3"
+
+services:
+
+  web:
+    image: nginx
+
+  database:
+    image: redis
+    
+ 3- run below command to run container
+        docker-compose up -d
+   
+ 4- run below command to check status
+         docker ps
+      
+ 5- To down container use below command
+         docker-compose down
+        
+    
+    
+
+
+ 
