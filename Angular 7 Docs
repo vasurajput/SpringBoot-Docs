@@ -9,14 +9,17 @@
 
 2- Go to app-routing.module.ts file and fill entry in Routes arr like below
 const routes: Routes = [
+  {path: "", redirectTo: "/departments", pathMatch="full"},  // This is for default route which show department by default
   {path: "employees", component: EmployeeListComponent},
   {path: "departments", component: DepartmentListComponent}
+   {path: "**", component: pageNotFoundComponent}      // wildcard routing if user type invalid URL it will redirect 
+                                                          to pageNotFouund page it must be last condition in sequence
 ];
 
 3- Now in app-routing.module.ts file export a array of above routing component and import this into app.module.ts file
   => In app-routing.module.ts
   ============
-  export const routingComponent = [DepartmentListComponent, EmployeeListComponent];
+  export const routingComponent = [DepartmentListComponent, EmployeeListComponent, pageNotFoundComponent];
   
   => In app.module.ts file
   import { AppRoutingModule, routingComponent } from './app-routing.module';
