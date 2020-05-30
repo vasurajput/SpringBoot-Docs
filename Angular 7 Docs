@@ -35,4 +35,42 @@ const routes: Routes = [
     <a routerLink="/employees" routerLinkActive="active">Employees</a>
    </nav>
    <router-outlet></router-outlet>
+   
+   
+###################### Pass Parameter to routing ############################
+1- make Entry in app-routing.module.ts file as below:
+       {path: "employeeDetail/:id", component: EmployeeDetail},
+
+2- Create a navigate Componenet from where you sending this Id or calling Component 
+    <ul class="items">
+    <li (click)="onSelect(i)" *ngFor="let i of details"> 
+            <p> {{ i.id }} {{ i.name }} </p>
+    </li>
+    </ul>
+    =============
+    import { Router } from '@angular/router';
+    
+      constructor(private router: Router) { }
+      onSelect(detail){
+         console.log(detail);
+         this.router.navigate(['employeeDetail',detail.id]);
+     }
+     
+3- Import ActivatedRoute service on called component or where you read this value like below:
+     import { ActivatedRoute } from '@angular/router';
+     export class EmployeeDetail implements OnInit{
+    public employeeId;
+    constructor(private router: ActivatedRoute){
+
+    }
+    ngOnInit(){
+        let id= parseInt(this.router.snapshot.paramMap.get('id'));
+        this.employeeId= id;
+    }
+}
+
+4- Go to view of Called Component and read above parameter
+     <p>employee details Calling for Id {{ employeeId}}</p>
+
+    
 
