@@ -1,0 +1,35 @@
+##################### Routing in Anguar 7 ###################
+=> Command to create Project with routing use below command
+        ng new routing-example --routiing
+=> Make sure in index.html file you have below syntax 
+        <base href="/">
+
+1- If you go to app.component.html you see below tag that is used for routing
+<router-outlet></router-outlet>
+
+2- Go to app-routing.module.ts file and fill entry in Routes arr like below
+const routes: Routes = [
+  {path: "employees", component: EmployeeListComponent},
+  {path: "departments", component: DepartmentListComponent}
+];
+
+3- Now in app-routing.module.ts file export a array of above routing component and import this into app.module.ts file
+  => In app-routing.module.ts
+  ============
+  export const routingComponent = [DepartmentListComponent, EmployeeListComponent];
+  
+  => In app.module.ts file
+  import { AppRoutingModule, routingComponent } from './app-routing.module';
+   @NgModule({
+  declarations: [
+    AppComponent,
+   routingComponent
+  ],
+  
+4- Now go to app.component file and add routing code like below:
+   <nav>
+    <a routerLink="/departments" routerLinkActive="active">Department</a><br><hr>
+    <a routerLink="/employees" routerLinkActive="active">Employees</a>
+   </nav>
+   <router-outlet></router-outlet>
+
