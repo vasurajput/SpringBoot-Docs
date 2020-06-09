@@ -36,9 +36,12 @@ services:
     1- Login on docker from terminal using below command
          sudo docker login
     2- create a tag of your image
-        sudo docker tag spring-docker.jar javadream/spring-docker.jar
+        sudo docker tag spring-docker.jar vasu01/spring-docker.jar  // NOTE- if you create tag name other then your username it will not push to docker try once
     3- Now list all image
         sudo docker image ls
+    4- Push this image to docker
+        sudo docker push vasu01/spring-docker.jar
+    5- Now go to your dockerhub, go inside profile and you will see this image.
      
 
 
