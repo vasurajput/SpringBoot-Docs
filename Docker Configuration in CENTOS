@@ -32,7 +32,14 @@ services:
          docker-compose down
         
     
-    
+    ========================= Push image to docker hub ===================================
+    1- Login on docker from terminal using below command
+         sudo docker login
+    2- create a tag of your image
+        sudo docker tag spring-docker.jar javadream/spring-docker.jar
+    3- Now list all image
+        sudo docker image ls
+     
 
 
  
