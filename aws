@@ -1,0 +1,5 @@
+========== Install tomcat in aws ==================
+1- Go to tomcat website and install core tar version
+2- etract and run
+3- Go to your ec2 instance and use elasticIp:8080 to access this tomcat on aws
+
