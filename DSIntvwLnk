@@ -45,3 +45,12 @@ Note:-> Applying Inorder traversal in BST will give Sort Data.
    -> If not have right child
       : Then find the given node from root and last left traversal turn node will be the ans( jb node find krenge root se to 
       search krte time last left turn wal node ans hoga)
+
+
+
+
+############################# a-boolean-matrix-question ##############################
+1- Initialize two temp arr named row and column
+2- Initialize both as 0
+3- Traverse main matrix and if mat[i][j]==1 intialize row[i]=1 and col[j]=1
+4- Again traverse row and column and if (row[i]=1 || col[j]=1) then mat[i][j]=1
