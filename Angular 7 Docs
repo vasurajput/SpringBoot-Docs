@@ -73,4 +73,9 @@ const routes: Routes = [
      <p>employee details Calling for Id {{ employeeId}}</p>
 
     
+    
+ ===================================== INSTALL stompjs and sockjs-client for Websocket ============================
+ Link- https://medium.com/linkit-intecs/real-time-updating-chat-room-using-angular-6-spring-boot-web-sockets-cc1a6e9d4944
+ After install above command if you get any error that ./lib like then use below command
+ npm i net -S
 
