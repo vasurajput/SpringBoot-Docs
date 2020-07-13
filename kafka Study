@@ -18,6 +18,10 @@ start zookeper
 Go to bin folder
 ./zookeeper-server-start.sh ../config/zookeeper.properties
 
+To Kill Zookeper if you find port already used exception
+==================
+lsof -i :2181
+
 start kafka
 ==========
 Go to bin folder
