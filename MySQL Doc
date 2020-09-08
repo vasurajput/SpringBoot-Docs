@@ -1,0 +1,77 @@
+############ Stored Function
+
+create function testFun(s varchar(255))
+returns varchar(255)
+ begin
+  return concat('Hello','s','!');
+ end
+
+Run-> select testFun('vasu');
+
+###### To Drop Function if already Exist
+drop function if exists testFun;
+
+#### To Drop Procedure if already Exist
+drop procedure if exists testProc
+
+############ Stored Procedure
+
+create procedure testProc(n varchar(24))
+ begin
+   select concat('hello, ', n , '!');
+ end
+
+Run- > Call testProc('vasu');
+
+Ex:
+create procedure vasu(param varchar(30))
+ begin
+   select a.artist as artist,
+   a.title as album
+   t.trackNo as trackNo
+   from track as t
+   join album as a
+    on a.id=t.albumId
+   where a.artist like param
+   order by artist, album, trackNo
+ end
+
+call vasu('%Lets Nacho%')
+
+
+######### Procedure with return
+create procedure totalDuration(param varchar(20), OUT outp varchar(30))
+  begin
+   select trackLen(SUM(duration)) into outp
+   from track
+   where albumId in (Select id from album where artist like param);
+  end
+
+call totalDuration('%vasu%', @dur);
+select @dur;
+
+
+
+
+######## To See all the Function and Procedure List ############
+show procedure status where definer like 'vasu%';
+show function status where definer like 'vasu%';
+
+
+########## To See Index detail on a table use below command ######
+show index from table_name;
+
+########## To create index explicitly on a table column use below command #########
+create table test(
+  id int unsigned not null auto_increment primary key,
+  string1 varchar(20) unique,
+  string2 varchar(20),
+  index i_str2 (string2)    or you can use unique index i_str2 (string2)
+);
+show index from test;
+
+######### To Create Index Seperately from Table ##############
+create index i_str2 on test(string2);
+        OR to create unique index
+create unique index i_str2 on test(string2)
+
