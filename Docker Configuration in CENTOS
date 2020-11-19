@@ -45,4 +45,101 @@ services:
      
 
 
+
+To see last stopped container
+=============================
+
+docker ps -l
+
+To see list of all running container
+====================================
+docker ps -a
+
+
+# Diff Bw Docker run and Docker Commit
+========================================
+The diff is Docker Run convert Docker Image to Docker Container
+And Docker Commit convert docker container to docker image
+
+
+# To Display container details in formate use below command
+==========================================================
+
+docker ps -l --format=$FORMAT
+
+# Docker Commit Command
+========================
+1- Display the container that you want to convet in image
+2- In this case we convert last stopped container to docker image. So to see the detail of last running container use below command
+
+    docker ps -l
+
+3- Copy the ID and use this id with docker commit command syntax like below
+
+   docker commit ID
+
+4- Using above command it will give you a very long ID like sha256:323423425523
+5- It is difficult to remember this long li=ong id so we give it a name using docker tag command like below
+
+   docker tag 323423425523 my-image
+
+6- Now check images using docker images command 
+7- Now run this image using below command
+   
+   docker run -it my-image
+
+Shortcut of all above command is below
+================================
+docker commit NAME_OF_LAST_RUNNING_CONTAINER my-image-2
+
+NAME_OF_LAST_RUNNING_CONTAINER = docker ps -l --format=$FORMAT   [ use this command to get NAME_OF_LAST_RUNNING_CONTAINER  ]
+
+# To Run container in Bakground we use -d means now container running in background syntax like below
+
+   docker run -d -it ubuntu bash
+
+2- Now check this continer details using below command
+  
+   docker ps --format=$FORMAT
+
+3- Now use below syntax to jump into the container
+
+   docker attach NAME_OF_CONTAINER
+
+# Runnig More things in container
+================================
+docker exec
+
+=> Start another process in an existing container
+=> Great for debugging and DB administration
+=> Can't add ports, Volumes, and so on
+
+Example
+=======
+If you already have a running container and you want to do some process then use docker exec command like below
+
+docker exec -it NAME_OF_RUNNING_CONTAINER bash
+
+Now whatever you do in this container it will also reflect on main container
+
+
+# For Checking Container logs if something went wrong
+====================================================
+docker logs
+
+Syntax =>  docker logs CONTAINER_NAME
+
+Example
+======
+docker run --name example -d ubuntu bash -c "lose /etc/password"          [ In this command we have a typo error with lose in "" ]
+docker logs example
+
+#Stopping or removing container
+================================
+docker kill CONTAINER_NAME
+docker rm CONTAINER_NAME
+
+
+
+
  
