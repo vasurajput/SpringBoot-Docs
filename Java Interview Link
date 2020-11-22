@@ -25,3 +25,11 @@ https://www.oracle.com/java/technologies/javase-downloads.html
 6- Edit path and add this path in that
 7- now click on new and set path till bin foler using name JAVA_HOME
 8- Now go to your cmd and type java -version
+
+
+# ==================Install Eclipse on windows 10 ======================
+1- Go to below link
+https://www.eclipse.org/downloads/packages/
+
+2- Scroll down and look for More Downloads
+3- Select version and install
