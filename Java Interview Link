@@ -11,3 +11,17 @@ https://javarevisited.blogspot.com/2015/10/133-java-interview-questions-answers-
 https://javarevisited.blogspot.com/2014/07/top-50-java-multithreading-interview-questions-answers.html
 
 https://javarevisited.blogspot.com/2015/02/50-programmer-phone-interview-questions-answers.html
+
+
+Install java on windows
+===========================
+1- Go to below download url of oracle
+https://www.oracle.com/java/technologies/javase-downloads.html
+
+2- select version and click on jdk download
+3- click on window installer .exe file
+4- go to programe files in your system go to java and go to bin folder copy this path
+5- Go to system advance setting and set environment variable
+6- Edit path and add this path in that
+7- now click on new and set path till bin foler using name JAVA_HOME
+8- Now go to your cmd and type java -version
