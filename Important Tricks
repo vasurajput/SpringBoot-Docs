@@ -2,6 +2,10 @@
 gnome-keyring
 -DUSSD_HOME=/home/vasurajput/vishu/ussd-platform/resources
 
+========== SAGA Pattern Link ==========
+https://www.vinsguru.com/architectural-pattern-orchestration-saga-pattern-implementation-using-kafka/
+https://www.google.com/search?sxsrf=ALeKk03udzKKg9Pj1EbcAIkQoffnrnKe7A:1606030692551&q=saga+pattern+kafka&sa=X&ved=2ahUKEwiH7LXH0pXtAhUJfSsKHXdvB0gQ1QIoAXoECAYQAg
+
 ============================ SCP Command ================================
 scp -P1980 webserver.pem root@serverIp:/usr/local/dada/
 
