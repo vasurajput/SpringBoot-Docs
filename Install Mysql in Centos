@@ -95,3 +95,20 @@ mysql> select plugin_name, plugin_status from information_schema.plugins where p
 
 ################ User Creation Link MySql ##########################
 https://stackoverflow.com/questions/39281594/error-1698-28000-access-denied-for-user-rootlocalhost/39282732
+
+
+
+
+##################### Install MySQL on windoes ######################
+1- Go to below URL
+https://www.mysql.com/downloads/
+2- Go to bottom and click on
+MySQL Community (GPL) Downloads »
+
+3- click on 
+MySQL Community Server
+
+4- Click on 
+Go to download Page           Note: don't go for other downloads
+
+5- Now click on download of size 405.2 MB
