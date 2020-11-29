@@ -127,6 +127,7 @@ https://docs.spring.io/spring-data/jpa/docs/current/reference/html/#transactions
 spring.jpa.show-sql=true            //display sql logs
 spring.h2.console.enabled=true          
 spring.h2.console.path=/h2-console      // for h2 web-console
+spring.datasource.url=jdbc:h2:mem:testdb    //In advnce version we get error to solve this we add this annotation
 
 3-Create a entity class like below
 @Entity
