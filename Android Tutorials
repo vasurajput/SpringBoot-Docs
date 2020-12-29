@@ -23,7 +23,7 @@ Simple Login Example
     =====================
     
     1- First go to Design tab and go to container and choose ListView
-    2- Now go to MainActivity.Java and get instance of ListView using Id and create a list that you want to show in ListView
+    2- Now go to MainActivity.Java inside onCreate method and get instance of ListView using Id and create a list that you want to show in ListView
     
          ListView listView = (ListView)findViewById(R.id.myListView);
 
