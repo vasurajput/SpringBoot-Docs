@@ -1,0 +1,267 @@
+Copy constructor in java is used to create the copy of an object. 
+
+Is there any copy constructor in java by default ? 
+
+Java does not create any copy constructor by default like c++, We have to create the copy constructor explicitly. 
+
+First look at complete code of copy constructor than we explain it step by step. 
+
+========== 
+
+package Practice; 
+
+  
+
+class Student { 
+
+  
+
+	private int id; 
+
+	private String name; 
+
+  
+
+	public Student(Student copy) { 
+
+		this.id = copy.id; 
+
+		this.name = copy.name; 
+
+	} 
+
+  
+
+	public Student(int id, String name) { 
+
+		this.id = id; 
+
+		this.name = name; 
+
+	} 
+
+  
+
+	@Override 
+
+	public String toString() { 
+
+		return "Student [id=" + id + ", name=" + name + "]"; 
+
+	} 
+
+  
+
+} 
+
+  
+
+public class CopyConstructor { 
+
+	public static void main(String[] args) { 
+
+		Student s1 = new Student(1, "vasu"); 
+
+		Student s2 = new Student(1, "vishu"); 
+
+  
+
+		Student s3 = new Student(s1); 
+
+  
+
+		System.out.println(s1); 
+
+		System.out.println(s2); 
+
+		System.out.println(s3); 
+
+  
+
+	} 
+
+} 
+
+ 
+
+Now Run this programe and see the output. 
+
+Student [id=1, name=vasu] 
+
+Student [id=2, name=vishu] 
+
+Student [id=1, name=vasu] 
+
+ 
+
+========== 
+
+ 
+
+Explanation of above code: 
+
+To create Copy constructor we have to define our class constructor like below. 
+
+ 
+
+class Student { 
+
+ 
+
+ private int id; 
+
+ private String name; 
+
+  
+
+public Student(Student copy) { 
+
+      this.id = copy.id; 
+
+      this.name = copy.name; 
+
+} 
+
+ 
+
+In above syntax we define a Student class with two fields 
+
+1- Id 
+
+2- name 
+
+And a constructor that accept Student class object. And we assign this Student object value to our instance variable. 
+
+Now create a parameterized constructor and override the toString() method to see how the copy constructor works. Now our code look like below: 
+
+class Student { 
+
+  
+
+	private int id; 
+
+	private String name; 
+
+  
+
+	public Student(Student copy) { 
+
+		this.id = copy.id; 
+
+		this.name = copy.name; 
+
+	} 
+
+  
+
+	public Student(int id, String name) { 
+
+		this.id = id; 
+
+		this.name = name; 
+
+	} 
+
+  
+
+	@Override 
+
+	public String toString() { 
+
+		return "Student [id=" + id + ", name=" + name + "]"; 
+
+	} 
+
+  
+
+} 
+
+ 
+
+As you can see we have a class named Student with two constructor 
+
+1- Parameterized constructor 
+
+2- Copy Constructor. 
+
+Parameterized constructor accept id and name as parameter and assign them to our instance variable. 
+
+Copy Constructor accept a Student object and assign them to our instance variable. 
+
+ 
+
+Now create the main method and create Object of Student class like below. 
+
+public static void main(String[] args) { 
+
+		Student s1 = new Student(1, "vasu"); 
+
+		Student s2 = new Student(1, "vishu"); 
+
+  
+
+		Student s3 = new Student(s1); 
+
+  
+
+		System.out.println(s1); 
+
+		System.out.println(s2); 
+
+		System.out.println(s3); 
+
+  
+
+	} 
+
+ 
+
+As you can see we have define two object of class Student s1 and s2.  
+
+Now we create another Student object named s3 and assign object s1 to it. 
+
+Now we simplly print all three objects. 
+
+Now see the result of s3 object it is same as s1 object. This is because of copy constructor because we pass this s1 object to our copy constructor using below line of code. 
+
+Student s3 = new Student(s1); 
+
+ 
+
+Copy constructor create the shallow copy not deep copy of objects. 
+
+ 
+
+Now you are confused why we use copy constructor if we create the copy of object using clone method. 
+
+Copy Constructor Vs Clone method. 
+
+1- It is very easy to create copy of an object using copy constructor as compare to Clone method. 
+
+2- If we use Clone method than we have to implement the Clonable interface and also need to handle CloneNotSupportedException. 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
