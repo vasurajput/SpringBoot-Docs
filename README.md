@@ -1567,7 +1567,7 @@ public class SchedulerApplication {
  
 #log4j.rootCategory=INFO, A1
 #log4j.appender.A1=org.apache.log4j.FileAppender
-#log4j.appender.A1.File=/var/log/vasu.log
+#log4j.appender.A1.File=/var/log/vasu.log             For Windows Path will be like C:\\Users\\vasurajput\\Desktop\\vasu.log         
 #log4j.appender.A1.layout=org.apache.log4j.PatternLayout
 #log4j.appender.A1.layout.ConversionPattern=%d{DATE} %F|%L : %m%n
 
