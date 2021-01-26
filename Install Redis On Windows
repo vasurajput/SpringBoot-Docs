@@ -1,0 +1,24 @@
+By Default Redis Does not support Windows OS but you can run it using github
+
+=> Go to below URL
+https://github.com/MicrosoftArchive/redis
+
+=> Now Search for Below Line ( It will be 3rd Line of below heading )
+Redis on Windows
+You can download the latest unsigned binaries and the unsigned MSI installer from the release page.
+
+=> Click on release page
+=> Now Below URL will Open
+https://github.com/microsoftarchive/redis/releases
+
+=> Now Download Zip file
+=> Now Extract this zip file
+
+=> Open your Envirnoment Varible click on System variable Edit Path and add the path of your redis server
+=>Now Open your Cmd and run server using below command
+redis-server
+
+=> Open another cmd and run client using below command
+redis-cli
+
+Now your redis client will start type Ping on client it will return Pong as a response
