@@ -1720,6 +1720,18 @@ No again Login
   username - admin
   password - admin
   
+  For Rabbit MQ on Window Installation
+  ================================
+  1- Install ERLang
+  2- Install RabbitMQ
+  3- Then use below steps
+Run the command prompt as Administrator
+Navigate to the sbin directory and uninstall the service. rabbitmq-service remove
+Reinstall the service rabbitmq-service install
+Enable the plugins. rabbitmq-plugins enable rabbitmq_management
+Start the service rabbitmq-service start
+Go to "http://localhost:15672/"
+  
   
   ################## Message With Redis Server #####################
   1- go to src folder of redis server
