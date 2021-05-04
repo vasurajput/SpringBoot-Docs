@@ -51,3 +51,6 @@ https://developers.facebook.com/docs/facebook-login/access-tokens/debugging-and-
 
 https://stackoverflow.com/questions/8605703/how-to-verify-facebook-access-token
 
+
+=============== Split using pattern in java 8 ============
+Pattern.compile(">").splitAsStream(breadCrumb).collect(Collectors.toList());
