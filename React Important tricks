@@ -1,0 +1,4 @@
+If firebase not work in your project do following ( importank SO link => https://stackoverflow.com/questions/52659859/module-not-found-cant-resolve-firebase-index )
+1. Do npm uninstall firebase
+2. npm cache clear
+3. npm install firebase
