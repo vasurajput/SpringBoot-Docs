@@ -5,7 +5,7 @@ If firebase not work in your project do following ( importank SO link => https:/
 
 
 
-#  Props in React Js ####################################
+######################################################  Props in React Js ####################################
 We can use props to pass data between two components. Suppose we have to pass data from our App component to Class Component so we use props.
 
 App.Js [ THis is the main React class Component ]
