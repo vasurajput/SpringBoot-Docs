@@ -41,3 +41,24 @@ export default person;
 
 ###################################################################### State in React Js ##########################################################
 We can use state only in class component not in the functional component
+eg:
+===
+class App extends React.Component {
+  state = {
+    persons: [
+      { name: 'vasu', age: 27 },
+      { name: 'konika', age: 26 },
+      { name: 'sushmita', age: 28 }
+    ]
+  }
+  render() {
+    return (
+      <div className="App" >
+        My First React Application
+        <Person name={this.state.persons[0].name} age={this.state.persons[0].age} />
+        <Person name={this.state.persons[1].name} age={this.state.persons[1].age}>My Hobbies: Sex</Person>
+        <Person name={this.state.persons[2].name} age={this.state.persons[2].age} />
+      </div>
+    );
+  }
+}
