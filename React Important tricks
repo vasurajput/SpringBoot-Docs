@@ -2,3 +2,42 @@ If firebase not work in your project do following ( importank SO link => https:/
 1. Do npm uninstall firebase
 2. npm cache clear
 3. npm install firebase
+
+
+
+###################################  Props in React Js ####################################
+We can use props to pass data between two components. Suppose we have to pass data from our App component to Class Component so we use props.
+
+App.Js [ THis is the main React class Component ]
+======
+function App() {
+  return (
+    <div className="App">
+      My First React Application
+      <Person name="vasu" age="27"/>
+      <Person name="konika" age="26">My Hobbies: Sex</Person>
+      <Person name="sushmita" age="28"/>
+    </div>
+  );
+}
+
+Person.Js   [ This is the functional component that we have created ]
+=========
+import React from 'react';
+const person = (props) => {
+    return (
+        <div>
+            <h1>
+                I am {props.name} and i am {props.age}years old.
+            </h1>
+            <p>{props.children}</p>
+        </div>
+
+    )
+}
+export default person;
+
+
+
+###################################################################### State in React Js ##########################################################
+We can use state only in class component not in the functional component
