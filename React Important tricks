@@ -62,3 +62,44 @@ class App extends React.Component {
     );
   }
 }
+
+
+#######################################    Change State in React Js ##########################################################################
+React uses "setState" methos to change the state. In this example we use a button and on click on this button we change the state. Means when we click on this button our name 
+will be change to the full neme.
+
+eg:
+====
+class App extends React.Component {
+  state = {
+    persons: [
+      { name: 'vasu', age: 27 },
+      { name: 'konika', age: 26 },
+      { name: 'sushmita', age: 28 }
+    ]
+  }
+
+  swithNameHandler = () => {
+    console.log('button clicked');
+    this.setState({
+      persons: [
+        { name: 'vasu Rajput', age: 27 },
+        { name: 'konika Bisht', age: 26 },
+        { name: 'sushmita Joshi', age: 28 }
+      ]
+    })
+  }
+
+  render() {
+    return (
+      <div className="App" >
+        My First React Application<br />
+        <button onClick={this.swithNameHandler}>Switch Names</button>
+        <Person name={this.state.persons[0].name} age={this.state.persons[0].age} />
+        <Person name={this.state.persons[1].name} age={this.state.persons[1].age}>My Hobbies: Watching Movies</Person>
+        <Person name={this.state.persons[2].name} age={this.state.persons[2].age} />
+      </div>
+    );
+  }
+}
+export default App;
