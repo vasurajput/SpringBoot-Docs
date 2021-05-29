@@ -160,5 +160,68 @@ const App = props => {
 export default App;
 
 
+#######################################  Show and Hide Content of an Component #######################################################
+We are using a Persons variable and put persons div inside this and return only if state condition is true
 
+1- Our default state is 
+    const [personState, personSetState] = useState({
+    persons: [
+      { name: 'vasu', age: 27 },
+      { name: 'konika', age: 26 },
+      { name: 'sushmita', age: 28 }
+    ],
+    showPersonState: true
+  })
+  
+2- Now Declare a variable Persons and set persons div to this variable
+  let persons = null;
+  if (personState.showPersonState) {
+    persons = (
+      <div>
+        <Person name={personState.persons[0].name} age={personState.persons[0].age} />
+        <Person name={personState.persons[1].name} age={personState.persons[1].age}
+          click={swithNameHandler.bind(this, "MC")}
+          change={nameChangeHandler}
+        >My Hobbies: Watching Movies</Person>
+        <Person name={personState.persons[2].name} age={personState.persons[2].age} />
+      </div>
+    );
+  }
+  
+3- Now Create two button to show and Hide this data
+     <button style={inlineCss} onClick={togglePersonHandler}>Sabko Hide kr do BC</button>
+     <button style={inlineCss} onClick={showTogglePersonHandler}>Sbako Dikhao BC</button>
+     
+4- Create these onClick method to show and hide data
+     const togglePersonHandler = () => {
+    personSetState({
+      persons: [
+        { name: 'vasu Rajput', age: 27 },
+        { name: 'konika Rajput', age: 26 },
+        { name: 'sushmita Rajput', age: 28 }
+      ],
+      showPersonState: false
+    })
+  }
+  const showTogglePersonHandler = () => {
+    personSetState({
+      persons: [
+        { name: 'vasu Rajput', age: 27 },
+        { name: 'konika Rajput', age: 26 },
+        { name: 'sushmita Rajput', age: 28 }
+      ],
+      showPersonState: true
+    })
+  }
+  
+5- Now your return Method of Functional Component is look like this Now click on these buttons and check your functionallity
+
+   return (
+    <div className="App" >
+      My First React Application<br />
+      <button style={inlineCss} onClick={togglePersonHandler}>Sabko Hide kr do BC</button>
+      <button style={inlineCss} onClick={showTogglePersonHandler}>Sbako Dikhao BC</button>
+      {persons}
+    </div>
+  );
 
