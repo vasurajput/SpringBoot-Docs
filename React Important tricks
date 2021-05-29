@@ -103,3 +103,62 @@ class App extends React.Component {
   }
 }
 export default App;
+
+
+
+##########################################   Hooks in React Js #####################################################################
+As we know we can't use state in our functional component. so to manage state in functional components we use the hooks.
+so to use hooks we have to import them as well. And most usefull hooks is "useState".
+
+import React, { useState } from 'react';
+
+useState always return the two elements
+   First Element is always be the current state
+   Second Element will be the function which allow us to modify the current state.
+   
+Note: 1- Class Component uses state
+      2- Functional Component uses hooks that is useState.
+      3- We can use only one state in class component where as we can use multiple useState hooks in functional interface.
+      
+eg of useState hooks:
+=====================
+import React, { useState } from 'react';
+import './App.css';
+import Person from './Person/Person.js';
+
+const App = props => {
+  const [personState, personSetState] = useState({
+    persons: [
+      { name: 'vasu', age: 27 },
+      { name: 'konika', age: 26 },
+      { name: 'sushmita', age: 28 }
+    ]
+  })
+
+  const swithNameHandler = () => {
+    console.log('button clicked');
+    personSetState({
+      persons: [
+        { name: 'vasu Rajput', age: 27 },
+        { name: 'konika Bisht', age: 26 },
+        { name: 'sushmita Joshi', age: 28 }
+      ]
+    })
+  }
+
+
+  return (
+    <div className="App" >
+      My First React Application<br />
+      <button onClick={swithNameHandler}>Switch Names</button>
+      <Person name={personState.persons[0].name} age={personState.persons[0].age} />
+      <Person name={personState.persons[1].name} age={personState.persons[1].age}>My Hobbies: Watching Movies</Person>
+      <Person name={personState.persons[2].name} age={personState.persons[2].age} />
+    </div>
+  );
+}
+export default App;
+
+
+
+
