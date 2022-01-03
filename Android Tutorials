@@ -257,3 +257,28 @@ list_item_layout.xml
 
        
     
+    
+    ###### Volley Api Call #######################
+    1. Add below gradle dependency
+    implementation 'com.android.volley:volley:1.2.1'
+    
+    2. open MainActivity.java and paste the below code
+        private static final String url = "Give Any URl here";
+        
+         StringRequest request = new StringRequest(url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                System.out.print("vasu");
+                TextView tx = (TextView)findViewById(R.id.text1);
+                tx.setText(response.toString());
+                Log.d("RESPONSE", response);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(MainActivity.this, "Something Went Wrong", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        RequestQueue queue = Volley.newRequestQueue(this);
+        queue.add(request);
