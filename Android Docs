@@ -7,3 +7,6 @@ Gtk-Message: 12:41:06.853: Failed to load module "canberra-gtk-module"
 then use command 
 sudo apt-get install libcanberra-gtk*
 
+How to call localhost api from Android Emulator
+================================================
+https://stackoverflow.com/questions/6760585/accessing-localhostport-from-android-emulator
