@@ -1,0 +1,15 @@
+To check what's the default project selected on GCP console
+===========
+gcloud config list
+
+To help gcloud command
+==============
+gcloud -h
+
+what properties have been set so far in the configuration
+===============
+gcloud config list
+
+If you need a help for the particular command like for compute command you need help then type
+===================
+gcloud compute --help
