@@ -13,3 +13,7 @@ gcloud config list
 If you need a help for the particular command like for compute command you need help then type
 ===================
 gcloud compute --help
+
+Connect mysql through GCP cloud shell
+=================
+gcloud sql connect vasuDBInstanceName --user=root
