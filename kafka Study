@@ -55,3 +55,196 @@ By default produce produce message and same message in fetch by consumer
 
 ##### for see all the messages of consumer topic that is send by produce use command #####
 ./kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic first_topic --from-beginning
+
+
+
+
+
+#Kafka For Windows
+
+Note:  To Clear cmd console we use the cls command
+====
+
+Note: If you get exception like access denied file exception after deleting the topic than goto c:\tmp folder and delete zookeeper and kafka folder
+=====       then try again
+
+After Download kafka there are two main folder 1 is bin and 1 is config.
+To Start Kafka we have to first start the zookeeper and command to start zookeper is
+
+zookeeper-server-start.bat ..\..\config\zookeeper.properties
+
+Now after start Zookeeper we can start Kafka and to run kafka we use the below commands
+=======================================================================================
+kafka-server-start.bat ..\..\config\server.properties
+
+
+
+# Kafka Cluster
+===============
+We have 3 type of clusters in kafka
+1- Single Node Single Broker
+2- Single Node Multiple Broker
+3- Multiple Node Multiple Broker
+
+
+#Broker -> Broker is nothing but a set of servers. If we have to run more than 1 kafka server then we use below steps:
+==========
+1- Go to config folder of kafka and copy the server.properties with any name say like vasu1-kafka.properties and vasu2-kafka.properties
+2- Now open both the file and change the broker.id and plantext port and log directory.
+
+broker.id=1
+listeners=PLAINTEXT://:9093
+log.dirs=/tmp/synergy-1-logs 
+
+After above changes run these kafka server same as we run the actual kafka server
+
+kafka-server-start.bat ..\..\config\vasu1-kafka.properties
+
+#Create a topic in kafka
+============================
+> kafka-topics.bat --create --bootstrap-server localhost:9092 --replication-factor 1 --partitions 1 --topic humbleTopic
+
+# To check if topic has been created succesfully or not
+=========================================================
+> kafka-topics.bat --list --bootstrap-server localhost:9092 humbleTopic
+
+# To check how many messages are in kafka topic use below command
+=================================================================
+kafka-run-class.bat kafka.tools.GetOffsetShell --broker-list localhost:9092 --topic user_topic --time -1
+
+# TO get the detail of a particular topic we use the --describe command
+=========================================================================
+> kafka-topics.bat --describe --bootstrap-server localhost:9092 --topic humbleTopic
+
+
+# To create a topic with multiple replicas we increase the --replication-factor
+===============================================================================
+> kafka-topics.bat --create --bootstrap-server localhost:9092 --replication-factor 2 --partitions 1 --topic replicatedTopic
+
+Note: We Can not create the replica more than the available broker. Means suppose you have only one kafka server running and you try
+====      to make --replication-factor 2 then you will get below exceptions
+
+C:\kafka\bin\windows>kafka-topics.bat --create --bootstrap-server localhost:9092 --replication-factor 2 --partitions 1 --topic replicatedTopic
+Error while executing topic command : Replication factor: 2 larger than available brokers: 1.
+[2022-02-16 09:29:31,330] ERROR org.apache.kafka.common.errors.InvalidReplicationFactorException: Replication factor: 2 larger than available brokers: 1.
+
+
+
+# To send a Message throught the kafka producer
+===============================================
+We can send message to producer using key,value
+key is optional
+value is mandatory
+
+When we pass message with key through producer it's guranted that consumer will get it in sequence
+
+command
+=======
+1-> kafka-console-producer.bat --broker-list localhost:9092 --topic humbleTopic
+2-> kafka-console-producer.bat --broker-list localhost:9092 --topic json_topic --property "key.separator=-" --property "parse.key=true"
+
+Note: If you see in second producer we have added some property means we are using key in message to send it to producer. When we use key to send message it's guranted that our consumer will get it in the sequence.
+
+
+Vasu is a good boy
+
+Vasu wants to learn new things
+
+# To REcieve a message through kafka consumer
+==============================================
+Consumer will have 3 options to read messages 
+1- from-begining    => Read Message from the begining of the topis
+2- latest           => read the message that comes latest means read only the messages that come after consumer has start
+3- specific offset  => read the message from topic by passing the specific offset value ( THis can be done only progamatically )
+
+Command
+=======
+1-> kafka-console-consumer.bat --topic humbleTopic --bootstrap-server localhost:9092 --from-beginning
+2-> kafka-console-consumer.bat --topic humbleTopic --bootstrap-server localhost:9092 --from-beginning --property "key.separator=-" --property "print.key=true"
+
+Output will be:
+Vasu is a good boy
+Vasu wants to learn new things
+
+
+# To Consume only First Message
+===============================
+kafka-console-consumer.bat --topic humbleTopic --bootstrap-server localhost:9092 --max-messages 1
+
+
+# To check Installed Kafka Version use below Command
+====================================================
+kafka-topics.bat --version
+
+
+
+group.id
+=========
+=>  group.id is mandatory to startup the consumer
+=>  It plays a major role when it comes to scalable message consumption
+
+# Consumer Offset
+=================
+As We know When we read record from kafka topic out consumer will have __consumer_offsets in which it maintain the last read meesage index(offset)
+record.
+
+But We can also manage this last read record index count in our code so there are two ways
+1- Auto Commit Offset ( Default )
+   => In this commiting offset is automatically taken care by the consumer API so no code needed for this
+   => There are few property that used to set this autocommit
+      1- enable.auto.commit=true
+	  2- auto.commit.interval.ms=5000
+2- Manually commiting offsets
+   => In this we commiting offset explicitly
+   => In this we have to approach to commit offset  
+      1- Commit offset Synchronously
+	  2- Commit offset asynchronously
+	  
+	  
+#  setProducerListener
+=======================
+This is used to set the callback so we can sure that which msg is delivered and which is not and we can log that accordingly
+
+            categoryKafkaTemplate.setProducerListener(new ProducerListener<String, Category>() {
+
+				@Override
+				public void onSuccess(ProducerRecord<String, Category> producerRecord, RecordMetadata recordMetadata) {
+					System.out.println("### Callback :: " + recordMetadata.topic() + " ; partition = "
+							+ recordMetadata.partition() + " with offset= " + recordMetadata.offset()
+							+ " ; Timestamp : " + recordMetadata.timestamp() + " ; Message Size = "
+							+ recordMetadata.serializedValueSize());
+				}
+
+				@Override
+				public void onError(ProducerRecord<String, Category> producerRecord, RecordMetadata recordMetadata,
+						Exception exception) {
+					System.out.println("### Topic = " + producerRecord.topic() );
+					exception.printStackTrace();
+				}
+
+			});
+			categoryKafkaTemplate.send(topic, category);
+			
+			
+# Producer Config
+=================
+enable.idempotence=true  => means data is not lost and we also do not contain any duplicate in kafka broker. For Eg suppose someone send msg to kafka broker and while send acknowledgment to sender we get some n/w issue and ack is not receive by the sender in that case sender again same msg and to avoid that duplicate entry we use the above property
+
+
+Kafka Integration with Spring boot
+====================================
+https://medium.com/@shrutishrm17/kafka-batch-processing-in-spring-boot-fc6c58f857fa
+https://memorynotfound.com/spring-kafka-batch-listener-example/
+https://codenotfound.com/spring-kafka-batch-listener-example.html
+
+Note: Some time we have to send and read Json. And for Sending json we need some pojo class and we have to make custom serialization for this 
+=====     pojo So Use below link to make custom serializer and desrilizer .
+https://www.baeldung.com/kafka-custom-serializer
+
+Multiple Type Consumer Example
+==========
+https://howtodoinjava.com/kafka/multiple-consumers-example/
+
+# Start and Stop kafka Listener dynamically ( Listener is used to read message from kafka queue)
+========================================================
+https://ananthasharma.medium.com/how-to-dynamically-start-stop-kafka-listener-in-springboot-apps-1e3da2140be1
