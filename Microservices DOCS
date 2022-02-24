@@ -545,3 +545,32 @@ public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExce
 		return new ResponseEntity(exceptionResponse, HttpStatus.NOT_FOUND);
 	}
 }
+
+
+
+## Spring boot application Monitoring 
+====================================
+1- First we have to install the prometheus and grafna
+2- Make sure we are using the actuator dependency in our pom.xml file and exposing the metrics and prometheus endpoint using below property in application.property
+   management.endpoints.web.exposure.include=health,info,metrics,prometheus
+3- Step to Install prometheus
+   1- Go to https://prometheus.io/download/   and download for windows
+   2- A Zip file 'll download extract that zip
+   3- Now open extracted folder and there is a file named prometheus.yml oepn this and put below lines at the end
+  - job_name: "spring-actuator"
+    metrics_path: "/actuator/prometheus"
+    scrape_interval: 5s
+    static_configs:
+    - targets: ["localhost:8080"]
+    
+    4- Now open cmd in the same folder and run prometheus.exe after that check on localhost:9090 port you 'll get the data from your actuator to prometheus dashboard
+    
+ 4- Step to install grafna
+     1- Go to https://grafana.com/grafana/download?platform=windows
+     2- Install the ZIP file and extract that
+     3- Go to the bin folder and open cmd and run the grafana-server.exe
+     4- Now go to localhost:3000 your grafna dashboard 'll display
+     5- By default userName and password is admin
+     
+    
+       
