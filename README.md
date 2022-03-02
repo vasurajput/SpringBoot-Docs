@@ -1869,3 +1869,21 @@ https://github.com/vasurajput/SpringBootSecurity/tree/master/SpringBootSecurityM
 #################################  Install Zipkin in Ubuntu #########################
 curl -sSL https://zipkin.io/quickstart.sh | bash -s
 
+
+	
+#Copy Docker Image into GCP container Registory
+================================================
+We use GCP container regisoty to pull and push the docker images. So Suppose i have to fetch the image from my Docker Hub account so i follow the below steps:
+	1- First i open my GCP and open their cloud shell
+	2- do login using docker ( docker login)
+	3- Pull the image from my Dockerhub ( docker pull vashurajput/spring-kubernates.jar)
+	
+So at this point i have my Docker Image if i want to run this i can run this directlly using below command
+	docker run -p 8080:8080 vashurajput/spring-kubernates.jar
+	And after hit above command click on web preview on the cloud shell at top right corner and hit your api
+	
+But Now i have to use this or we can say that i have to push this docker image on my GCP container registory so for this first i have to tag this image again and push it to container regidtory
+	For Example:
+	             docker pull busybox
+                     docker tag busybox gcr.io/my-project/busybox
+                     docker push gcr.io/my-project/busybox                 // Here gcr.io is nothing but hostname of gcp storage and use your project Id instead of my-                                                                              project use link to study further https://cloud.google.com/container-registry/docs/pushing-and-pulling
