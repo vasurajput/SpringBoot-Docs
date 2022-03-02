@@ -1886,4 +1886,8 @@ But Now i have to use this or we can say that i have to push this docker image o
 	For Example:
 	             docker pull busybox
                      docker tag busybox gcr.io/my-project/busybox
-                     docker push gcr.io/my-project/busybox                 // Here gcr.io is nothing but hostname of gcp storage and use your project Id instead of my-                                                                              project use link to study further https://cloud.google.com/container-registry/docs/pushing-and-pulling
+                     docker push gcr.io/my-project/busybox  
+	
+Note=> Here gcr.io is nothing but hostname of gcp storage and use your project Id instead of my-project use link to study further https://cloud.google.com/container-registry/docs/pushing-and-pulling
+
+After this go to container regisotry on your GCP you can see this image there
