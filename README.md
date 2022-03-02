@@ -1891,3 +1891,21 @@ But Now i have to use this or we can say that i have to push this docker image o
 Note=> Here gcr.io is nothing but hostname of gcp storage and use your project Id instead of my-project use link to study further https://cloud.google.com/container-registry/docs/pushing-and-pulling
 
 After this go to container regisotry on your GCP you can see this image there
+	
+	
+# Host you Spring boot application on Kubernetes cluster.
+=========================================================
+After following above steps i am supposing that you have docker image or you have tag this image and already pushed into GCP container registory.
+	
+-> After this use your docker image or container registory image and hit the below command to create the deployment
+	kubectl expose deployment hello-java --type=LoadBalancer --port 80 --target-port 8080
+	
+-> After hitting this command check is your pods and deployment is running or not using the below commands
+	kubectl get pods
+	kubectl get deplyment
+	
+-> After this we have to expose this deployment to a service using below command
+	kubectl expose deployment hello-java --type=LoadBalancer --port 80 --target-port 8080
+	
+-> After this check for service is up or not if up then use Expernal-Ip and hit your endpoint. Congrats you have done deployment succesfully
+	kubectl get svc
