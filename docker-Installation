@@ -1,2 +1,8 @@
 Links to remove
 https://stackoverflow.com/questions/48962730/docker-not-completely-removed
+
+
+If you install it on windows you get error and docker will not start so do the following
+1- Goto the link https://learn.microsoft.com/en-us/windows/wsl/install-manual
+2- Goto the step 4 Step 4 - Download the Linux kernel update package 
+3- And Download it. If still not work Uninstall your docker and again install it will work
