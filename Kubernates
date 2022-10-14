@@ -38,3 +38,52 @@ Now if you want to delete any specific label then just use - in front of that la
 Suppose if you want to assign a label to all the pods then use the below command
    kubectl label --all pods status=xyz
    kubectl label --all pods status-      // This is used to remove this status label from all the pods
+To See/List all the labels use below command
+   kubectl get pods --show-labels
+   
+   
+# Create a POD using yaml File. So for this create a yaml file and paste the below details there and then run the below command
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: vasupod
+  labels:
+    env: prod
+spec:
+  containers:
+    - name: firstcustomcontainer
+      image: nginx
+ 
+after saving above file use the below command to create the POD from this yaml file.
+    kubectl create -f mycustompod.yaml
+    
+# To see the complete syntax and format of this pod yaml file use the below command
+    kubectl explain pods --recursive
+    kubectl explain pods --recursive | less
+    
+# To edit a POD yaml file use the below command
+    kubectl edit pod firstpod
+    
+# Set and See the environment variable in the POD yaml file
+  First edit your yaml file
+  
+apiVersion: v1
+kind: Pod
+metadata:
+  name: vasupod
+  labels:
+    env: prod
+spec:
+  containers:
+    - name: firstcustomcontainer
+      image: nginx
+      env:
+        - name: myname
+          value: vasu
+        - name: city
+          value: Najibabad
+          
+ Now to see this envirnment variable run the below command
+    kubectl exec vasupod env
+ 
