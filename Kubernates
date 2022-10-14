@@ -1,0 +1,40 @@
+#POD
+====
+1- For Creating a Pod using command
+kubectl run firstpod  --generator=run-pod/v1 --image=nginx
+
+2- To List all pods
+kubectl get pod/po/pods
+
+# To List all Nodes
+kubectl get nodes/no/node
+
+# To see all details of pod
+kubectl get pods -o wide
+kubectl get pods -o json
+kubectl get pods -o yaml
+
+# Suppose if you don't know anything about pods so you can see the documentation with below command
+kubectl explain pods
+
+# To see the all step to create a pod use below command
+kubectl describe pod your-pod-name
+
+# To watch a pod means continously check what a pod is doing means if some delete then it will automatically create it so to watch this activity 
+kubectl get pods -w
+
+#To Delete a POD
+kubectl delete pod firstpod
+
+# Label a POD
+First you can check the label assing to a POD using
+   kubectl describe pod firstpod command
+and after that to assign a new label to the pod use below command
+   kubectl label pod firstpod env=testing
+Now Suppose we want to override/update the label value say env=dev then if you use the ablove command you will get error overwrite not allowed so use the below command
+   kubectl label --overwrite pod firstpod env=dev
+Now if you want to delete any specific label then just use - in front of that label key. For example see the below command to delete the env label
+   kubectl label pod firstpod env-
+Suppose if you want to assign a label to all the pods then use the below command
+   kubectl label --all pods status=xyz
+   kubectl label --all pods status-      // This is used to remove this status label from all the pods
