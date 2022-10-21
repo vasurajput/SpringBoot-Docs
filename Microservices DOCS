@@ -632,10 +632,17 @@ public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExce
  5- In your Service class annotate your method with below annotations.
      
         @CircuitBreaker(name = "vasu", fallbackMethod = "testFallback")             // Note: Just concentrate on name property here because it 'll be use in application.properties files
-	@Retry(name = "vasu") // No need to add fallbackMethod property here because it will go to the fallbackMethod due to @CircuitBreaker but if you are not using @CircuitBreaker then you can define fallBackMethod in @Retry
-	public String test() {
+	@Retry(name = "vasu") // No need to add fallbackMethod property here because it will go to the fallbackMethod due to
+	public String test() {                // @CircuitBreaker but if you are not using @CircuitBreaker then you can define fallBackMethod in @Retry
 	    ResponseEntity<String> forEntity = new RestTemplate().getForEntity("http://localhost:9090/dummy", String.class);
 	    return forEntity.getBody();
+	}
+	@CircuitBreaker(name = "reactive-api" , fallbackMethod = "testReactiveFallback")
+	@Retry(name = "reactive-api")
+	public Mono<String> testReactive(){
+		System.out.println("Insida test Reactive");
+		Mono<String> bodyToMono = myWebClient.get().uri("dummy").retrieve().bodyToMono(String.class);
+		return bodyToMono;
 	}
 In above method we are calling a invalid api so we want that our method retry calling this api 3 times and if it still fails then return a fallback method response.
 So for this we have to go to our application.yaml or application. properties file and have to add below property there.
@@ -645,7 +652,7 @@ So for this we have to go to our application.yaml or application. properties fil
         vasu:                                      //This is the same name which we are using with name in our annotation @Retry(name = "vasu") above 
             registerHealthIndicator: true
             slidingWindowSize: 100
-        reactive-api:
+        reactive-api:                             //This is the same name which we are using with name in our annotation @Retry(name = " reactive-api") above 
             registerHealthIndicator: true
             slidingWindowSize: 10
    configs:
