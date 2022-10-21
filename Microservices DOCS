@@ -598,5 +598,180 @@ public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExce
      4- Now go to localhost:3000 your grafna dashboard 'll display
      5- By default userName and password is admin
      
+  
+ #################################################################  Resilience4j in Spring boot for circuit breaker ###########################################
+ Doc Link- https://resilience4j.readme.io/docs/getting-started-3
+ 
+ 1- Add the below dependency in your pom.xml file ( Note: it is must to use aop and actuator dependency with resilience4j )
     
+     		<dependency>
+			<groupId>io.github.resilience4j</groupId>
+			<artifactId>resilience4j-spring-boot2</artifactId>
+			<version>1.7.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-aop</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
+		
+ 2- Now Suppose you are using Spring Reactive means Spring WebFlux and if you want to use resilience4j with above dependency then it 'll not Work. So you have to add 
+ additional dependecy for reactive resilence4j
+ 
+ 		<dependency>
+			<groupId>io.github.resilience4j</groupId>
+			<artifactId>resilience4j-reactor</artifactId>
+			<version>1.7.0</version>
+		</dependency>
+		
+ 3- In resilience4j we got many modules like Retry, CircuitBreaker, Bulkhead, RateLimiter, TimeLimiter.
+ 4- We are going to use Retry and CircuitBreaker only for others you can follow the above doc link for resilience4j.
+ 5- In your Service class annotate your method with below annotations.
+     
+        @CircuitBreaker(name = "vasu", fallbackMethod = "testFallback")             // Note: Just concentrate on name property here because it 'll be use in application.properties files
+	@Retry(name = "vasu") // No need to add fallbackMethod property here because it will go to the fallbackMethod due to @CircuitBreaker but if you are not using @CircuitBreaker then you can define fallBackMethod in @Retry
+	public String test() {
+	    ResponseEntity<String> forEntity = new RestTemplate().getForEntity("http://localhost:9090/dummy", String.class);
+	    return forEntity.getBody();
+	}
+In above method we are calling a invalid api so we want that our method retry calling this api 3 times and if it still fails then return a fallback method response.
+So for this we have to go to our application.yaml or application. properties file and have to add below property there.
+
+  resilience4j.circuitbreaker:
+    instances:
+        vasu:                                      //This is the same name which we are using with name in our annotation @Retry(name = "vasu") above 
+            registerHealthIndicator: true
+            slidingWindowSize: 100
+        reactive-api:
+            registerHealthIndicator: true
+            slidingWindowSize: 10
+   configs:
+     default:
+       registerHealthIndicator: true 
        
+For Retry Below property should be 
+
+  resilience4j.retry:
+    instances:
+        vasu:
+            maxAttempts: 3
+            waitDuration: 10s
+            enableExponentialBackoff: true
+            exponentialBackoffMultiplier: 2
+#            retryExceptions:
+#                - org.springframework.web.client.HttpServerErrorException
+#                - java.io.IOException
+#            ignoreExceptions:
+#                - io.github.robwin.exception.BusinessException
+        reactive-api:
+            maxAttempts: 3
+            waitDuration: 10s
+            enableExponentialBackoff: true
+            exponentialBackoffMultiplier: 2
+#            retryExceptions:
+#                - org.springframework.web.client.HttpServerErrorException
+#                - java.io.IOException
+#            ignoreExceptions:
+#                - io.github.robwin.exception.BusinessException
+
+Now Suppose you want to see the complete status of the circuitBreaker then add below property and after that hit the url ( http://localhost:8080/actuator/health)
+       
+  management:
+   health:
+    circuitbreakers:
+      enabled: true
+#    ratelimiters:
+#      enabled: true
+#   endpoints:
+#     web:
+#      exposure:
+#        include: health,info,metrics,env,mappings,beans,shutdown,circuitbreakers,circuitbreakerevents
+   endpoint:
+     health:
+       show-details: always
+
+Note: If you run the programe with @Retry and @CircuitBreaker you 'll observe that @Retry will not work only @CircuitBreaker work. Means if some issue occurs
+=====        
+it 'll not retry for given count period it directlly fallback to method. The reason it there is some priorty and @circuitBreaker 'll execute before @Retry if you want 
+to start @Retry before @circuitBreaker you have to add the below property. The higher the priority that 'll execute first.
+
+resilience4j:
+  circuitbreaker:
+    circuitBreakerAspectOrder: 1
+  retry:
+    retryAspectOrder: 2
+    
+Now Run and Test your application and for CircuitBreaker status you can check it on ( http://localhost:8080/actuator/health ) url.
+
+Now Suppose you are using this annotation on Reactive method then it works same but after retry you 'll not get fallback response you 'll get something like 503
+async call issue. So to resolve this add below property 
+
+spring:
+  mvc:
+    async:
+      request-timeout: -1
+      
+ Now it willwork fine.
+ 
+ Reactive Method
+ @CircuitBreaker(name = "reactive-api" , fallbackMethod = "testReactiveFallback")
+	@Retry(name = "reactive-api")
+	public Mono<String> testReactive(){
+		System.out.println("Insida test Reactive");
+		Mono<String> bodyToMono = myWebClient.get().uri("dummy").retrieve().bodyToMono(String.class);
+			return bodyToMono;
+	}
+	
+	
+############################################################  Web Client in Spring Boot #################################################
+1- You have to add below dependency in your pom.xml file
+		 <dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-webflux</artifactId>
+		</dependency>
+2- Now Create a configuration class and paste below code
+
+package com.javadream.configuration;
+import java.time.Duration;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.http.client.reactive.ReactorClientHttpConnector;
+import org.springframework.web.reactive.function.client.WebClient;
+
+import io.netty.channel.ChannelOption;
+import reactor.netty.http.client.HttpClient;
+
+@Configuration
+public class WebclientConfig {
+
+	@Bean
+	public WebClient myWebClient() {
+//		HttpClient httpClient = HttpClient.create()
+//				.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 500)
+//				.responseTimeout(Duration.ofMillis(500));
+		return WebClient.builder()
+						.baseUrl("http://localhost:8081/")
+						//.clientConnector(new ReactorClientHttpConnector(httpClient))
+						.build();
+	}
+}
+
+3- Now go to the service class and autowired the above beand and use the webclient like below
+
+   @Autowired
+   private WebClient myWebClient;
+   
+   @CircuitBreaker(name = "reactive-api" , fallbackMethod = "testReactiveFallback")
+	@Retry(name = "reactive-api")
+	public Mono<String> testReactive(){
+		System.out.println("Insida test Reactive");
+		Mono<String> bodyToMono = myWebClient.get().uri("dummy").retrieve().bodyToMono(String.class);
+		return bodyToMono;
+	}
+
+
+
+
