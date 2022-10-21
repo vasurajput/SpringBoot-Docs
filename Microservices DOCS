@@ -475,6 +475,32 @@ http://localhost:9091/vasu/dev
 http://localhost:9091/vasu/qa
 
 
+############################################## Config client in Spring Boot #######################################
+1- First we have to add the below dependency in our pom.xml file
+   		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-config</artifactId>
+		</dependency>
+		
+2- Go to the application.properties file and add the below dependency there
+    spring.cloud.config.uri= http://localhost:9091       Note: The given url is the url of your config server
+    
+3- Now run your config client application and check the response it must be picked up from the Config Server Property files.
+In logs you see something like below
+Fetching config from server at : http://localhost:9091
+
+Note: If you get below exception while statring your config client application
+===== 
+org.springframework.cloud.commons.ConfigDataMissingEnvironmentPostProcessor$ImportException: No spring.config.import set
+
+So to Resolve this add the below dependency in your config-client application pom.xml file and run it 'll work fine
+
+		 <dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-bootstrap</artifactId>
+		</dependency>
+
+
 #######################################  CUSTOM EXCEPTION IN SPRING BOOT #########################################
 1- throw a Exception by Creating a class.
 for eg:
