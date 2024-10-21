@@ -1909,3 +1909,29 @@ After following above steps i am supposing that you have docker image or you hav
 	
 -> After this check for service is up or not if up then use Expernal-Ip and hit your endpoint. Congrats you have done deployment succesfully
 	kubectl get svc
+
+
+# Create docker image and run docker container
+=============================================
+
+1- Add DockerFile in your root directory and paste below commands 
+
+FROM openjdk:17
+MAINTAINER "vashurajput005@gmail.com"
+VOLUME /tmp
+ADD target/vasu.jar app.jar
+RUN bash -c 'touch /app.jar'
+ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/app.jar"]
+
+2- add <finalName> tag inside <build> tag for creating custom jar name like we give vasu.jar in above Dockerfile
+3- Run below command to create docker image
+    docker build -t <give_any_name> .
+4- Run below command to check image created or not
+   docker images
+5- To stop container use below commands
+    docker stop <container_ID>
+    docker kill <container_ID>
+    docker container prune
+6- Remove docker images
+   docker rmi <image_ID>
+
