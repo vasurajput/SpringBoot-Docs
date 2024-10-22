@@ -1935,3 +1935,21 @@ ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/app.jar"]
 6- Remove docker images
    docker rmi <image_ID>
 
+
+# Install MySQL using Docker
+===========================
+1- Pull the MySQL image
+	docker pull mysql:latest
+2- Run the docker container with this image
+	docker run --name test-mysql -e MYSQL_ROOT_PASSWORD=vasu -d mysql
+3- To check the port binding with this MySQL container
+	docker port test-mysql
+4- To Enter inside this MySQL Container
+	docker exec -it test-mysql bash
+5- Login using below command
+	mysql -u root -p
+
+6- If you want to connect this MySQL with MySQL workbench than run it on any port like we are running it on 3307 port
+	docker run -d --name test-mysql -e MYSQL_ROOT_PASSWORD=vasu -p 3306:3306 mysql
+7- Open MySQL workbench and put the details and test connection
+
