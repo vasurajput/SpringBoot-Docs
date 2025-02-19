@@ -143,6 +143,52 @@ AND pk.table_name = fk.table_name
 AND pk.column_name = fk.column_name
 WHERE pk.data_type <> fk.data_type;
 
+##################
+WITH pk_columns AS (
+    SELECT 
+        c.oid AS table_oid,
+        c.relname AS table_name,
+        n.nspname AS schema_name,
+        a.attname AS column_name,
+        format_type(a.atttypid, a.atttypmod) AS data_type
+    FROM pg_class c
+    JOIN pg_namespace n ON n.oid = c.relnamespace
+    JOIN pg_index i ON i.indrelid = c.oid AND i.indisprimary
+    JOIN pg_attribute a ON a.attrelid = c.oid AND a.attnum = ANY(i.indkey)
+    WHERE n.nspname = 'your_schema'  -- Change schema
+), fk_columns AS (
+    SELECT 
+        confnsp.nspname AS parent_schema,
+        confrel.relname AS parent_table,
+        confatt.attname AS parent_column,
+        format_type(confatt.atttypid, confatt.atttypmod) AS parent_data_type,
+        conrel.relname AS child_table,
+        conatt.attname AS child_column,
+        format_type(conatt.atttypid, conatt.atttypmod) AS child_data_type
+    FROM pg_constraint con
+    JOIN pg_class confrel ON con.confrelid = confrel.oid
+    JOIN pg_class conrel ON con.conrelid = conrel.oid
+    JOIN pg_namespace confnsp ON confrel.relnamespace = confnsp.oid
+    JOIN pg_namespace connsp ON conrel.relnamespace = connsp.oid
+    JOIN pg_attribute confatt ON confatt.attrelid = confrel.oid AND confatt.attnum = ANY(con.confkey)
+    JOIN pg_attribute conatt ON conatt.attrelid = conrel.oid AND conatt.attnum = ANY(con.conkey)
+    WHERE con.contype = 'f' AND confnsp.nspname = 'your_schema'  -- Change schema
+)
+SELECT 
+    fk.parent_schema,
+    fk.parent_table,
+    fk.parent_column,
+    fk.parent_data_type,
+    fk.child_table,
+    fk.child_column,
+    fk.child_data_type
+FROM fk_columns fk
+JOIN pk_columns pk 
+    ON fk.parent_schema = pk.schema_name 
+    AND fk.parent_table = pk.table_name 
+    AND fk.parent_column = pk.column_name
+WHERE fk.parent_data_type <> fk.child_data_type;
+
 
 ############ Stored Function
 
