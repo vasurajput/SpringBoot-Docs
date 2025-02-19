@@ -88,6 +88,60 @@ AND pk.table_name = fk.table_name
 AND pk.column_name = fk.column_name
 WHERE pk.data_type <> fk.data_type;
 
+#######################
+SELECT
+    pk.table_schema AS parent_schema,
+    pk.table_name AS parent_table,
+    pk.column_name AS parent_column,
+    pk.data_type AS parent_data_type,
+    fk.table_schema AS child_schema,
+    fk.table_name AS child_table,
+    fk.column_name AS child_column,
+    fk.data_type AS child_data_type
+FROM (
+    -- Get primary key columns with their data types
+    SELECT
+        tc.table_schema,
+        tc.table_name,
+        kcu.column_name,
+        c.data_type
+    FROM information_schema.table_constraints AS tc
+    JOIN information_schema.key_column_usage AS kcu
+        ON tc.constraint_name = kcu.constraint_name
+        AND tc.table_schema = kcu.table_schema
+    JOIN information_schema.columns AS c
+        ON kcu.table_schema = c.table_schema
+        AND kcu.table_name = c.table_name
+        AND kcu.column_name = c.column_name
+    WHERE tc.constraint_type = 'PRIMARY KEY'
+        AND tc.table_schema = 'your_schema'  -- Change schema name
+) pk
+JOIN (
+    -- Get foreign key columns with their data types
+    SELECT
+        tc.table_schema,
+        tc.table_name,
+        kcu.column_name,
+        c.data_type,
+        rc.unique_constraint_schema,
+        rc.unique_constraint_name
+    FROM information_schema.table_constraints AS tc
+    JOIN information_schema.key_column_usage AS kcu
+        ON tc.constraint_name = kcu.constraint_name
+        AND tc.table_schema = kcu.table_schema
+    JOIN information_schema.columns AS c
+        ON kcu.table_schema = c.table_schema
+        AND kcu.table_name = c.table_name
+        AND kcu.column_name = c.column_name
+    JOIN information_schema.referential_constraints AS rc
+        ON tc.constraint_name = rc.constraint_name
+        AND tc.table_schema = rc.constraint_schema
+    WHERE tc.constraint_type = 'FOREIGN KEY'
+        AND tc.table_schema = 'your_schema'  -- Change schema name
+) fk ON pk.table_schema = fk.unique_constraint_schema
+AND pk.table_name = fk.table_name
+AND pk.column_name = fk.column_name
+WHERE pk.data_type <> fk.data_type;
 
 
 ############ Stored Function
