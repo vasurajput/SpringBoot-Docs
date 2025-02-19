@@ -1,3 +1,40 @@
+SELECT 
+    pk.table_name AS parent_table,
+    pk.column_name AS parent_column,
+    pk.data_type AS parent_data_type,
+    fk.table_name AS child_table,
+    fk.column_name AS child_column,
+    fk.data_type AS child_data_type
+FROM (
+    SELECT 
+        c.oid AS table_oid, 
+        c.relname AS table_name, 
+        a.attname AS column_name, 
+        format_type(a.atttypid, a.atttypmod) AS data_type
+    FROM pg_class c
+    JOIN pg_namespace n ON n.oid = c.relnamespace
+    JOIN pg_attribute a ON a.attrelid = c.oid
+    JOIN pg_index i ON i.indrelid = c.oid AND i.indisprimary
+    WHERE n.nspname = 'public' -- Change schema if needed
+) pk
+JOIN (
+    SELECT 
+        c.oid AS table_oid, 
+        c.relname AS table_name, 
+        a.attname AS column_name, 
+        format_type(a.atttypid, a.atttypmod) AS data_type, 
+        con.conrelid,
+        con.confrelid
+    FROM pg_constraint con
+    JOIN pg_class c ON c.oid = con.conrelid
+    JOIN pg_namespace n ON n.oid = c.relnamespace
+    JOIN pg_attribute a ON a.attrelid = con.conrelid AND a.attnum = ANY(con.conkey)
+    WHERE con.contype = 'f'
+) fk ON pk.table_oid = fk.confrelid
+AND pk.column_name = fk.column_name
+WHERE pk.data_type <> fk.data_type;
+
+
 ############ Stored Function
 
 create function testFun(s varchar(255))
