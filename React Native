@@ -25,3 +25,9 @@ emulator -list-avds
 # Command to run react-native application
 npx react-native start
 npx react-native run-android
+
+# To open device Manager without opening the Android Studio use the below steps:
+Goto C:\Users\vasu\AppData\Local\Android\Sdk\emulator
+run "emulator -list-avds" command to see all available devices list
+above command return a list of devices. Use below command with any of the device given by above command
+"emulator -avd Pixel_API_30" Run this command it 'll open the device manager. Pixel_API_30 is the name of the device
