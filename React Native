@@ -1,0 +1,27 @@
+Download Android Studio and Visual Studio along with latest Node version
+
+#Command to create react native project
+npx @react-native-community/cli init MyApp
+
+#Command to open environment variable. Type window + R and enter this command
+sysdm.cpl
+
+# set following on system variable [ click on path and add as new ]
+C:\Users\vasu\AppData\Local\Android\Sdk\emulator
+C:\Users\vasu\AppData\Local\Android\Sdk\platform-tools
+C:\Users\vasu\AppData\Local\Android\Sdk\tools
+C:\Users\vasu\AppData\Local\Android\Sdk\tools\bin
+
+# Add below path as ANDROID_HOME in system variable
+C:\Users\vasu\AppData\Local\Android\Sdk
+
+# Make sure your JAVA_HOME set with below path
+C:\Program Files\Java\jdk-17
+
+
+# After setting env variable run below command to check which android emulator is running
+emulator -list-avds
+
+# Command to run react-native application
+npx react-native start
+npx react-native run-android
