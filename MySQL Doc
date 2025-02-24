@@ -190,6 +190,28 @@ JOIN pk_columns pk
 WHERE fk.parent_data_type <> fk.child_data_type;
 
 
+
+################
+SELECT
+    conrelid::regclass AS table_name,
+    att1.attname AS column_name,
+    format_type(att1.atttypid, att1.atttypmod) AS column_type,
+    confrelid::regclass AS referenced_table,
+    att2.attname AS referenced_column,
+    format_type(att2.atttypid, att2.atttypmod) AS referenced_column_type
+FROM
+    pg_constraint AS con
+JOIN
+    pg_attribute AS att1 ON att1.attnum = con.conkey[1] AND att1.attrelid = con.conrelid
+JOIN
+    pg_attribute AS att2 ON att2.attnum = con.confkey[1] AND att2.attrelid = con.confrelid
+WHERE
+    con.contype = 'f'
+    AND att1.atttypid <> att2.atttypid
+    AND con.connamespace = 'your_schema'::regnamespace;
+
+
+
 ############ Stored Function
 
 create function testFun(s varchar(255))
