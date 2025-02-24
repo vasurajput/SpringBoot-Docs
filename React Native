@@ -2,7 +2,6 @@ Download Android Studio and Visual Studio along with latest Node version
 
 #Command to create react native project
 npx @react-native-community/cli init MyApp
-npx react-native@0.78.0 init MyNewApp   -> with the latest version
 
 #Command to open environment variable. Type window + R and enter this command
 sysdm.cpl
