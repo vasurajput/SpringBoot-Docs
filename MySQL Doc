@@ -29,8 +29,8 @@ BEGIN
 
         -- If there are matches, print the detected relationship
         IF match_count > 0 THEN
-            RAISE NOTICE 'Possible Relationship: %%.%% <-> %%.%% (Matches: %)', 
-                r.table1, r.column1, r.table2, r.column2, match_count;
+            RAISE NOTICE 'Possible Relationship: %.% (%) <-> %.% (%) with % matches', 
+                r.table1, r.column1, r.datatype1, r.table2, r.column2, r.datatype2, match_count;
         END IF;
     END LOOP;
 END $$;
