@@ -1,8 +1,8 @@
 SELECT 
-    c1.table_name AS referencing_table, 
-    c1.column_name AS referencing_column, 
-    c2.table_name AS referenced_table, 
-    c2.column_name AS referenced_column
+    t1.relname AS referencing_table, 
+    a1.attname AS referencing_column, 
+    t2.relname AS referenced_table, 
+    a2.attname AS referenced_column
 FROM pg_catalog.pg_attribute a1
 JOIN pg_catalog.pg_class t1 ON a1.attrelid = t1.oid
 JOIN pg_catalog.pg_namespace n1 ON t1.relnamespace = n1.oid
@@ -13,9 +13,10 @@ WHERE
     a1.attname LIKE '%id' 
     AND t1.relkind = 'r'
     AND t2.relkind = 'r'
-    AND t1.relname <> t2.relname
+    AND t1.oid <> t2.oid  -- Ensure we are not matching the same table
     AND n1.nspname = 'public'
     AND n2.nspname = 'public';
+
 
 
 
