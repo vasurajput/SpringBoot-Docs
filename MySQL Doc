@@ -1,28 +1,10 @@
-WITH selected_tables AS (
-    SELECT table_name 
-    FROM information_schema.tables
-    WHERE table_schema = 'public' 
-    AND table_name IN ('order', 'client', 'table3', 'table4')  -- Specify your tables here
-)
-SELECT 
-    c1.table_name AS possible_foreign_table,
-    c1.column_name AS possible_foreign_key,
-    c2.table_name AS possible_primary_table,
-    c2.column_name AS possible_primary_key
-FROM 
-    information_schema.columns c1
-JOIN 
-    information_schema.columns c2
-ON 
-    c1.column_name = c2.column_name  -- Matching column names
-WHERE 
-    c1.table_schema = 'public' 
-    AND c2.table_schema = 'public'
-    AND c1.table_name <> c2.table_name  -- Ensure different tables
-    AND c1.table_name IN (SELECT table_name FROM selected_tables)
-    AND c2.table_name IN (SELECT table_name FROM selected_tables)
-ORDER BY 
-    c1.table_name, c1.column_name;
+SELECT c1.column_name 
+FROM information_schema.columns c1
+JOIN information_schema.columns c2 
+ON c1.column_name = c2.column_name 
+AND c1.data_type = c2.data_type
+WHERE c1.table_name = 'order' 
+AND c2.table_name = 'client';
 
 
 
