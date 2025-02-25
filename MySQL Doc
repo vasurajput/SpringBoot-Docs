@@ -1,3 +1,19 @@
+SELECT 
+    c.table_name,
+    c.column_name,
+    c.table_schema,
+    ARRAY_AGG(DISTINCT t.table_name) AS related_tables
+FROM information_schema.columns c
+JOIN information_schema.columns t
+    ON c.column_name = t.column_name
+    AND c.table_name != t.table_name
+WHERE c.table_name IN ('table1', 'table2', 'table3')  -- Specify your table names here
+AND c.table_schema = 'public'
+GROUP BY c.table_name, c.column_name, c.table_schema
+ORDER BY c.column_name;
+
+
+
 SELECT table_schema, table_name, column_name
 FROM information_schema.columns
 WHERE column_name SIMILAR TO '%(substring1|substring2|substring3)%'
