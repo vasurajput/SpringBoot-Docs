@@ -3,6 +3,16 @@ FROM information_schema.columns
 WHERE column_name SIMILAR TO '%(substring1|substring2|substring3)%'
 AND table_schema = 'public';
 
+SELECT 
+    table_schema, 
+    table_name, 
+    column_name, 
+    data_type, 
+    COALESCE(character_maximum_length::TEXT, numeric_precision::TEXT, '') AS length
+FROM information_schema.columns
+WHERE column_name SIMILAR TO '%(substring1|substring2|substring3)%'
+AND table_schema = 'public';
+
 
 
 
