@@ -14,8 +14,9 @@ JOIN
 WHERE 
     tc.constraint_type = 'FOREIGN KEY'
     AND kcu.table_schema = 'public' -- Change if using a different schema
-    AND (kcu.table_name IN ('table1', 'table2', 'table3', 'table4', 'table5')
-         OR ccu.table_name IN ('table1', 'table2', 'table3', 'table4', 'table5'));
+    AND kcu.table_name IN ('table1', 'table2', 'table3', 'table4', 'table5')
+    AND ccu.table_name IN ('table1', 'table2', 'table3', 'table4', 'table5');
+
 
 
 
