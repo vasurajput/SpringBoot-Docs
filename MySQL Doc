@@ -1,25 +1,21 @@
-WITH possible_relationships AS (
-    SELECT 
-        c1.table_name AS table1,
-        c1.column_name AS column1,
-        c2.table_name AS table2,
-        c2.column_name AS column2,
-        c1.data_type AS column1_type,
-        c2.data_type AS column2_type
-    FROM information_schema.columns c1
-    JOIN information_schema.columns c2 
-        ON c1.column_name = c2.column_name  -- Same column name
-        AND c1.table_name <> c2.table_name  -- Different tables
-    WHERE c1.table_name IN ('table1', 'table2', 'table3')  -- Specify tables to check
-      AND c2.table_name IN ('table1', 'table2', 'table3')
-)
 SELECT 
-    pr.*,
-    (SELECT COUNT(*) 
-     FROM (SELECT DISTINCT t1.* FROM table1 t1 JOIN table2 t2 
-           ON t1.column1::TEXT = t2.column2::TEXT LIMIT 10) sub) AS match_count
-FROM possible_relationships pr
-ORDER BY match_count DESC;
+    c1.table_name AS referencing_table, 
+    c1.column_name AS referencing_column, 
+    c2.table_name AS referenced_table, 
+    c2.column_name AS referenced_column
+FROM pg_catalog.pg_attribute a1
+JOIN pg_catalog.pg_class t1 ON a1.attrelid = t1.oid
+JOIN pg_catalog.pg_namespace n1 ON t1.relnamespace = n1.oid
+JOIN pg_catalog.pg_attribute a2 ON a1.attname = a2.attname
+JOIN pg_catalog.pg_class t2 ON a2.attrelid = t2.oid
+JOIN pg_catalog.pg_namespace n2 ON t2.relnamespace = n2.oid
+WHERE 
+    a1.attname LIKE '%id' 
+    AND t1.relkind = 'r'
+    AND t2.relkind = 'r'
+    AND t1.relname <> t2.relname
+    AND n1.nspname = 'public'
+    AND n2.nspname = 'public';
 
 
 
