@@ -1,39 +1,22 @@
-DO $$ 
-DECLARE 
-    r RECORD;
-    sql TEXT;
-    match_count INT;
-BEGIN
-    -- Loop through all columns from the selected tables
-    FOR r IN 
-        SELECT c1.table_name AS table1, c1.column_name AS column1, c1.data_type AS datatype1,
-               c2.table_name AS table2, c2.column_name AS column2, c2.data_type AS datatype2
-        FROM information_schema.columns c1
-        JOIN information_schema.columns c2 
-            ON c1.data_type = c2.data_type  -- Match columns with the same data type
-           AND c1.table_name <> c2.table_name  -- Ensure different tables
-           AND c1.column_name <> c2.column_name -- Exclude self-joins
-        WHERE c1.table_schema = 'public' AND c2.table_schema = 'public'
-        AND c1.table_name IN ('table1', 'table2', 'table3', 'table4', 'table5', 
-                              'table6', 'table7', 'table8', 'table9', 'table10')
-        AND c2.table_name IN ('table1', 'table2', 'table3', 'table4', 'table5', 
-                              'table6', 'table7', 'table8', 'table9', 'table10')
-    LOOP
-        -- Construct and execute the INTERSECT query to check for matching values
-        sql := format(
-            'SELECT COUNT(*) FROM (SELECT DISTINCT t1.%I FROM %I t1 INTERSECT SELECT DISTINCT t2.%I FROM %I t2) matched;',
-            r.column1, r.table1, r.column2, r.table2
-        );
-        
-        EXECUTE sql INTO match_count;
+SELECT 
+    kcu.table_name AS referencing_table,
+    kcu.column_name AS referencing_column,
+    ccu.table_name AS referenced_table,
+    ccu.column_name AS referenced_column
+FROM 
+    information_schema.key_column_usage kcu
+JOIN 
+    information_schema.table_constraints tc 
+    ON kcu.constraint_name = tc.constraint_name
+JOIN 
+    information_schema.constraint_column_usage ccu 
+    ON kcu.constraint_name = ccu.constraint_name
+WHERE 
+    tc.constraint_type = 'FOREIGN KEY'
+    AND kcu.table_schema = 'public' -- Change if using a different schema
+    AND (kcu.table_name IN ('table1', 'table2', 'table3', 'table4', 'table5')
+         OR ccu.table_name IN ('table1', 'table2', 'table3', 'table4', 'table5'));
 
-        -- If there are matches, print the detected relationship
-        IF match_count > 0 THEN
-            RAISE NOTICE 'Possible Relationship: %.% (%) <-> %.% (%) with % matches', 
-                r.table1, r.column1, r.datatype1, r.table2, r.column2, r.datatype2, match_count;
-        END IF;
-    END LOOP;
-END $$;
 
 
 
