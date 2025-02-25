@@ -1,3 +1,11 @@
+SELECT table_schema, table_name, column_name
+FROM information_schema.columns
+WHERE column_name SIMILAR TO '%(substring1|substring2|substring3)%'
+AND table_schema = 'public';
+
+
+
+
 SELECT 
     pk.table_name AS parent_table,
     pk.column_name AS parent_column,
