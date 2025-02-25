@@ -1,11 +1,26 @@
-SELECT c1.column_name 
-FROM information_schema.columns c1
-JOIN information_schema.columns c2 
-ON c1.column_name = c2.column_name 
-AND c1.data_type = c2.data_type
-WHERE c1.table_name = 'order' 
-AND c2.table_name = 'client';
-
+DO $$ 
+DECLARE 
+    col_name TEXT;
+    sql_query TEXT;
+BEGIN 
+    FOR col_name IN 
+        SELECT c1.column_name 
+        FROM information_schema.columns c1
+        JOIN information_schema.columns c2 
+        ON c1.column_name = c2.column_name 
+        AND c1.data_type = c2.data_type
+        WHERE c1.table_name = 'order' 
+        AND c2.table_name = 'client'
+    LOOP 
+        sql_query := format('
+            SELECT COUNT(*) AS matches, %I AS column_name 
+            FROM "order" o 
+            JOIN client c ON o.%I = c.%I
+            LIMIT 1;', col_name, col_name, col_name);
+        
+        EXECUTE sql_query;
+    END LOOP;
+END $$;
 
 
 
