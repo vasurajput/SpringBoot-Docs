@@ -1,10 +1,8 @@
-SELECT a.column_name
-FROM information_schema.columns a
-JOIN information_schema.columns b 
-ON a.column_name = b.column_name 
-AND a.data_type = b.data_type
-WHERE a.table_name = 'table1' 
-AND b.table_name = 'table2';
+SELECT table_name, column_name, data_type 
+FROM information_schema.columns 
+WHERE table_schema = 'public' 
+AND column_name IN ('created_at', 'updated_at');
+
 
 
 
