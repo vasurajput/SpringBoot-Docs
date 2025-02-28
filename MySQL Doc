@@ -1,19 +1,28 @@
 DO $$ 
+DECLARE
+    error_message TEXT;
 BEGIN
     BEGIN
         -- Start transaction
         INSERT INTO users (id, name, email) VALUES (1, 'John Doe', 'john@example.com');
 
-        -- Intentional error (duplicate key)
+        -- Intentional error (duplicate key violation)
         INSERT INTO users (id, name, email) VALUES (1, 'Jane Doe', 'jane@example.com');
 
         COMMIT;  -- This won't execute if an error occurs
     EXCEPTION
         WHEN OTHERS THEN
-            ROLLBACK;  -- Rollback on error
-            RAISE NOTICE 'Transaction failed and was rolled back.';
+            -- Capture the error message
+            GET STACKED DIAGNOSTICS error_message = MESSAGE_TEXT;
+            
+            -- Rollback the transaction
+            ROLLBACK;
+            
+            -- Show the error message
+            RAISE NOTICE 'Transaction failed and was rolled back. Error: %', error_message;
     END;
 END $$;
+
 
 
 
