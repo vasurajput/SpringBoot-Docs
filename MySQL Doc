@@ -1,3 +1,22 @@
+DO $$ 
+BEGIN
+    BEGIN
+        -- Start transaction
+        INSERT INTO users (id, name, email) VALUES (1, 'John Doe', 'john@example.com');
+
+        -- Intentional error (duplicate key)
+        INSERT INTO users (id, name, email) VALUES (1, 'Jane Doe', 'jane@example.com');
+
+        COMMIT;  -- This won't execute if an error occurs
+    EXCEPTION
+        WHEN OTHERS THEN
+            ROLLBACK;  -- Rollback on error
+            RAISE NOTICE 'Transaction failed and was rolled back.';
+    END;
+END $$;
+
+
+
 SELECT DISTINCT v.viewname
 FROM pg_views v
 JOIN information_schema.view_column_usage vc 
