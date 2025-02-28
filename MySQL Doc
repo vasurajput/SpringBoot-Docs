@@ -1,3 +1,11 @@
+SELECT DISTINCT v.viewname, c.column_name
+FROM pg_views v
+JOIN information_schema.view_column_usage vc ON v.viewname = vc.view_name
+JOIN information_schema.columns c ON vc.column_name = c.column_name
+WHERE vc.table_name = 'your_table_name';
+
+
+
 SELECT viewname, definition
 FROM pg_views
 WHERE schemaname NOT IN ('pg_catalog', 'information_schema')
