@@ -1,16 +1,25 @@
+WITH view_data AS (
+    SELECT 
+        v.schemaname AS schema_name,
+        v.viewname AS view_name,
+        v.definition AS view_definition
+    FROM 
+        pg_views v
+    WHERE 
+        v.schemaname = 'your_schema'  -- Replace with your schema name
+)
 SELECT 
-    v.viewname AS view_name, 
-    v.schemaname AS schema_name,
-    c.table_name AS table_name,
-    c.column_name AS column_name,
-    v.definition AS view_definition
+    vd.view_name, 
+    vd.schema_name,
+    c.table_name, 
+    c.column_name, 
+    vd.view_definition
 FROM 
-    pg_views v
+    view_data vd
 JOIN 
     information_schema.columns c 
-    ON v.definition ILIKE '%' || c.column_name || '::%'  -- Check for type cast
-WHERE 
-    c.table_schema = v.schemaname;
+    ON c.table_schema = vd.schema_name 
+    AND vd.view_definition LIKE '%' || c.column_name || '::%';
 
 
 
