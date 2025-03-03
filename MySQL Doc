@@ -1,19 +1,22 @@
-
 SELECT 
     v.viewname AS view_name, 
-    c.relname AS table_name, 
-    a.attname AS column_name, 
-    pg_get_viewdef(v.oid, true) AS view_definition
+    v.schemaname AS schema_name, 
+    t.tablename AS table_name, 
+    c.column_name AS column_name, 
+    v.definition AS view_definition
 FROM 
     pg_views v
 JOIN 
-    pg_class c ON v.schemaname = 'public' -- Change schema if needed
+    information_schema.columns c 
+    ON v.definition ILIKE '%' || c.column_name || '::%'  -- Finds type cast usage
 JOIN 
-    pg_namespace n ON c.relnamespace = n.oid
-JOIN 
-    pg_attribute a ON a.attrelid = c.oid
+    information_schema.tables t 
+    ON c.table_name = t.table_name
 WHERE 
-    pg_get_viewdef(v.oid, true) ~* CONCAT('::', a.attname);
+    t.table_schema = v.schemaname -- Match schema
+    AND t.table_type = 'BASE TABLE'  -- Ensure it's a table, not another view
+    AND c.table_schema = t.table_schema;
+
 
 
 DO $$ 
