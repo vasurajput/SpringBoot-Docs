@@ -1,25 +1,9 @@
-WITH view_data AS (
-    SELECT 
-        v.schemaname AS schema_name,
-        v.viewname AS view_name,
-        v.definition AS view_definition
-    FROM 
-        pg_views v
-    WHERE 
-        v.schemaname = 'your_schema'  -- Replace with your schema name
-)
-SELECT 
-    vd.view_name, 
-    vd.schema_name,
-    c.table_name, 
-    c.column_name, 
-    vd.view_definition
-FROM 
-    view_data vd
-JOIN 
-    information_schema.columns c 
-    ON c.table_schema = vd.schema_name 
-    AND vd.view_definition LIKE '%' || c.column_name || '::%';
+SELECT DISTINCT 
+    v.schemaname, 
+    v.viewname, 
+    v.definition
+FROM pg_views v
+WHERE v.definition ILIKE '%your_column_name::%';
 
 
 
