@@ -1,21 +1,17 @@
 SELECT 
     v.viewname AS view_name, 
-    v.schemaname AS schema_name, 
-    t.tablename AS table_name, 
-    c.column_name AS column_name, 
+    v.schemaname AS schema_name,
+    c.table_name AS table_name,
+    c.column_name AS column_name,
     v.definition AS view_definition
 FROM 
     pg_views v
 JOIN 
     information_schema.columns c 
-    ON v.definition ILIKE '%' || c.column_name || '::%'  -- Finds type cast usage
-JOIN 
-    information_schema.tables t 
-    ON c.table_name = t.table_name
+    ON v.definition ILIKE '%' || c.column_name || '::%'  -- Check for type cast
 WHERE 
-    t.table_schema = v.schemaname -- Match schema
-    AND t.table_type = 'BASE TABLE'  -- Ensure it's a table, not another view
-    AND c.table_schema = t.table_schema;
+    c.table_schema = v.schemaname;
+
 
 
 
