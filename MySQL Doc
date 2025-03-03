@@ -1,3 +1,21 @@
+
+SELECT 
+    v.viewname AS view_name, 
+    c.relname AS table_name, 
+    a.attname AS column_name, 
+    pg_get_viewdef(v.oid, true) AS view_definition
+FROM 
+    pg_views v
+JOIN 
+    pg_class c ON v.schemaname = 'public' -- Change schema if needed
+JOIN 
+    pg_namespace n ON c.relnamespace = n.oid
+JOIN 
+    pg_attribute a ON a.attrelid = c.oid
+WHERE 
+    pg_get_viewdef(v.oid, true) ~* CONCAT('::', a.attname);
+
+
 DO $$ 
 DECLARE
     error_message TEXT;
