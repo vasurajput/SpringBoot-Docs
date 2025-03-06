@@ -1,3 +1,104 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="myApp">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Filter</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+</head>
+<body ng-controller="SearchController">
+
+<div class="container mt-3">
+    <div class="row">
+        <!-- Filter Selection -->
+        <div class="col-md-4">
+            <label>Search Type:</label>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" id="quickSearch" ng-model="searchType" value="quick">
+                <label class="form-check-label" for="quickSearch">Quick Search</label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" id="dateRange" ng-model="searchType" value="date">
+                <label class="form-check-label" for="dateRange">Date Range</label>
+            </div>
+
+            <!-- Quick Search Dropdown -->
+            <div ng-if="searchType === 'quick'" class="mt-2">
+                <label for="quickSearchOptions">Select Range:</label>
+                <select class="form-control" ng-model="quickSearchValue" ng-change="applyQuickSearch()">
+                    <option value="">Select</option>
+                    <option value="today">Today</option>
+                    <option value="yesterday">Yesterday</option>
+                    <option value="last7">Last 7 Days</option>
+                    <option value="last30">Last 1 Month</option>
+                </select>
+            </div>
+
+            <!-- Date Range Inputs -->
+            <div ng-if="searchType === 'date'" class="mt-2">
+                <label>From:</label>
+                <input type="date" class="form-control" ng-model="dateFrom">
+                <label>To:</label>
+                <input type="date" class="form-control" ng-model="dateTo">
+            </div>
+        </div>
+
+        <!-- Second Text Box -->
+        <div class="col-md-4">
+            <label>Second Text Box:</label>
+            <input type="text" class="form-control">
+        </div>
+
+        <!-- Third Text Box -->
+        <div class="col-md-4">
+            <label>Third Text Box:</label>
+            <input type="text" class="form-control">
+        </div>
+    </div>
+</div>
+
+<script>
+    var app = angular.module("myApp", []);
+
+    app.controller("SearchController", function ($scope) {
+        $scope.searchType = "quick"; // Default selection
+        $scope.quickSearchValue = "";
+        $scope.dateFrom = "";
+        $scope.dateTo = "";
+
+        $scope.applyQuickSearch = function () {
+            var today = new Date();
+            var fromDate, toDate;
+
+            switch ($scope.quickSearchValue) {
+                case "today":
+                    fromDate = toDate = today;
+                    break;
+                case "yesterday":
+                    fromDate = toDate = new Date(today.setDate(today.getDate() - 1));
+                    break;
+                case "last7":
+                    fromDate = new Date(today.setDate(today.getDate() - 7));
+                    toDate = new Date();
+                    break;
+                case "last30":
+                    fromDate = new Date(today.setMonth(today.getMonth() - 1));
+                    toDate = new Date();
+                    break;
+            }
+
+            $scope.dateFrom = fromDate ? fromDate.toISOString().split("T")[0] : "";
+            $scope.dateTo = toDate ? toDate.toISOString().split("T")[0] : "";
+        };
+    });
+</script>
+
+</body>
+</html>
+
+
+
 SELECT DISTINCT 
     v.schemaname, 
     v.viewname, 
