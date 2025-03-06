@@ -1,3 +1,20 @@
+<div class="container mt-3">
+    <div class="row align-items-center">
+        <!-- First Column: Quick Search + Date Range -->
+        <div class="col-md-6 d-flex gap-2">
+            <input type="text" class="form-control" placeholder="Quick Search">
+            <input type="date" class="form-control">
+        </div>
+
+        <!-- Second Column: Created Date + Committed Date -->
+        <div class="col-md-6 d-flex gap-2">
+            <input type="date" class="form-control" placeholder="Created Date">
+            <input type="date" class="form-control" placeholder="Committed Date">
+        </div>
+    </div>
+</div>
+
+
 <!DOCTYPE html>
 <html lang="en" ng-app="myApp">
 <head>
