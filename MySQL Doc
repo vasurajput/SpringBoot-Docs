@@ -2,16 +2,28 @@ private ByteArrayInputStream pdfToImage(byte[] pdfData) throws IOException {
     try (ByteArrayInputStream bais = new ByteArrayInputStream(pdfData)) {
         // Load the PDF document
         PDDocument document = PDDocument.load(bais);
+        if (document.getNumberOfPages() == 0) {
+            throw new IOException("PDF document has no pages");
+        }
         PDFRenderer pdfRenderer = new PDFRenderer(document);
 
         // Render the PDF page to a BufferedImage with higher DPI (300) for better clarity
         BufferedImage image = pdfRenderer.renderImageWithDPI(0, 300);
 
-        // Convert the image to grayscale
+        // Debug: Save the rendered image to disk
+        File debugRendered = new File("debug_rendered.png");
+        ImageIO.write(image, "png", debugRendered);
+        System.out.println("Debug: Rendered image saved to " + debugRendered.getAbsolutePath());
+
+        // Convert the image to grayscale using ColorConvertOp
         BufferedImage grayscaleImage = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_BYTE_GRAY);
-        Graphics2D gGray = grayscaleImage.createGraphics();
-        gGray.drawImage(image, 0, 0, null);
-        gGray.dispose();
+        ColorConvertOp op = new ColorConvertOp(ColorSpace.getInstance(ColorSpace.CS_GRAY), null);
+        op.filter(image, grayscaleImage);
+
+        // Debug: Save the grayscale image to disk
+        File debugGrayscale = new File("debug_grayscale.png");
+        ImageIO.write(grayscaleImage, "png", debugGrayscale);
+        System.out.println("Debug: Grayscale image saved to " + debugGrayscale.getAbsolutePath());
 
         // Calculate dimensions for the 2.5:1 aspect ratio canvas
         int originalWidth = grayscaleImage.getWidth();
@@ -26,6 +38,9 @@ private ByteArrayInputStream pdfToImage(byte[] pdfData) throws IOException {
             canvasWidth = originalWidth;
             canvasHeight = originalHeight;
         }
+
+        // Debug: Log the canvas dimensions
+        System.out.println("Canvas dimensions: " + canvasWidth + "x" + canvasHeight);
 
         // Create a new BufferedImage with the 2.5:1 aspect ratio canvas
         BufferedImage canvasImage = new BufferedImage(canvasWidth, canvasHeight, BufferedImage.TYPE_BYTE_GRAY);
@@ -54,13 +69,35 @@ private ByteArrayInputStream pdfToImage(byte[] pdfData) throws IOException {
             scaledHeight = (int) (scaledWidth / originalAspectRatio);
         }
 
+        // Ensure scaled dimensions are positive and fit within the canvas
+        if (scaledWidth > canvasWidth) {
+            scaledWidth = canvasWidth;
+            scaledHeight = (int) (scaledWidth / originalAspectRatio);
+        }
+        if (scaledHeight > canvasHeight) {
+            scaledHeight = canvasHeight;
+            scaledWidth = (int) (scaledHeight * originalAspectRatio);
+        }
+        if (scaledWidth <= 0 || scaledHeight <= 0) {
+            throw new IllegalStateException("Invalid scaled dimensions: " + scaledWidth + "x" + scaledHeight);
+        }
+
         // Center the image on the canvas
         int x = (canvasWidth - scaledWidth) / 2;
         int y = (canvasHeight - scaledHeight) / 2;
 
-        // Draw the original image onto the canvas without stretching
+        // Debug: Log the scaled dimensions and position
+        System.out.println("Scaled dimensions: " + scaledWidth + "x" + scaledHeight);
+        System.out.println("Position: (" + x + ", " + y + ")");
+
+        // Draw the grayscale image onto the canvas
         g.drawImage(grayscaleImage, x, y, scaledWidth, scaledHeight, null);
         g.dispose();
+
+        // Debug: Save the final canvas image to disk
+        File debugFinal = new File("debug_final.png");
+        ImageIO.write(canvasImage, "png", debugFinal);
+        System.out.println("Debug: Final image saved to " + debugFinal.getAbsolutePath());
 
         // Convert the BufferedImage to a byte array (PNG format)
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
