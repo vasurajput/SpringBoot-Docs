@@ -11,37 +11,22 @@ private ByteArrayInputStream pdfToImage(byte[] pdfData) throws IOException {
         gGray.drawImage(image, 0, 0, null);
         gGray.dispose();
 
-        // Adjust to 2.5:1 aspect ratio without stretching
-        int originalWidth = grayscaleImage.getWidth();
-        int originalHeight = grayscaleImage.getHeight();
-        int canvasWidth = originalWidth;
+        // Set the new dimensions for 2.5:1 aspect ratio
+        int canvasWidth = grayscaleImage.getWidth();
         int canvasHeight = (int) (canvasWidth / 2.5); // 2.5:1 aspect ratio
 
-        // Create a canvas with the new dimensions
+        // Create a new canvas with the 2.5:1 aspect ratio
         BufferedImage canvasImage = new BufferedImage(canvasWidth, canvasHeight, BufferedImage.TYPE_BYTE_GRAY);
         Graphics2D g = canvasImage.createGraphics();
 
-        // Fill the background with black
-        g.setColor(Color.BLACK);
-        g.fillRect(0, 0, canvasWidth, canvasHeight);
+        // Set rendering hints for better quality
+        g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+        g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 
-        // Scale the image to fit the canvas while preserving aspect ratio
-        double originalAspectRatio = (double) originalWidth / originalHeight;
-        int scaledWidth = canvasWidth;
-        int scaledHeight = (int) (scaledWidth / originalAspectRatio);
-
-        // If the scaled height is too large, adjust based on height instead
-        if (scaledHeight > canvasHeight) {
-            scaledHeight = canvasHeight;
-            scaledWidth = (int) (scaledHeight * originalAspectRatio);
-        }
-
-        // Center the image on the canvas
-        int x = (canvasWidth - scaledWidth) / 2;
-        int y = (canvasHeight - scaledHeight) / 2;
-
-        // Draw the image
-        g.drawImage(grayscaleImage, x, y, scaledWidth, scaledHeight, null);
+        // Stretch the image to fill the entire canvas (no padding)
+        g.drawImage(grayscaleImage, 0, 0, canvasWidth, canvasHeight, null);
         g.dispose();
 
         // Convert to ByteArrayInputStream
