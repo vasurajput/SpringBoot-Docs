@@ -11,6 +11,16 @@ private ByteArrayInputStream pdfToImage(byte[] pdfData) throws IOException {
         gGray.drawImage(image, 0, 0, null);
         gGray.dispose();
 
+// Increase contrast to make text darker
+        RescaleOp contrastOp = new RescaleOp(1.5f, -50f, null); // Increase contrast and darken
+        BufferedImage contrastImage = contrastOp.filter(grayscaleImage, null);
+
+        // Apply binary thresholding to make text solid black
+        BufferedImage thresholdImage = new BufferedImage(contrastImage.getWidth(), contrastImage.getHeight(), BufferedImage.TYPE_BYTE_BINARY);
+        Graphics2D gThresh = thresholdImage.createGraphics();
+        gThresh.drawImage(contrastImage, 0, 0, null);
+        gThresh.dispose();
+
         // Set the new dimensions for 2.5:1 aspect ratio
         int canvasWidth = grayscaleImage.getWidth();
         int canvasHeight = (int) (canvasWidth / 2.5); // 2.5:1 aspect ratio
