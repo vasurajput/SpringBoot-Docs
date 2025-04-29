@@ -1,50 +1,6 @@
-private ByteArrayInputStream pdfToImage(byte[] pdfData) throws IOException {
-    try (ByteArrayInputStream bais = new ByteArrayInputStream(pdfData)) {
-        // Load the PDF document and render it
-        PDDocument document = PDDocument.load(bais);
-        PDFRenderer pdfRenderer = new PDFRenderer(document);
-        BufferedImage image = pdfRenderer.renderImageWithDPI(0, 300); // Render at 300 DPI for clarity
++ new IndexColorModel(1, 2, new int[]{0xFFFFFFFF, 0xFF000000}, 0, false, -1, DataBuffer.TYPE_BYTE);
+directory.add(TiffTagConstants.TIFF_TAG_PHOTOMETRIC_INTERPRETATION, 0); // NEW CORRECT
 
-        // Convert to grayscale
-        BufferedImage grayscaleImage = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_BYTE_GRAY);
-        Graphics2D gGray = grayscaleImage.createGraphics();
-        gGray.drawImage(image, 0, 0, null);
-        gGray.dispose();
-
-// Increase contrast to make text darker
-        RescaleOp contrastOp = new RescaleOp(1.5f, -50f, null); // Increase contrast and darken
-        BufferedImage contrastImage = contrastOp.filter(grayscaleImage, null);
-
-        // Apply binary thresholding to make text solid black
-        BufferedImage thresholdImage = new BufferedImage(contrastImage.getWidth(), contrastImage.getHeight(), BufferedImage.TYPE_BYTE_BINARY);
-        Graphics2D gThresh = thresholdImage.createGraphics();
-        gThresh.drawImage(contrastImage, 0, 0, null);
-        gThresh.dispose();
-
-        // Set the new dimensions for 2.5:1 aspect ratio
-        int canvasWidth = grayscaleImage.getWidth();
-        int canvasHeight = (int) (canvasWidth / 2.5); // 2.5:1 aspect ratio
-
-        // Create a new canvas with the 2.5:1 aspect ratio
-        BufferedImage canvasImage = new BufferedImage(canvasWidth, canvasHeight, BufferedImage.TYPE_BYTE_GRAY);
-        Graphics2D g = canvasImage.createGraphics();
-
-        // Set rendering hints for better quality
-        g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
-        g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-
-        // Stretch the image to fill the entire canvas (no padding)
-        g.drawImage(grayscaleImage, 0, 0, canvasWidth, canvasHeight, null);
-        g.dispose();
-
-        // Convert to ByteArrayInputStream
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ImageIO.write(canvasImage, "png", baos);
-        return new ByteArrayInputStream(baos.toByteArray());
-    }
-}
 
 <div class="container mt-3">
     <div class="row align-items-center">
