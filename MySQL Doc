@@ -1,22 +1,33 @@
-+ new IndexColorModel(1, 2, new int[]{0xFFFFFFFF, 0xFF000000}, 0, false, -1, DataBuffer.TYPE_BYTE);
-directory.add(TiffTagConstants.TIFF_TAG_PHOTOMETRIC_INTERPRETATION, 0); // NEW CORRECT
+<dependency>
+    <groupId>org.springdoc</groupId>
+    <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+    <version>2.6.0</version>
+</dependency>
 
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
 
-<div class="container mt-3">
-    <div class="row align-items-center">
-        <!-- First Column: Quick Search + Date Range -->
-        <div class="col-md-6 d-flex gap-2">
-            <input type="text" class="form-control" placeholder="Quick Search">
-            <input type="date" class="form-control">
-        </div>
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import org.springframework.web.bind.annotation.*;
 
-        <!-- Second Column: Created Date + Committed Date -->
-        <div class="col-md-6 d-flex gap-2">
-            <input type="date" class="form-control" placeholder="Created Date">
-            <input type="date" class="form-control" placeholder="Committed Date">
-        </div>
-    </div>
-</div>
+@RestController
+@RequestMapping("/api")
+public class MyController {
+
+    @Operation(summary = "Get a sample resource", description = "Returns a sample string")
+    @ApiResponse(responseCode = "200", description = "Successful operation")
+    @GetMapping("/sample")
+    public String getSample() {
+        return "Hello, Swagger!";
+    }
+}
+
+Access Swagger UI at: http://localhost:8080/swagger-ui.html
+Get the OpenAPI JSON at: http://localhost:8080/api-docs
 
 
 <!DOCTYPE html>
