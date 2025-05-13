@@ -9,22 +9,33 @@ springdoc:
     path: /api-docs
   swagger-ui:
     path: /swagger-ui.html
+    operations-sorter: alpha
+    tags-sorter: alpha
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api")
-public class MyController {
+@Tag(name = "Sample API", description = "API for sample operations")
+public class SampleController {
 
     @Operation(summary = "Get a sample resource", description = "Returns a sample string")
-    @ApiResponse(responseCode = "200", description = "Successful operation")
+    @ApiResponse(responseCode = "200", description = "Success")
+    @ApiResponse(responseCode = "404", description = "Not found")
     @GetMapping("/sample")
     public String getSample() {
         return "Hello, Swagger!";
     }
 }
+
+import io.swagger.v3.oas.annotations.info.Info;
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+
+@OpenAPIDefinition(info = @Info(title = "My API", version = "1.0", description = "API for my Spring Boot app"))
+public class OpenApiConfig {}
 
 Access Swagger UI at: http://localhost:8080/swagger-ui.html
 Get the OpenAPI JSON at: http://localhost:8080/api-docs
