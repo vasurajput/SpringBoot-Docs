@@ -8,7 +8,9 @@ npx tailwindcss init
 
 # Install Specific tailwind version
 npm install -D tailwindcss@3.4.6
+npm install -D tailwindcss@3.4.6 postcss@8.4.38 autoprefixer@10.4.19
 npx tailwindcss init -p
+"./src/**/*.{js,jsx,ts,tsx}"
 
 if you face any issue change tailwindversion in your package.json then run above commands "tailwindcss": "^3.4.13"
 
