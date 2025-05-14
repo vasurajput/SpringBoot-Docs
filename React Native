@@ -6,6 +6,10 @@ npm install
 npm install -D tailwindcss
 npx tailwindcss init
 
+# Install Specific tailwind version
+npm install -D tailwindcss@3.4.6
+npx tailwindcss init -p
+
 if you face any issue change tailwindversion in your package.json then run above commands "tailwindcss": "^3.4.13"
 
 Download Android Studio and Visual Studio along with latest Node version
