@@ -1,5 +1,5 @@
 #Set custom path for current session in intellij
-$env:JAVA_HOME = "C:\VasuDev\Softwares\openlogic-openjdk-21.0.3+9-windows-x64"
+$env:JAVA_HOME = "C:\VasuDev\Softwares\openlogic-openjdk-21.0.3+9-windows-x64\openlogic-openjdk-21.0.3+9-windows-x64"
 $env:PATH = "$env:JAVA_HOME\bin;" + $env:PATH
 
 # SpringBoot-Docs
