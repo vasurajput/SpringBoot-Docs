@@ -81,7 +81,15 @@ public class WebClientHelper {
                     return Flux.error(new CustomApiException(
                             ex.getStatusCode().value(),
                             ex.getResponseBodyAsString(),
-
+                            location
+                    ));
+                })
+                .onErrorResume(ex -> {
+                    log.error("Unknown WebClient POST error at {}: {}", location, ex.getMessage(), ex);
+                    return Flux.error(new CustomApiException(500, "Unexpected error occurred while calling API", location));
+                });
+    }
+}
 
 
 
