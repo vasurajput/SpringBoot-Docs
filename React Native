@@ -19,6 +19,15 @@ Download Android Studio and Visual Studio along with latest Node version
 #Command to create react native project
 npx @react-native-community/cli init MyApp
 
+======================= Steps to use Stack Navigation in React Native ==============================================
+1- Install below npm package
+   npm install @react-navigation/native
+   npm install @react-navigation/native-stack
+   npm install react-native-screens react-native-safe-area-context react-native-gesture-handler react-native-reanimated
+
+
+================================================
+
 ======================== Use Styled component in React Native for styling like CSS ==================================
 
 #Process to use the Stled component in react native
