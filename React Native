@@ -19,7 +19,7 @@ Download Android Studio and Visual Studio along with latest Node version
 #Command to create react native project
 npx @react-native-community/cli init MyApp
 
-==========================================================
+======================== Use Styled component in React Native for styling like CSS ==================================
 
 #Process to use the Stled component in react native
 1- Install the styled package using below command
