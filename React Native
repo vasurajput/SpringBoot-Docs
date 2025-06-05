@@ -19,6 +19,23 @@ Download Android Studio and Visual Studio along with latest Node version
 #Command to create react native project
 npx @react-native-community/cli init MyApp
 
+==========================================================
+
+#Process to use the Stled component in react native
+1- Install the styled package using below command
+   npm install styled-components --legacy-peer-deps
+2- Import the below package wherever you want to use
+    import styled from 'styled-components/native';
+3- Now create sheet like below at bottom of your file
+    const ButtonText = styled.Text`   => Left hand side you can give any name right side should follow th pattern like Text, View etc
+    color: red;
+    font-size: 18px;
+    `;
+4- Now you can use it something like this
+    <ButtonText>Vasu Rajput is a good boy</ButtonText>    => Tag should be same as that you defined above 
+
+============================================================
+
 #Command to open environment variable. Type window + R and enter this command
 sysdm.cpl
 
