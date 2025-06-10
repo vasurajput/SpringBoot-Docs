@@ -25,6 +25,44 @@ npx @react-native-community/cli init MyApp
    npm install @react-navigation/native-stack
    npm install react-native-screens react-native-safe-area-context react-native-gesture-handler react-native-reanimated
 
+2- In your App.tsx file return like below
+   return (
+    <NavigationContainer>
+    <Stack.Navigator initialRouteName='Home'>
+      <Stack.Screen name='Home' component={HomeScreen} />
+      <Stack.Screen name='Profile' component={ProfileScreen} />
+    </Stack.Navigator>
+    </NavigationContainer>
+  );
+
+3- Create HomeScreen and Profile Screen tsx file And add a button to navigate
+HomeScreen.tsx
+    	import { Button, Text, View } from "react-native"
+
+	const HomeScreen = ( {navigation}  ) => {
+    	return (
+        <View>
+            <Text>Home Screen</Text>
+            <Button title="Profile" onPress={() => navigation.navigate('Profile')} />
+        </View>
+    	)
+	}
+
+ProfileScreen.tsx
+	import { Text, View } from "react-native"
+
+	const ProfileScreen = () => {
+   	 return (
+        <View>
+            <Text>Profile Screen</Text>
+        </View>
+  	  )
+	}
+
+export default ProfileScreen;
+
+export default HomeScreen;
+
 
 ================================================
 
