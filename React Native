@@ -45,6 +45,42 @@ npx @react-native-community/cli init MyApp
 
 ============================================================
 
+=========================  Commands and step to use Icons  ===============================
+  1- Install below npm package for icons
+		npm install react-native-vector-icons --legacy-peer-deps
+  2- Then import below package 
+		import Icon from 'react-native-vector-icons/Ionicons';
+  3- Go inside android/app/build.gradle and add the below line there
+		apply from: "../../node_modules/react-native-vector-icons/fonts.gradle"
+Note: If you are using .js file then above import works fine. But if you are using .tsx file you get the error. So to resolve that error in .tsx file follow below step:
+		1- Create a file with name react-native-vector-icons.d.tsx and put the below context there
+			declare module 'react-native-vector-icons/Ionicons';
+		2- Now run the TypeScript server using given below steps
+  
+# Restart TypeScript Server
+	If you're using VS Code, do this:
+	Press Ctrl + Shift + P
+	Type: TypeScript: Restart TS Server
+	Hit Enter
+==========================================================================================
+
+
+====== If ever face build issue due to previous linking while uninstalling and installing npm package use below commands ======
+	rd /s /q node_modules
+	del package-lock.json
+	npm install --legacy-peer-deps
+	
+	cd android
+	rd /s /q .cxx
+	rd /s /q app\build
+	rd /s /q build
+	
+	cd android
+	gradlew clean
+	cd ..
+	npx react-native run-android
+===============================================================================================================================
+
 #Command to open environment variable. Type window + R and enter this command
 sysdm.cpl
 
