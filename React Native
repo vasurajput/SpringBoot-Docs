@@ -25,7 +25,9 @@ npx @react-native-community/cli init MyApp
    npm install @react-navigation/native-stack
    npm install react-native-screens react-native-safe-area-context react-native-gesture-handler react-native-reanimated
 
-2- In your App.tsx file return like below
+2- In your App.tsx file define a const variable and create stack navigatior and after that return like below
+
+    const Stack = createNativeStackNavigator();
    return (
     <NavigationContainer>
     <Stack.Navigator initialRouteName='Home'>
@@ -47,6 +49,7 @@ HomeScreen.tsx
         </View>
     	)
 	}
+	export default HomeScreen;
 
 ProfileScreen.tsx
 	import { Text, View } from "react-native"
@@ -59,10 +62,59 @@ ProfileScreen.tsx
   	  )
 	}
 
-export default ProfileScreen;
+	export default ProfileScreen;
 
-export default HomeScreen;
+4-  List of Navigation Functions
+Available via props.navigation or useNavigation():
 
+Function			Description
+navigate(name, params?)		Navigate to a screen
+goBack()			Go back to the previous screen
+push(name, params?)		Push another instance onto the stack
+pop(count)			Pop screens from the stack
+replace(name, params?)		Replace current screen
+reset(config)			Reset entire stack
+setParams(params)		Update params for current screen
+
+5-  Screen Options (Navigation UI)
+Pass these in options or screenOptions:
+
+Option			Type							Description
+title			string							Title in header
+headerShown		boolean							Hide/show header
+headerBackTitle		string							Custom back button label
+headerRight		function						Custom right-side header view
+headerLeft		function						Custom left-side header view
+animation		'default' | 'fade' | 'slide_from_right' | ...		Transition animation
+
+eg: 	<Stack.Screen
+  	name="Profile"
+  	component={ProfileScreen}
+  	options={{
+   	 title: 'User Profile',
+  	  headerRight: () => <Button title="Info" onPress={() => alert('Info')} />,
+ 	 }}
+	/>
+
+6- Stack.Navigator Props
+Used to wrap your screens. Main props include:
+
+Prop			Type					Description
+initialRouteName	string					First screen to render
+screenOptions		object or ({ route }) => object		Default options for all screens
+id			string					Optional ID for nested navigators
+
+eg: 	<Stack.Navigator initialRouteName="Home" screenOptions={{ headerShown: false }}>
+
+7- Stack.Screen Props
+Used to define a screen in the navigator.
+
+Prop		Type					Description
+name		string					Unique screen name
+component	React.ComponentType			Component to render
+options	object or ({ route, navigation }) => object	Custom options per screen
+
+eg: <Stack.Screen name="Home" component={HomeScreen} options={{ title: "Welcome" }} />
 
 ================================================
 
