@@ -23,7 +23,7 @@ npx @react-native-community/cli init MyApp
 1- Run npm package for bootsplash
 	 npm install react-native-bootsplash
 2- run this command it 'll automatically create the neccessary files
-     npx react-native generate-bootsplash assets/vasupic.png --logo-width=100 --assets-output=assets --platforms=android,ios --background=#000000
+         npx react-native generate-bootsplash assets/vasupic.png --logo-width=100 --assets-output=assets --platforms=android,ios --background=#000000
 3- run the project
 	 npx react-native run-android
 ====================================================================================================
