@@ -19,6 +19,42 @@ Download Android Studio and Visual Studio along with latest Node version
 #Command to create react native project
 npx @react-native-community/cli init MyApp
 
+=======================  Step to use Bottom Navigation along with Stack Navigation =====================
+1- Install the below package
+  	npm install @react-navigation/bottom-tabs
+2- Create a component and defint the Bottom Bavigation there
+    	import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+	import HomeScreen from "./HomeScreen";
+	import ProfileScreen from "./ProfileScreen";
+
+	const BottomTabs = () => {
+		const Tab = createBottomTabNavigator();                               // Use to declate the Bottom Tab like we declare for stack navigation
+		return (
+       		<Tab.Navigator screenOptions={{headerShown: false}}>                  // Here we are using the headerShown as false else you see the header while getting the screen
+            		<Tab.Screen name="Profile" component={ProfileScreen} />
+           		<Tab.Screen name="Home" component={HomeScreen} />
+        	</Tab.Navigator>
+   	 )
+	}
+	export default BottomTabs;
+
+3- In your Main Navigation [ stack navigation ] use it as a Stack.screen
+		function App(): React.JSX.Element {
+ 		const Stack = createNativeStackNavigator();
+  		return (
+    		<NavigationContainer>
+      		<Stack.Navigator initialRouteName='Login'>
+       		 <Stack.Screen name='Home' component={HomeScreen} />
+       		 <Stack.Screen name='Profile' component={ProfileScreen} />
+        	 <Stack.Screen name='Login' component={LoginScreen} />
+       		 <Stack.Screen name='ForgotPassword' component={ForgotPasswordScreen} />
+       		 <Stack.Screen name='MainApp' component={BottomTabs} />                    // Include bottom tab like this
+     		 </Stack.Navigator>
+    		</NavigationContainer>
+  );
+}
+=====================================================================================================
+
 ======================= Steps to use Stack Navigation in React Native ==============================================
 1- Install below npm package
    npm install @react-navigation/native
