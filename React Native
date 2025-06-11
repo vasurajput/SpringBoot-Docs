@@ -19,6 +19,14 @@ Download Android Studio and Visual Studio along with latest Node version
 #Command to create react native project
 npx @react-native-community/cli init MyApp
 
+
+===================== Create Component Shortcut ========================
+1- Install below plugin in visual studio code
+     ES7+ React/Redux/React-Native/JS snippets
+2- After this install just type 
+     rnf + tab
+========================================================================
+
 =================  Use Bootsplash for splash screen in react native. ===============================
 1- Run npm package for bootsplash
 	 npm install react-native-bootsplash
