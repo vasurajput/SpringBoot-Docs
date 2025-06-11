@@ -24,7 +24,7 @@ npx @react-native-community/cli init MyApp
 1- Install below plugin in visual studio code
      ES7+ React/Redux/React-Native/JS snippets
 2- After this install just type 
-     rnf + tab
+     rnfe + tab
 ========================================================================
 
 =================  Use Bootsplash for splash screen in react native. ===============================
