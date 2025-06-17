@@ -117,6 +117,23 @@ ProfileScreen.tsx
 
 	export default ProfileScreen;
 
+Note:   If you want to hide the screen header on stack nvaigation there are two ways
+=====
+a)  - Hide header globally (for all screens)
+<Stack.Navigator screenOptions={{ headerShown: false }}>
+  <Stack.Screen name="Home" component={HomeScreen} />
+  <Stack.Screen name="Details" component={DetailsScreen} />
+</Stack.Navigator>
+b) -  Hide header for a specific screen
+<Stack.Navigator>
+  <Stack.Screen
+    name="Home"
+    component={HomeScreen}
+    options={{ headerShown: false }}
+  />
+  <Stack.Screen name="Details" component={DetailsScreen} />
+</Stack.Navigator>
+
 4-  List of Navigation Functions
 Available via props.navigation or useNavigation():
 
