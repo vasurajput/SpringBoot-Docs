@@ -1,43 +1,11 @@
-DO $$
-DECLARE
-    r RECORD;
-    v_search TEXT := 'vasu';
-    v_sql TEXT;
-    match_count INT;
-BEGIN
-    -- Create a temp table to store results
-    CREATE TEMP TABLE IF NOT EXISTS search_results (
-        table_name TEXT,
-        column_name TEXT,
-        match_count INT
-    ) ON COMMIT DROP;
+SELECT 
+    'SELECT ''' || table_schema || '.' || table_name || ''' AS table_name, ''' 
+    || column_name || ''' AS column_name FROM ' || table_schema || '.' || table_name || 
+    ' WHERE ' || column_name || '::text ILIKE ''%vasu%'';' AS search_sql
+FROM information_schema.columns
+WHERE data_type IN ('character varying', 'text', 'varchar', 'char')
+  AND table_schema NOT IN ('pg_catalog', 'information_schema');
 
-    -- Loop through text-like columns
-    FOR r IN
-        SELECT table_schema, table_name, column_name
-        FROM information_schema.columns
-        WHERE data_type IN ('text', 'character varying', 'varchar', 'char')
-          AND table_schema NOT IN ('pg_catalog', 'information_schema')
-    LOOP
-        v_sql := format(
-            $$SELECT COUNT(*) FROM %I.%I WHERE %I::text ILIKE '%%%s%%'$$,
-            r.table_schema, r.table_name, r.column_name, v_search
-        );
-
-        BEGIN
-            EXECUTE v_sql INTO match_count;
-            IF match_count > 0 THEN
-                INSERT INTO search_results(table_name, column_name, match_count)
-                VALUES (r.table_schema || '.' || r.table_name, r.column_name, match_count);
-            END IF;
-        EXCEPTION WHEN OTHERS THEN
-            CONTINUE;
-        END;
-    END LOOP;
-END $$;
-
--- Now display the results
-SELECT * FROM search_results;
 
 
 
