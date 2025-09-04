@@ -27,6 +27,50 @@ npx @react-native-community/cli init MyApp
      rnfe + tab
 ========================================================================
 
+================= Step to generete APK file in React native ========================
+✅ Step 1: Generate a Release Keystore (only once)
+Run this command in your terminal (inside your project folder):
+keytool -genkeypair -v -storetype PKCS12 -keystore my-release-key.keystore -alias my-key-alias -keyalg RSA -keysize 2048 -validity 10000
+
+Above command create a file Move this file to your_project/android/app/
+
+✅ Step 2: Add Keystore Info
+Edit android/gradle.properties and add:
+MYAPP_UPLOAD_STORE_FILE=my-release-key.keystore
+MYAPP_UPLOAD_KEY_ALIAS=my-key-alias
+MYAPP_UPLOAD_STORE_PASSWORD=your-password
+MYAPP_UPLOAD_KEY_PASSWORD=your-password
+
+✅ Step 3: Configure Gradle
+In android/app/build.gradle, add inside android { signingConfigs { ... } }:
+
+signingConfigs {
+    release {
+        storeFile file(MYAPP_UPLOAD_STORE_FILE)
+        storePassword MYAPP_UPLOAD_STORE_PASSWORD
+        keyAlias MYAPP_UPLOAD_KEY_ALIAS
+        keyPassword MYAPP_UPLOAD_KEY_PASSWORD
+    }
+}
+buildTypes {
+    release {
+        signingConfig signingConfigs.release
+        minifyEnabled false
+        shrinkResources false
+        proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+    }
+}
+
+✅ Step 4: Build the APK
+Run this in terminal:
+cd android
+./gradlew assembleRelease
+
+✅ Step 5: Find Your APK
+After building, your APK will be here:
+your_project/android/app/build/outputs/apk/release/app-release.apk
+
+
 =================  Use Bootsplash for splash screen in react native. ===============================
 1- Run npm package for bootsplash
 	 npm install react-native-bootsplash
