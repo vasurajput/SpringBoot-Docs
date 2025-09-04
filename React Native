@@ -70,6 +70,14 @@ cd android
 After building, your APK will be here:
 your_project/android/app/build/outputs/apk/release/app-release.apk
 
+⚡ Quick Tips
+If you just want a debug APK (no signing needed):
+cd android
+./gradlew assembleDebug
+
+You’ll find it at:
+android/app/build/outputs/apk/debug/app-debug.apk
+
 
 =================  Use Bootsplash for splash screen in react native. ===============================
 1- Run npm package for bootsplash
