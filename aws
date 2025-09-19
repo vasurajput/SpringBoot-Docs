@@ -4,23 +4,242 @@
 3- Go to your ec2 instance and use elasticIp:8080 to access this tomcat on aws
 
 
-import { useState } from 'react';
-import './App.css';
-import XmlModal from './XmlModal';
+import React, { useState } from "react";
+import "./style.css";
 
-function App() {
-  const [isModalOpen, setModalOpen] = useState(false);
+/** escape user text so XML stays valid */
+const xmlEscape = (v = "") =>
+  String(v)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&apos;");
+
+/** helper: wrap with tag only if value not blank */
+const tagIf = (name, val) =>
+  val && String(val).trim() !== ""
+    ? `<${name}>${xmlEscape(val)}</${name}>`
+    : "";
+
+/** build the final XML string without blank lines/spaces */
+const generateXml = (d) => {
+  const clientTags = [
+    tagIf("name", d.name),
+    tagIf("address", d.address),
+    tagIf("city", d.city),
+    tagIf("province", d.province),
+    tagIf("postCode", d.postCode),
+    tagIf("country", d.country),
+    tagIf("templateName", d.templateName),
+    tagIf("userAssignedLoginIdEnabled", d.userAssignedLoginIdEnabled),
+  ].filter(Boolean).join("");
+
+  const autoDebitTags = [
+    tagIf("accountNumber", d.accountNumber),
+    tagIf("branchCode", d.branchCode),
+    tagIf("accountHolderName", d.accountHolderName),
+    tagIf("accountHolderLocalName", d.accountHolderLocalName),
+    tagIf("accountCurrency", d.accountCurrency),
+    tagIf("defaultAccount", d.defaultAccount),
+  ].filter(Boolean).join("");
+
+  const userTags = [
+    tagIf("applicationId", d.applicationId),
+    tagIf("email", d.email),
+    tagIf("firstName", d.firstName),
+    tagIf("lastName", d.lastName),
+    tagIf("templateName", d.userTemplateName),
+    tagIf("loginId", d.loginId),
+    tagIf("externalId", d.externalId),
+    tagIf("ssoDisabled", d.ssoDisabled),
+  ].filter(Boolean).join("");
+
+  return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>` +
+    `<ns:importRequest xmlns:ns="http://www.westernunionbusiness.com/geo/cma">` +
+      `<client id="${xmlEscape(d.clientId)}">` +
+        clientTags +
+        (autoDebitTags ? `<autoDebitAccount>${autoDebitTags}</autoDebitAccount>` : "") +
+        (userTags ? `<user id="${xmlEscape(d.userId)}">${userTags}</user>` : "") +
+      `</client>` +
+    `</ns:importRequest>`;
+};
+
+const XmlModal = ({ isOpen, onClose, onSubmit }) => {
+  const [openSection, setOpenSection] = useState(null);
+
+  const [formData, setFormData] = useState({
+    // Client Details
+    clientId: "CO1CID012563",
+    name: "",
+    address: "",
+    city: "",
+    province: "",
+    postCode: "",
+    country: "",
+    templateName: "",
+    userAssignedLoginIdEnabled: "true",
+
+    // Auto Debit Details
+    accountNumber: "",
+    branchCode: "",
+    accountHolderName: "",
+    accountHolderLocalName: "",
+    accountCurrency: "",
+    defaultAccount: "",
+
+    // User Details
+    userId: "CO1UID01235673",
+    applicationId: "APP-ID",
+    email: "",
+    firstName: "",
+    lastName: "",
+    userTemplateName: "",
+    loginId: "",
+    externalId: "",
+    ssoDisabled: "false",
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((p) => ({ ...p, [name]: value }));
+  };
+
+  const toggleSection = (section) => {
+    setOpenSection((cur) => (cur === section ? null : section));
+  };
+
+  const handleSubmit = () => {
+    const xml = generateXml(formData);
+    if (typeof onSubmit === "function") onSubmit(xml, formData);
+    console.log("XML payload →", xml);
+    onClose?.();
+  };
+
+  if (!isOpen) return null;
 
   return (
-    <div>
-      <button onClick={() => setModalOpen(true)}>Open Login Modal</button>
+    <div className="modal-overlay">
+      <div className="modal-container">
+        <div className="modal-header">
+          <h2>Import Request</h2>
+          <button className="close-btn" onClick={onClose} aria-label="Close">
+            ✕
+          </button>
+        </div>
 
-      <XmlModal isOpen={isModalOpen} onClose={() => setModalOpen(false)} />
+        <div className="modal-body">
+          {/* Accordions (same as before) */}
+          {/* Client Details */}
+          <div className="accordion">
+            <button
+              className={`accordion-toggle ${openSection === "client" ? "open" : ""}`}
+              onClick={() => toggleSection("client")}
+            >
+              <span>Client Details</span>
+              <span className="accordion-icon">
+                {openSection === "client" ? "▲" : "▼"}
+              </span>
+            </button>
+            {openSection === "client" && (
+              <div className="accordion-content">
+                <label>Client ID</label>
+                <input name="clientId" value={formData.clientId} onChange={handleChange}/>
+                <label>Name</label>
+                <input name="name" value={formData.name} onChange={handleChange}/>
+                <label>Address</label>
+                <input name="address" value={formData.address} onChange={handleChange}/>
+                <label>City</label>
+                <input name="city" value={formData.city} onChange={handleChange}/>
+                <label>Province</label>
+                <input name="province" value={formData.province} onChange={handleChange}/>
+                <label>Post Code</label>
+                <input name="postCode" value={formData.postCode} onChange={handleChange}/>
+                <label>Country</label>
+                <input name="country" value={formData.country} onChange={handleChange}/>
+                <label>Template Name</label>
+                <input name="templateName" value={formData.templateName} onChange={handleChange}/>
+                <label>User Assigned Login Enabled</label>
+                <input name="userAssignedLoginIdEnabled" value={formData.userAssignedLoginIdEnabled} onChange={handleChange}/>
+              </div>
+            )}
+          </div>
+
+          {/* Auto Debit */}
+          <div className="accordion">
+            <button
+              className={`accordion-toggle ${openSection === "auto" ? "open" : ""}`}
+              onClick={() => toggleSection("auto")}
+            >
+              <span>Auto Debit Details</span>
+              <span className="accordion-icon">
+                {openSection === "auto" ? "▲" : "▼"}
+              </span>
+            </button>
+            {openSection === "auto" && (
+              <div className="accordion-content">
+                <label>Account Number</label>
+                <input name="accountNumber" value={formData.accountNumber} onChange={handleChange}/>
+                <label>Branch Code</label>
+                <input name="branchCode" value={formData.branchCode} onChange={handleChange}/>
+                <label>Account Holder Name</label>
+                <input name="accountHolderName" value={formData.accountHolderName} onChange={handleChange}/>
+                <label>Account Holder Local Name</label>
+                <input name="accountHolderLocalName" value={formData.accountHolderLocalName} onChange={handleChange}/>
+                <label>Account Currency</label>
+                <input name="accountCurrency" value={formData.accountCurrency} onChange={handleChange}/>
+                <label>Default Account</label>
+                <input name="defaultAccount" value={formData.defaultAccount} onChange={handleChange}/>
+              </div>
+            )}
+          </div>
+
+          {/* User */}
+          <div className="accordion">
+            <button
+              className={`accordion-toggle ${openSection === "user" ? "open" : ""}`}
+              onClick={() => toggleSection("user")}
+            >
+              <span>User Details</span>
+              <span className="accordion-icon">
+                {openSection === "user" ? "▲" : "▼"}
+              </span>
+            </button>
+            {openSection === "user" && (
+              <div className="accordion-content">
+                <label>User ID</label>
+                <input name="userId" value={formData.userId} onChange={handleChange}/>
+                <label>Application ID</label>
+                <input name="applicationId" value={formData.applicationId} onChange={handleChange}/>
+                <label>Email</label>
+                <input name="email" value={formData.email} onChange={handleChange}/>
+                <label>First Name</label>
+                <input name="firstName" value={formData.firstName} onChange={handleChange}/>
+                <label>Last Name</label>
+                <input name="lastName" value={formData.lastName} onChange={handleChange}/>
+                <label>User Template Name</label>
+                <input name="userTemplateName" value={formData.userTemplateName} onChange={handleChange}/>
+                <label>Login ID</label>
+                <input name="loginId" value={formData.loginId} onChange={handleChange}/>
+                <label>External ID</label>
+                <input name="externalId" value={formData.externalId} onChange={handleChange}/>
+                <label>SSO Disabled</label>
+                <input name="ssoDisabled" value={formData.ssoDisabled} onChange={handleChange}/>
+              </div>
+            )}
+          </div>
+        </div>
+
+        <div className="modal-footer">
+          <button className="submit-btn" onClick={handleSubmit}>Submit</button>
+        </div>
+      </div>
     </div>
   );
-}
+};
 
-export default App;
+export default XmlModal;
+
 
 
 /* Overlay */
