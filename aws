@@ -66,6 +66,21 @@
 </html>
 
 
+// === Reset modal to fresh state ===
+function resetModal() {
+  // Clear inputs
+  document.querySelectorAll("#xmlModal input").forEach(i => i.value = "");
+
+  // Close all accordion contents
+  document.querySelectorAll(".accordion-content").forEach(c => c.style.display = "none");
+
+  // Reset arrows
+  document.querySelectorAll(".accordion-toggle span.arrow").forEach(a => a.textContent = "▼");
+
+  // Close modal
+  modal.style.display = "none";
+}
+
 CSS
 ====
 /* === Modal Overlay (background dim) === */
