@@ -3,3 +3,149 @@
 2- etract and run
 3- Go to your ec2 instance and use elasticIp:8080 to access this tomcat on aws
 
+
+import { useState } from 'react';
+import './App.css';
+import XmlModal from './XmlModal';
+
+function App() {
+  const [isModalOpen, setModalOpen] = useState(false);
+
+  return (
+    <div>
+      <button onClick={() => setModalOpen(true)}>Open Login Modal</button>
+
+      <XmlModal isOpen={isModalOpen} onClose={() => setModalOpen(false)} />
+    </div>
+  );
+}
+
+export default App;
+
+
+/* Overlay */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+/* Modal */
+.modal-container {
+  background: #fff;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 520px;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+}
+
+/* Header */
+.modal-header {
+  padding: 18px 20px;
+  background: #f8f9fb;
+  border-bottom: 2px solid #007BFF;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-header h2 {
+  font-size: 22px;
+  font-weight: 700;
+  color: #222;
+  margin: 0;
+  position: relative;
+}
+.modal-header h2::after {
+  content: "";
+  display: block;
+  width: 40px;
+  height: 3px;
+  background: #007BFF;
+  margin-top: 6px;
+  border-radius: 2px;
+}
+.close-btn {
+  background: transparent; border: none; font-size: 22px;
+  cursor: pointer; color: #555;
+}
+.close-btn:hover { color: #000; }
+
+/* Body */
+.modal-body {
+  padding: 14px 18px;
+  overflow-y: auto;
+  flex: 1;
+  background: #fafbfc;
+  overflow-x: hidden; /* no horizontal scroll */
+}
+
+/* Accordion */
+.accordion { margin-bottom: 12px; }
+.accordion-toggle {
+  width: 100%; background: #fff; color: #333;
+  padding: 14px 16px; border: 1px solid #ddd; border-radius: 8px;
+  cursor: pointer; font-weight: 600; display: flex; justify-content: space-between; align-items: center;
+  font-size: 16px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+  transition: all 0.2s ease;
+}
+.accordion-toggle:hover { background: #f1f5ff; border-color: #007BFF; }
+.accordion-toggle.open { background: #eaf2ff; border-color: #007BFF; }
+
+.accordion-icon {
+  font-size: 16px; background: #007BFF; color: #fff;
+  padding: 3px 7px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+}
+
+.accordion-content {
+  margin-top: 6px; padding: 14px; border: 1px solid #e1e4e8; border-radius: 8px;
+  background: #f9fafc; max-height: 260px; overflow-y: auto; overflow-x: hidden;
+}
+.accordion-content label {
+  display: block; margin-top: 8px; font-weight: 600; font-size: 14px; color: #444;
+}
+.accordion-content input {
+  width: 100%; padding: 8px 10px; margin-top: 4px; border: 1px solid #ccc; border-radius: 6px;
+  box-sizing: border-box; font-size: 14px;
+}
+.accordion-content input:focus {
+  border-color: #007BFF; outline: none; box-shadow: 0 0 4px rgba(0,123,255,0.3);
+}
+
+/* Footer */
+.modal-footer {
+  padding: 14px 20px; background: #f8f9fb; border-top: 1px solid #e1e4e8; text-align: right;
+}
+.submit-btn {
+  padding: 10px 20px; background: #007BFF; color: #fff; border: none; border-radius: 8px;
+  font-weight: 600; cursor: pointer; font-size: 15px; transition: background 0.2s ease;
+}
+.submit-btn:hover { background: #0056b3; }
+
+/* Responsive */
+@media (max-width: 480px) {
+  .modal-container { width: 95%; max-height: 90vh; }
+}
+
+
+function App() {
+  const [isModalOpen, setModalOpen] = useState(false);
+
+  return (
+    <div>
+      <button onClick={() => setModalOpen(true)}>Open Login Modal</button>
+
+      <XmlModal isOpen={isModalOpen} onClose={() => setModalOpen(false)} />
+    </div>
+  );
+}
+
+export default App;
