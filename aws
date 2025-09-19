@@ -1,3 +1,23 @@
+// === Accordion toggle logic (multiple open allowed) ===
+document.querySelectorAll(".accordion-toggle").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const section = btn.dataset.section;
+    const content = document.querySelector(`.accordion-content[data-section="${section}"]`);
+
+    const isOpen = content.style.display === "block";
+    
+    // Toggle only this one, don’t touch others
+    if (isOpen) {
+      content.style.display = "none";
+      btn.querySelector(".arrow").textContent = "▼";
+    } else {
+      content.style.display = "block";
+      btn.querySelector(".arrow").textContent = "▲";
+    }
+  });
+});
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
