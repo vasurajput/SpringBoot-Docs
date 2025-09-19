@@ -1,370 +1,163 @@
-========== Install tomcat in aws ==================
-1- Go to tomcat website and install core tar version
-2- etract and run
-3- Go to your ec2 instance and use elasticIp:8080 to access this tomcat on aws
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>XML Modal Example</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <button id="openModalBtn">Open Import Request Modal</button>
+
+  <!-- Modal -->
+  <div id="xmlModal" class="modal-overlay" style="display:none;">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h2>Import Request</h2>
+        <button id="closeModalBtn" class="close-btn">✕</button>
+      </div>
+      <div class="modal-body">
+        <!-- Client Details -->
+        <button class="accordion-toggle" data-section="client">Client Details ▼</button>
+        <div class="accordion-content" data-section="client">
+          <label>Client ID</label><input name="clientId" value="CO1CID012563">
+          <label>Name</label><input name="name">
+          <label>Address</label><input name="address">
+          <label>City</label><input name="city">
+          <label>Province</label><input name="province">
+          <label>Post Code</label><input name="postCode">
+          <label>Country</label><input name="country">
+          <label>Template Name</label><input name="templateName">
+          <label>User Assigned Login Enabled</label><input name="userAssignedLoginIdEnabled" value="true">
+        </div>
+
+        <!-- Auto Debit -->
+        <button class="accordion-toggle" data-section="auto">Auto Debit Details ▼</button>
+        <div class="accordion-content" data-section="auto">
+          <label>Account Number</label><input name="accountNumber">
+          <label>Branch Code</label><input name="branchCode">
+          <label>Account Holder Name</label><input name="accountHolderName">
+          <label>Account Holder Local Name</label><input name="accountHolderLocalName">
+          <label>Account Currency</label><input name="accountCurrency">
+          <label>Default Account</label><input name="defaultAccount">
+        </div>
+
+        <!-- User -->
+        <button class="accordion-toggle" data-section="user">User Details ▼</button>
+        <div class="accordion-content" data-section="user">
+          <label>User ID</label><input name="userId" value="CO1UID01235673">
+          <label>Application ID</label><input name="applicationId" value="APP-ID">
+          <label>Email</label><input name="email">
+          <label>First Name</label><input name="firstName">
+          <label>Last Name</label><input name="lastName">
+          <label>User Template Name</label><input name="userTemplateName">
+          <label>Login ID</label><input name="loginId">
+          <label>External ID</label><input name="externalId">
+          <label>SSO Disabled</label><input name="ssoDisabled" value="false">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="submitBtn" class="submit-btn">Submit</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="main.js"></script>
+</body>
+</html>
 
 
-import React, { useState } from "react";
-import "./style.css";
+.modal-overlay {
+  position: fixed; inset: 0; display: flex; justify-content: center; align-items: center;
+  background: rgba(0,0,0,0.5);
+}
+.modal-container { background: #fff; padding: 20px; border-radius: 10px; width: 600px; max-height: 90vh; overflow-y: auto; }
+.modal-header { display: flex; justify-content: space-between; align-items: center; }
+.close-btn { background: transparent; border: none; font-size: 20px; cursor: pointer; }
+.accordion-toggle { width: 100%; text-align: left; padding: 10px; margin-top: 10px; cursor: pointer; }
+.accordion-content { display: none; margin: 10px 0; }
+.accordion-content label { display:block; margin:5px 0 2px; }
+.accordion-content input { width:100%; padding:5px; margin-bottom:8px; }
 
-/** escape user text so XML stays valid */
-const xmlEscape = (v = "") =>
-  String(v)
+
+
+function xmlEscape(v = "") {
+  return String(v)
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&apos;");
-
-/** helper: wrap with tag only if value not blank */
-const tagIf = (name, val) =>
-  val && String(val).trim() !== ""
-    ? `<${name}>${xmlEscape(val)}</${name}>`
-    : "";
-
-/** build the final XML string without blank lines/spaces */
-const generateXml = (d) => {
+}
+function tagIf(name, val) {
+  return val && String(val).trim() !== "" ? `<${name}>${xmlEscape(val)}</${name}>` : "";
+}
+function generateXml(data) {
   const clientTags = [
-    tagIf("name", d.name),
-    tagIf("address", d.address),
-    tagIf("city", d.city),
-    tagIf("province", d.province),
-    tagIf("postCode", d.postCode),
-    tagIf("country", d.country),
-    tagIf("templateName", d.templateName),
-    tagIf("userAssignedLoginIdEnabled", d.userAssignedLoginIdEnabled),
+    tagIf("name", data.name),
+    tagIf("address", data.address),
+    tagIf("city", data.city),
+    tagIf("province", data.province),
+    tagIf("postCode", data.postCode),
+    tagIf("country", data.country),
+    tagIf("templateName", data.templateName),
+    tagIf("userAssignedLoginIdEnabled", data.userAssignedLoginIdEnabled),
   ].filter(Boolean).join("");
 
   const autoDebitTags = [
-    tagIf("accountNumber", d.accountNumber),
-    tagIf("branchCode", d.branchCode),
-    tagIf("accountHolderName", d.accountHolderName),
-    tagIf("accountHolderLocalName", d.accountHolderLocalName),
-    tagIf("accountCurrency", d.accountCurrency),
-    tagIf("defaultAccount", d.defaultAccount),
+    tagIf("accountNumber", data.accountNumber),
+    tagIf("branchCode", data.branchCode),
+    tagIf("accountHolderName", data.accountHolderName),
+    tagIf("accountHolderLocalName", data.accountHolderLocalName),
+    tagIf("accountCurrency", data.accountCurrency),
+    tagIf("defaultAccount", data.defaultAccount),
   ].filter(Boolean).join("");
 
   const userTags = [
-    tagIf("applicationId", d.applicationId),
-    tagIf("email", d.email),
-    tagIf("firstName", d.firstName),
-    tagIf("lastName", d.lastName),
-    tagIf("templateName", d.userTemplateName),
-    tagIf("loginId", d.loginId),
-    tagIf("externalId", d.externalId),
-    tagIf("ssoDisabled", d.ssoDisabled),
+    tagIf("applicationId", data.applicationId),
+    tagIf("email", data.email),
+    tagIf("firstName", data.firstName),
+    tagIf("lastName", data.lastName),
+    tagIf("templateName", data.userTemplateName),
+    tagIf("loginId", data.loginId),
+    tagIf("externalId", data.externalId),
+    tagIf("ssoDisabled", data.ssoDisabled),
   ].filter(Boolean).join("");
 
   return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>` +
     `<ns:importRequest xmlns:ns="http://www.westernunionbusiness.com/geo/cma">` +
-      `<client id="${xmlEscape(d.clientId)}">` +
+      `<client id="${xmlEscape(data.clientId)}">` +
         clientTags +
         (autoDebitTags ? `<autoDebitAccount>${autoDebitTags}</autoDebitAccount>` : "") +
-        (userTags ? `<user id="${xmlEscape(d.userId)}">${userTags}</user>` : "") +
+        (userTags ? `<user id="${xmlEscape(data.userId)}">${userTags}</user>` : "") +
       `</client>` +
     `</ns:importRequest>`;
-};
+}
 
-const XmlModal = ({ isOpen, onClose, onSubmit }) => {
-  const [openSection, setOpenSection] = useState(null);
+// Modal controls
+const modal = document.getElementById("xmlModal");
+document.getElementById("openModalBtn").onclick = () => modal.style.display = "flex";
+document.getElementById("closeModalBtn").onclick = () => modal.style.display = "none";
 
-  const [formData, setFormData] = useState({
-    // Client Details
-    clientId: "CO1CID012563",
-    name: "",
-    address: "",
-    city: "",
-    province: "",
-    postCode: "",
-    country: "",
-    templateName: "",
-    userAssignedLoginIdEnabled: "true",
-
-    // Auto Debit Details
-    accountNumber: "",
-    branchCode: "",
-    accountHolderName: "",
-    accountHolderLocalName: "",
-    accountCurrency: "",
-    defaultAccount: "",
-
-    // User Details
-    userId: "CO1UID01235673",
-    applicationId: "APP-ID",
-    email: "",
-    firstName: "",
-    lastName: "",
-    userTemplateName: "",
-    loginId: "",
-    externalId: "",
-    ssoDisabled: "false",
+// Accordion toggle
+document.querySelectorAll(".accordion-toggle").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const section = btn.dataset.section;
+    const content = document.querySelector(`.accordion-content[data-section="${section}"]`);
+    content.style.display = content.style.display === "block" ? "none" : "block";
   });
+});
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((p) => ({ ...p, [name]: value }));
-  };
-
-  const toggleSection = (section) => {
-    setOpenSection((cur) => (cur === section ? null : section));
-  };
-
-  const handleSubmit = () => {
-    const xml = generateXml(formData);
-    if (typeof onSubmit === "function") onSubmit(xml, formData);
-    console.log("XML payload →", xml);
-    onClose?.();
-  };
-
-  if (!isOpen) return null;
-
-  return (
-    <div className="modal-overlay">
-      <div className="modal-container">
-        <div className="modal-header">
-          <h2>Import Request</h2>
-          <button className="close-btn" onClick={onClose} aria-label="Close">
-            ✕
-          </button>
-        </div>
-
-        <div className="modal-body">
-          {/* Accordions (same as before) */}
-          {/* Client Details */}
-          <div className="accordion">
-            <button
-              className={`accordion-toggle ${openSection === "client" ? "open" : ""}`}
-              onClick={() => toggleSection("client")}
-            >
-              <span>Client Details</span>
-              <span className="accordion-icon">
-                {openSection === "client" ? "▲" : "▼"}
-              </span>
-            </button>
-            {openSection === "client" && (
-              <div className="accordion-content">
-                <label>Client ID</label>
-                <input name="clientId" value={formData.clientId} onChange={handleChange}/>
-                <label>Name</label>
-                <input name="name" value={formData.name} onChange={handleChange}/>
-                <label>Address</label>
-                <input name="address" value={formData.address} onChange={handleChange}/>
-                <label>City</label>
-                <input name="city" value={formData.city} onChange={handleChange}/>
-                <label>Province</label>
-                <input name="province" value={formData.province} onChange={handleChange}/>
-                <label>Post Code</label>
-                <input name="postCode" value={formData.postCode} onChange={handleChange}/>
-                <label>Country</label>
-                <input name="country" value={formData.country} onChange={handleChange}/>
-                <label>Template Name</label>
-                <input name="templateName" value={formData.templateName} onChange={handleChange}/>
-                <label>User Assigned Login Enabled</label>
-                <input name="userAssignedLoginIdEnabled" value={formData.userAssignedLoginIdEnabled} onChange={handleChange}/>
-              </div>
-            )}
-          </div>
-
-          {/* Auto Debit */}
-          <div className="accordion">
-            <button
-              className={`accordion-toggle ${openSection === "auto" ? "open" : ""}`}
-              onClick={() => toggleSection("auto")}
-            >
-              <span>Auto Debit Details</span>
-              <span className="accordion-icon">
-                {openSection === "auto" ? "▲" : "▼"}
-              </span>
-            </button>
-            {openSection === "auto" && (
-              <div className="accordion-content">
-                <label>Account Number</label>
-                <input name="accountNumber" value={formData.accountNumber} onChange={handleChange}/>
-                <label>Branch Code</label>
-                <input name="branchCode" value={formData.branchCode} onChange={handleChange}/>
-                <label>Account Holder Name</label>
-                <input name="accountHolderName" value={formData.accountHolderName} onChange={handleChange}/>
-                <label>Account Holder Local Name</label>
-                <input name="accountHolderLocalName" value={formData.accountHolderLocalName} onChange={handleChange}/>
-                <label>Account Currency</label>
-                <input name="accountCurrency" value={formData.accountCurrency} onChange={handleChange}/>
-                <label>Default Account</label>
-                <input name="defaultAccount" value={formData.defaultAccount} onChange={handleChange}/>
-              </div>
-            )}
-          </div>
-
-          {/* User */}
-          <div className="accordion">
-            <button
-              className={`accordion-toggle ${openSection === "user" ? "open" : ""}`}
-              onClick={() => toggleSection("user")}
-            >
-              <span>User Details</span>
-              <span className="accordion-icon">
-                {openSection === "user" ? "▲" : "▼"}
-              </span>
-            </button>
-            {openSection === "user" && (
-              <div className="accordion-content">
-                <label>User ID</label>
-                <input name="userId" value={formData.userId} onChange={handleChange}/>
-                <label>Application ID</label>
-                <input name="applicationId" value={formData.applicationId} onChange={handleChange}/>
-                <label>Email</label>
-                <input name="email" value={formData.email} onChange={handleChange}/>
-                <label>First Name</label>
-                <input name="firstName" value={formData.firstName} onChange={handleChange}/>
-                <label>Last Name</label>
-                <input name="lastName" value={formData.lastName} onChange={handleChange}/>
-                <label>User Template Name</label>
-                <input name="userTemplateName" value={formData.userTemplateName} onChange={handleChange}/>
-                <label>Login ID</label>
-                <input name="loginId" value={formData.loginId} onChange={handleChange}/>
-                <label>External ID</label>
-                <input name="externalId" value={formData.externalId} onChange={handleChange}/>
-                <label>SSO Disabled</label>
-                <input name="ssoDisabled" value={formData.ssoDisabled} onChange={handleChange}/>
-              </div>
-            )}
-          </div>
-        </div>
-
-        <div className="modal-footer">
-          <button className="submit-btn" onClick={handleSubmit}>Submit</button>
-        </div>
-      </div>
-    </div>
-  );
+// Submit
+document.getElementById("submitBtn").onclick = () => {
+  const inputs = document.querySelectorAll("#xmlModal input");
+  const data = {};
+  inputs.forEach(i => data[i.name] = i.value);
+  const xml = generateXml(data);
+  console.log("XML payload →", xml);
+  alert("XML Generated! Check console.");
+  modal.style.display = "none";
 };
 
-export default XmlModal;
 
 
 
-/* Overlay */
-.modal-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.6);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 999;
-}
-
-/* Modal */
-.modal-container {
-  background: #fff;
-  border-radius: 12px;
-  width: 90%;
-  max-width: 520px;
-  max-height: 85vh;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.25);
-}
-
-/* Header */
-.modal-header {
-  padding: 18px 20px;
-  background: #f8f9fb;
-  border-bottom: 2px solid #007BFF;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.modal-header h2 {
-  font-size: 22px;
-  font-weight: 700;
-  color: #222;
-  margin: 0;
-  position: relative;
-}
-.modal-header h2::after {
-  content: "";
-  display: block;
-  width: 40px;
-  height: 3px;
-  background: #007BFF;
-  margin-top: 6px;
-  border-radius: 2px;
-}
-.close-btn {
-  background: transparent; border: none; font-size: 22px;
-  cursor: pointer; color: #555;
-}
-.close-btn:hover { color: #000; }
-
-/* Body */
-.modal-body {
-  padding: 14px 18px;
-  overflow-y: auto;
-  flex: 1;
-  background: #fafbfc;
-  overflow-x: hidden; /* no horizontal scroll */
-}
-
-/* Accordion */
-.accordion { margin-bottom: 12px; }
-.accordion-toggle {
-  width: 100%; background: #fff; color: #333;
-  padding: 14px 16px; border: 1px solid #ddd; border-radius: 8px;
-  cursor: pointer; font-weight: 600; display: flex; justify-content: space-between; align-items: center;
-  font-size: 16px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-  transition: all 0.2s ease;
-}
-.accordion-toggle:hover { background: #f1f5ff; border-color: #007BFF; }
-.accordion-toggle.open { background: #eaf2ff; border-color: #007BFF; }
-
-.accordion-icon {
-  font-size: 16px; background: #007BFF; color: #fff;
-  padding: 3px 7px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
-}
-
-.accordion-content {
-  margin-top: 6px; padding: 14px; border: 1px solid #e1e4e8; border-radius: 8px;
-  background: #f9fafc; max-height: 260px; overflow-y: auto; overflow-x: hidden;
-}
-.accordion-content label {
-  display: block; margin-top: 8px; font-weight: 600; font-size: 14px; color: #444;
-}
-.accordion-content input {
-  width: 100%; padding: 8px 10px; margin-top: 4px; border: 1px solid #ccc; border-radius: 6px;
-  box-sizing: border-box; font-size: 14px;
-}
-.accordion-content input:focus {
-  border-color: #007BFF; outline: none; box-shadow: 0 0 4px rgba(0,123,255,0.3);
-}
-
-/* Footer */
-.modal-footer {
-  padding: 14px 20px; background: #f8f9fb; border-top: 1px solid #e1e4e8; text-align: right;
-}
-.submit-btn {
-  padding: 10px 20px; background: #007BFF; color: #fff; border: none; border-radius: 8px;
-  font-weight: 600; cursor: pointer; font-size: 15px; transition: background 0.2s ease;
-}
-.submit-btn:hover { background: #0056b3; }
-
-/* Responsive */
-@media (max-width: 480px) {
-  .modal-container { width: 95%; max-height: 90vh; }
-}
-
-
-function App() {
-  const [isModalOpen, setModalOpen] = useState(false);
-
-  return (
-    <div>
-      <button onClick={() => setModalOpen(true)}>Open Login Modal</button>
-
-      <XmlModal isOpen={isModalOpen} onClose={() => setModalOpen(false)} />
-    </div>
-  );
-}
-
-export default App;
