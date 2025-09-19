@@ -5,17 +5,19 @@ document.querySelectorAll(".accordion-toggle").forEach(btn => {
     const content = document.querySelector(`.accordion-content[data-section="${section}"]`);
 
     const isOpen = content.style.display === "block";
-    
-    // Toggle only this one, don’t touch others
+
     if (isOpen) {
       content.style.display = "none";
-      btn.querySelector(".arrow").textContent = "▼";
+      // replace ▲ with ▼ in button text
+      btn.innerHTML = btn.innerHTML.replace("▲", "▼");
     } else {
       content.style.display = "block";
-      btn.querySelector(".arrow").textContent = "▲";
+      // replace ▼ with ▲ in button text
+      btn.innerHTML = btn.innerHTML.replace("▼", "▲");
     }
   });
 });
+
 
 
 <!DOCTYPE html>
