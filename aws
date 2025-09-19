@@ -3,20 +3,22 @@ document.querySelectorAll(".accordion-toggle").forEach(btn => {
   btn.addEventListener("click", () => {
     const section = btn.dataset.section;
     const content = document.querySelector(`.accordion-content[data-section="${section}"]`);
-
     const isOpen = content.style.display === "block";
 
-    if (isOpen) {
-      content.style.display = "none";
-      // replace ▲ with ▼ in button text
-      btn.innerHTML = btn.innerHTML.replace("▲", "▼");
-    } else {
+    // First close all sections
+    document.querySelectorAll(".accordion-content").forEach(c => c.style.display = "none");
+    document.querySelectorAll(".accordion-toggle").forEach(b => {
+      b.innerHTML = b.innerHTML.replace("▲", "▼");
+    });
+
+    // Then open only the clicked one (if it wasn’t already open)
+    if (!isOpen) {
       content.style.display = "block";
-      // replace ▼ with ▲ in button text
       btn.innerHTML = btn.innerHTML.replace("▼", "▲");
     }
   });
 });
+
 
 
 
