@@ -1,0 +1,11 @@
+PushPay Onboarding Batch Summary
+=================================
+Generated:            2026-07-12T14:09:34
+Input file:           PushPay_Onboarding_Template.xlsx
+Total clients:        3
+Total beneficiaries:  11
+
+Clients:
+  C1       Acme Trading LLC                         template=1003     3 beneficiaries
+  C2       Acme Trading LLC1                        template=1001     7 beneficiaries
+  C3       Acme Trading LLC2                        template=1001     1 beneficiaries

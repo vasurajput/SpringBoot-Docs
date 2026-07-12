@@ -1,0 +1,43 @@
+spring:
+  main:
+    web-application-type: none
+    banner-mode: off
+  jmx:
+    enabled: false
+
+logging:
+  pattern:
+    console: "%msg%n"
+  level:
+    root: WARN
+
+pushpay:
+  client:
+    # Fixed-ROLE columns on the Clients sheet (design.md §3): the join key linking to
+    # Beneficiaries, the one always-mandatory identity field, and the template-client
+    # selector routed to its own SQL parameter. The header TEXT is fully configurable
+    # here - rename any of these and no Java code needs to change. What is NOT
+    # configurable is that some column plays each role; that's fixed in code.
+    # NOTE: nameColumn's value becomes the JSON key sent to Postgres (p_client->>'...').
+    # If you rename it, onboard_pushpay_client_with_benes must be updated to match, or
+    # every onboarding call will fail with "Unknown client field".
+    refColumn: client_ref
+    nameColumn: name1
+    templateIdColumn: template_client_id
+    # Optional override columns (blank cell => value copied from the template client).
+    columns: [client_address, country, client_city, deal_review_notification,
+              country_segment, website_url, contact_email, cct_account_number,
+              transaction_manager, legal_entity, primary_email, industry_segment,
+              seller_type, debtor_portal_default_lang, seller_payment_type]
+    mandatory: [country]
+    # Columns checked for a valid email shape (name@domain). Must be a subset of columns above.
+    emailColumns: [contact_email, primary_email]
+  bene:
+    refColumn: client_ref
+    columns: [bene_name, account_number, bene_bank_name, routing_code, swift_code,
+              bank_code, bene_addr_address, bene_addr_country, bene_addr_city,
+              bene_addr_province, bene_addr_post_code, bank_addr_address,
+              bank_addr_country, bank_addr_city, bank_addr_province, bank_addr_post_code]
+    # TODO (design.md §10.3): mirror ALL NOT NULL columns of t_geo_beneficiary here once
+    # confirmed against the real schema - only bene_name/account_number are known-mandatory today.
+    mandatory: [bene_name, account_number]
