@@ -1,0 +1,827 @@
+SELECT 
+    'SELECT ''' || table_schema || '.' || table_name || ''' AS table_name, ''' 
+    || column_name || ''' AS column_name FROM ' || table_schema || '.' || table_name || 
+    ' WHERE ' || column_name || '::text ILIKE ''%vasu%'';' AS search_sql
+FROM information_schema.columns
+WHERE data_type IN ('character varying', 'text', 'varchar', 'char')
+  AND table_schema NOT IN ('pg_catalog', 'information_schema');
+
+
+
+
+
+package com.javadream.SpringbootHumanitec;
+
+import com.javadream.SpringbootHumanitec.exception.CustomApiException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.MediaType;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
+import reactor.core.publisher.Flux;
+
+import java.time.Duration;
+import java.util.Map;
+
+@Component
+public class WebClientHelper {
+
+    private static final Logger log = LoggerFactory.getLogger(WebClientHelper.class);
+    private final WebClient webClient;
+
+    public WebClientHelper() {
+        this.webClient = WebClient.builder().build();
+    }
+
+    public <T> Flux<T> get(String url, Map<String, String> headers, Class<T> responseType) {
+        String location = "WebClientHelper::GET " + url;
+        return webClient.get()
+                .uri(url)
+                .headers(httpHeaders -> {
+                    if (headers != null) headers.forEach(httpHeaders::add);
+                })
+                .accept(MediaType.APPLICATION_JSON)
+                .retrieve()
+                .onStatus(
+                        HttpStatus::isError,
+                        response -> response.bodyToMono(String.class)
+                                .defaultIfEmpty("Unknown error")
+                                .map(errorBody ->
+                                        new CustomApiException(response.statusCode().value(), errorBody, location)
+                                )
+                )
+                .bodyToFlux(responseType)
+                .timeout(Duration.ofSeconds(10))
+                .onErrorResume(WebClientResponseException.class, ex -> {
+                    log.error("WebClient GET error at {}: {} - StackTrace:", location, ex.getMessage(), ex);
+                    return Flux.error(new CustomApiException(
+                            ex.getStatusCode().value(),
+                            ex.getResponseBodyAsString(),
+                            location
+                    ));
+                })
+                .onErrorResume(ex -> {
+                    log.error("Unknown WebClient GET error at {}: {}", location, ex.getMessage(), ex);
+                    return Flux.error(new CustomApiException(500, "Unexpected error occurred while calling API", location));
+                });
+    }
+
+    public <T> Flux<T> post(String url, Object payload, Map<String, String> headers, Class<T> responseType) {
+        String location = "WebClientHelper::POST " + url;
+        return webClient.post()
+                .uri(url)
+                .headers(httpHeaders -> {
+                    if (headers != null) headers.forEach(httpHeaders::add);
+                })
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .bodyValue(payload)
+                .retrieve()
+                .onStatus(
+                        HttpStatus::isError,
+                        response -> response.bodyToMono(String.class)
+                                .defaultIfEmpty("Unknown error")
+                                .map(errorBody ->
+                                        new CustomApiException(response.statusCode().value(), errorBody, location)
+                                )
+                )
+                .bodyToFlux(responseType)
+                .timeout(Duration.ofSeconds(10))
+                .onErrorResume(WebClientResponseException.class, ex -> {
+                    log.error("WebClient POST error at {}: {} - StackTrace:", location, ex.getMessage(), ex);
+                    return Flux.error(new CustomApiException(
+                            ex.getStatusCode().value(),
+                            ex.getResponseBodyAsString(),
+                            location
+                    ));
+                })
+                .onErrorResume(ex -> {
+                    log.error("Unknown WebClient POST error at {}: {}", location, ex.getMessage(), ex);
+                    return Flux.error(new CustomApiException(500, "Unexpected error occurred while calling API", location));
+                });
+    }
+}
+
+
+
+
+private String buildUrlWithParams(String baseUrl, Object pojo) {
+    Map<String, Object> paramMap = new ObjectMapper().convertValue(pojo, new TypeReference<>() {});
+
+    String queryString = paramMap.entrySet().stream()
+        .filter(e -> e.getValue() != null) // skip nulls
+        .map(e -> e.getKey() + "=" + UriUtils.encode(e.getValue().toString(), StandardCharsets.UTF_8))
+        .collect(Collectors.joining("&"));
+
+    return baseUrl + (queryString.isEmpty() ? "" : "?" + queryString);
+}
+
+
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.example</groupId>
+    <artifactId>common-lib</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <name>common-lib</name>
+    <description>Shared library for microservices</description>
+
+    <properties>
+        <java.version>21</java.version>
+        <spring-boot.version>3.4.5</spring-boot.version>
+    </properties>
+
+    <!-- Remove Spring Boot Starter Parent, use dependencyManagement instead -->
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring-boot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <dependencies>
+        <!-- Keep Lombok (if added via Spring Initializr) -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <!-- Add Spring Core for utility classes -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.11.0</version>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
+
+
+<dependency>
+    <groupId>org.springdoc</groupId>
+    <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+    <version>2.6.0</version>
+</dependency>
+
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operations-sorter: alpha
+    tags-sorter: alpha
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/api")
+@Tag(name = "Sample API", description = "API for sample operations")
+public class SampleController {
+
+    @Operation(summary = "Get a sample resource", description = "Returns a sample string")
+    @ApiResponse(responseCode = "200", description = "Success")
+    @ApiResponse(responseCode = "404", description = "Not found")
+    @GetMapping("/sample")
+    public String getSample() {
+        return "Hello, Swagger!";
+    }
+}
+
+import io.swagger.v3.oas.annotations.info.Info;
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+
+@OpenAPIDefinition(info = @Info(title = "My API", version = "1.0", description = "API for my Spring Boot app"))
+public class OpenApiConfig {}
+
+Access Swagger UI at: http://localhost:8080/swagger-ui.html
+Get the OpenAPI JSON at: http://localhost:8080/api-docs
+
+
+<!DOCTYPE html>
+<html lang="en" ng-app="myApp">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Filter</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+</head>
+<body ng-controller="SearchController">
+
+<div class="container mt-3">
+    <div class="row">
+        <!-- Filter Selection -->
+        <div class="col-md-4">
+            <label>Search Type:</label>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" id="quickSearch" ng-model="searchType" value="quick">
+                <label class="form-check-label" for="quickSearch">Quick Search</label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" id="dateRange" ng-model="searchType" value="date">
+                <label class="form-check-label" for="dateRange">Date Range</label>
+            </div>
+
+            <!-- Quick Search Dropdown -->
+            <div ng-if="searchType === 'quick'" class="mt-2">
+                <label for="quickSearchOptions">Select Range:</label>
+                <select class="form-control" ng-model="quickSearchValue" ng-change="applyQuickSearch()">
+                    <option value="">Select</option>
+                    <option value="today">Today</option>
+                    <option value="yesterday">Yesterday</option>
+                    <option value="last7">Last 7 Days</option>
+                    <option value="last30">Last 1 Month</option>
+                </select>
+            </div>
+
+            <!-- Date Range Inputs -->
+            <div ng-if="searchType === 'date'" class="mt-2">
+                <label>From:</label>
+                <input type="date" class="form-control" ng-model="dateFrom">
+                <label>To:</label>
+                <input type="date" class="form-control" ng-model="dateTo">
+            </div>
+        </div>
+
+        <!-- Second Text Box -->
+        <div class="col-md-4">
+            <label>Second Text Box:</label>
+            <input type="text" class="form-control">
+        </div>
+
+        <!-- Third Text Box -->
+        <div class="col-md-4">
+            <label>Third Text Box:</label>
+            <input type="text" class="form-control">
+        </div>
+    </div>
+</div>
+
+<script>
+    var app = angular.module("myApp", []);
+
+    app.controller("SearchController", function ($scope) {
+        $scope.searchType = "quick"; // Default selection
+        $scope.quickSearchValue = "";
+        $scope.dateFrom = "";
+        $scope.dateTo = "";
+
+        $scope.applyQuickSearch = function () {
+            var today = new Date();
+            var fromDate, toDate;
+
+            switch ($scope.quickSearchValue) {
+                case "today":
+                    fromDate = toDate = today;
+                    break;
+                case "yesterday":
+                    fromDate = toDate = new Date(today.setDate(today.getDate() - 1));
+                    break;
+                case "last7":
+                    fromDate = new Date(today.setDate(today.getDate() - 7));
+                    toDate = new Date();
+                    break;
+                case "last30":
+                    fromDate = new Date(today.setMonth(today.getMonth() - 1));
+                    toDate = new Date();
+                    break;
+            }
+
+            $scope.dateFrom = fromDate ? fromDate.toISOString().split("T")[0] : "";
+            $scope.dateTo = toDate ? toDate.toISOString().split("T")[0] : "";
+        };
+    });
+</script>
+
+</body>
+</html>
+
+
+
+SELECT DISTINCT 
+    v.schemaname, 
+    v.viewname, 
+    v.definition
+FROM pg_views v
+WHERE v.definition ILIKE '%your_column_name::%';
+
+
+
+
+DO $$ 
+DECLARE
+    error_message TEXT;
+BEGIN
+    BEGIN
+        -- Start transaction
+        INSERT INTO users (id, name, email) VALUES (1, 'John Doe', 'john@example.com');
+
+        -- Intentional error (duplicate key violation)
+        INSERT INTO users (id, name, email) VALUES (1, 'Jane Doe', 'jane@example.com');
+
+        COMMIT;  -- This won't execute if an error occurs
+    EXCEPTION
+        WHEN OTHERS THEN
+            -- Capture the error message
+            GET STACKED DIAGNOSTICS error_message = MESSAGE_TEXT;
+            
+            -- Rollback the transaction
+            ROLLBACK;
+            
+            -- Show the error message
+            RAISE NOTICE 'Transaction failed and was rolled back. Error: %', error_message;
+    END;
+END $$;
+
+
+
+
+SELECT DISTINCT v.viewname
+FROM pg_views v
+JOIN information_schema.view_column_usage vc 
+    ON v.viewname = vc.view_name
+WHERE vc.table_name = 'your_table_name'
+AND vc.column_name = 'your_column_name';
+
+
+
+SELECT DISTINCT v.viewname, c.column_name
+FROM pg_views v
+JOIN information_schema.view_column_usage vc ON v.viewname = vc.view_name
+JOIN information_schema.columns c ON vc.column_name = c.column_name
+WHERE vc.table_name = 'your_table_name';
+
+
+
+SELECT viewname, definition
+FROM pg_views
+WHERE schemaname NOT IN ('pg_catalog', 'information_schema')
+AND definition LIKE '%::%';
+
+
+
+SELECT 
+    c.table_schema, 
+    c.table_name, 
+    c.column_name, 
+    c.data_type, 
+    COALESCE(c.character_maximum_length::TEXT, c.numeric_precision::TEXT, '') AS length
+FROM information_schema.columns c
+JOIN information_schema.tables t 
+    ON c.table_name = t.table_name 
+    AND c.table_schema = t.table_schema
+WHERE c.column_name SIMILAR TO '%(substring1|substring2|substring3)%'
+AND c.table_schema = 'public'
+AND t.table_type = 'BASE TABLE';
+
+
+
+SELECT table_name, column_name, data_type 
+FROM information_schema.columns 
+WHERE table_schema = 'public' 
+AND column_name IN ('created_at', 'updated_at');
+
+
+
+SELECT table_name, STRING_AGG(column_name || ' (' || data_type || ')', ', ') AS columns_with_types
+FROM information_schema.columns
+WHERE table_schema = 'public'
+GROUP BY table_name
+ORDER BY table_name;
+
+
+
+
+
+
+WITH selected_tables AS (
+    SELECT c.oid, c.relname AS table_name
+    FROM pg_catalog.pg_class c
+    JOIN pg_catalog.pg_namespace n ON c.relnamespace = n.oid
+    WHERE n.nspname = 'public'
+    AND c.relname IN ('order', 'client', 'product', 'invoice') -- Replace with your table names
+),
+table_columns AS (
+    SELECT 
+        c.oid AS table_oid,
+        c.relname AS table_name,
+        a.attname AS column_name,
+        pg_catalog.format_type(a.atttypid, a.atttypmod) AS data_type
+    FROM pg_catalog.pg_attribute a
+    JOIN pg_catalog.pg_class c ON a.attrelid = c.oid
+    JOIN pg_catalog.pg_namespace n ON c.relnamespace = n.oid
+    WHERE n.nspname = 'public' 
+    AND c.relname IN ('order', 'client', 'product', 'invoice') -- Replace with your table names
+    AND a.attnum > 0 AND NOT a.attisdropped -- Exclude system columns
+)
+SELECT 
+    t1.table_name AS referencing_table,
+    t1.column_name AS referencing_column,
+    t2.table_name AS referenced_table,
+    t2.column_name AS referenced_column
+FROM table_columns t1
+JOIN table_columns t2
+ON (
+    -- Matching column names that contain the referenced table name
+    t1.column_name ILIKE '%' || t2.table_name || '%'
+    OR t2.column_name ILIKE '%' || t1.table_name || '%'
+    -- Ensuring similar column names are matched
+    OR t1.column_name ILIKE t2.column_name
+)
+AND t1.table_name <> t2.table_name -- Ensure different tables
+AND t1.data_type = t2.data_type -- Ensure data types match
+ORDER BY referencing_table, referenced_table;
+
+
+==========
+WITH selected_tables AS (
+    SELECT c.oid, c.relname AS table_name
+    FROM pg_catalog.pg_class c
+    JOIN pg_catalog.pg_namespace n ON c.relnamespace = n.oid
+    WHERE n.nspname = 'public'
+    AND c.relname IN ('order', 'client', 'product', 'invoice') -- Replace with your table names
+),
+table_columns AS (
+    SELECT 
+        c.oid AS table_oid,
+        c.relname AS table_name,
+        a.attname AS column_name,
+        pg_catalog.format_type(a.atttypid, a.atttypmod) AS data_type
+    FROM pg_catalog.pg_attribute a
+    JOIN pg_catalog.pg_class c ON a.attrelid = c.oid
+    JOIN pg_catalog.pg_namespace n ON c.relnamespace = n.oid
+    WHERE n.nspname = 'public' 
+    AND c.relname IN ('order', 'client', 'product', 'invoice') -- Replace with your table names
+    AND a.attnum > 0 AND NOT a.attisdropped -- Exclude system columns
+)
+SELECT 
+    t1.table_name AS referencing_table,
+    t1.column_name AS referencing_column,
+    t2.table_name AS referenced_table,
+    t2.column_name AS referenced_column
+FROM table_columns t1
+JOIN table_columns t2
+ON (
+    -- Match column naming patterns
+    t1.column_name LIKE t2.table_name || '_id'
+    OR t1.column_name LIKE t2.table_name || 'Id'
+    OR (t1.column_name = 'id' AND t2.column_name LIKE '%_id')
+)
+AND t1.table_name <> t2.table_name -- Ensure different tables
+AND t1.data_type = t2.data_type -- Ensure data types match
+ORDER BY referencing_table, referenced_table;
+
+
+
+
+
+
+SELECT 
+    c.table_name,
+    c.column_name,
+    c.table_schema,
+    ARRAY_AGG(DISTINCT t.table_name) AS related_tables
+FROM information_schema.columns c
+JOIN information_schema.columns t
+    ON c.column_name = t.column_name
+    AND c.table_name != t.table_name
+WHERE c.table_name IN ('table1', 'table2', 'table3')  -- Specify your table names here
+AND c.table_schema = 'public'
+GROUP BY c.table_name, c.column_name, c.table_schema
+ORDER BY c.column_name;
+
+
+
+SELECT table_schema, table_name, column_name
+FROM information_schema.columns
+WHERE column_name SIMILAR TO '%(substring1|substring2|substring3)%'
+AND table_schema = 'public';
+
+SELECT 
+    table_schema, 
+    table_name, 
+    column_name, 
+    data_type, 
+    COALESCE(character_maximum_length::TEXT, numeric_precision::TEXT, '') AS length
+FROM information_schema.columns
+WHERE column_name SIMILAR TO '%(substring1|substring2|substring3)%'
+AND table_schema = 'public';
+
+
+
+
+SELECT 
+    pk.table_name AS parent_table,
+    pk.column_name AS parent_column,
+    pk.data_type AS parent_data_type,
+    fk.table_name AS child_table,
+    fk.column_name AS child_column,
+    fk.data_type AS child_data_type
+FROM (
+    SELECT 
+        c.oid AS table_oid, 
+        c.relname AS table_name, 
+        a.attname AS column_name, 
+        format_type(a.atttypid, a.atttypmod) AS data_type
+    FROM pg_class c
+    JOIN pg_namespace n ON n.oid = c.relnamespace
+    JOIN pg_attribute a ON a.attrelid = c.oid
+    JOIN pg_index i ON i.indrelid = c.oid AND i.indisprimary
+    WHERE n.nspname = 'public' -- Change schema if needed
+) pk
+JOIN (
+    SELECT 
+        c.oid AS table_oid, 
+        c.relname AS table_name, 
+        a.attname AS column_name, 
+        format_type(a.atttypid, a.atttypmod) AS data_type, 
+        con.conrelid,
+        con.confrelid
+    FROM pg_constraint con
+    JOIN pg_class c ON c.oid = con.conrelid
+    JOIN pg_namespace n ON n.oid = c.relnamespace
+    JOIN pg_attribute a ON a.attrelid = con.conrelid AND a.attnum = ANY(con.conkey)
+    WHERE con.contype = 'f'
+) fk ON pk.table_oid = fk.confrelid
+AND pk.column_name = fk.column_name
+WHERE pk.data_type <> fk.data_type;
+
+##############
+
+SELECT
+    pk.table_schema AS parent_schema,
+    pk.table_name AS parent_table,
+    pk.column_name AS parent_column,
+    pk.data_type AS parent_data_type,
+    fk.table_schema AS child_schema,
+    fk.table_name AS child_table,
+    fk.column_name AS child_column,
+    fk.data_type AS child_data_type
+FROM (
+    -- Get primary key columns with their data types
+    SELECT
+        tc.table_schema,
+        tc.table_name,
+        kcu.column_name,
+        c.data_type
+    FROM information_schema.table_constraints AS tc
+    JOIN information_schema.key_column_usage AS kcu
+        ON tc.constraint_name = kcu.constraint_name
+        AND tc.table_schema = kcu.table_schema
+    JOIN information_schema.columns AS c
+        ON kcu.table_schema = c.table_schema
+        AND kcu.table_name = c.table_name
+        AND kcu.column_name = c.column_name
+    WHERE tc.constraint_type = 'PRIMARY KEY'
+) pk
+JOIN (
+    -- Get foreign key columns with their data types
+    SELECT
+        tc.table_schema,
+        tc.table_name,
+        kcu.column_name,
+        c.data_type,
+        rc.unique_constraint_schema,
+        rc.unique_constraint_name
+    FROM information_schema.table_constraints AS tc
+    JOIN information_schema.key_column_usage AS kcu
+        ON tc.constraint_name = kcu.constraint_name
+        AND tc.table_schema = kcu.table_schema
+    JOIN information_schema.columns AS c
+        ON kcu.table_schema = c.table_schema
+        AND kcu.table_name = c.table_name
+        AND kcu.column_name = c.column_name
+    JOIN information_schema.referential_constraints AS rc
+        ON tc.constraint_name = rc.constraint_name
+        AND tc.table_schema = rc.constraint_schema
+    WHERE tc.constraint_type = 'FOREIGN KEY'
+) fk ON pk.table_schema = fk.unique_constraint_schema
+AND pk.table_name = fk.table_name
+AND pk.column_name = fk.column_name
+WHERE pk.data_type <> fk.data_type;
+
+#######################
+SELECT
+    pk.table_schema AS parent_schema,
+    pk.table_name AS parent_table,
+    pk.column_name AS parent_column,
+    pk.data_type AS parent_data_type,
+    fk.table_schema AS child_schema,
+    fk.table_name AS child_table,
+    fk.column_name AS child_column,
+    fk.data_type AS child_data_type
+FROM (
+    -- Get primary key columns with their data types
+    SELECT
+        tc.table_schema,
+        tc.table_name,
+        kcu.column_name,
+        c.data_type
+    FROM information_schema.table_constraints AS tc
+    JOIN information_schema.key_column_usage AS kcu
+        ON tc.constraint_name = kcu.constraint_name
+        AND tc.table_schema = kcu.table_schema
+    JOIN information_schema.columns AS c
+        ON kcu.table_schema = c.table_schema
+        AND kcu.table_name = c.table_name
+        AND kcu.column_name = c.column_name
+    WHERE tc.constraint_type = 'PRIMARY KEY'
+        AND tc.table_schema = 'your_schema'  -- Change schema name
+) pk
+JOIN (
+    -- Get foreign key columns with their data types
+    SELECT
+        tc.table_schema,
+        tc.table_name,
+        kcu.column_name,
+        c.data_type,
+        rc.unique_constraint_schema,
+        rc.unique_constraint_name
+    FROM information_schema.table_constraints AS tc
+    JOIN information_schema.key_column_usage AS kcu
+        ON tc.constraint_name = kcu.constraint_name
+        AND tc.table_schema = kcu.table_schema
+    JOIN information_schema.columns AS c
+        ON kcu.table_schema = c.table_schema
+        AND kcu.table_name = c.table_name
+        AND kcu.column_name = c.column_name
+    JOIN information_schema.referential_constraints AS rc
+        ON tc.constraint_name = rc.constraint_name
+        AND tc.table_schema = rc.constraint_schema
+    WHERE tc.constraint_type = 'FOREIGN KEY'
+        AND tc.table_schema = 'your_schema'  -- Change schema name
+) fk ON pk.table_schema = fk.unique_constraint_schema
+AND pk.table_name = fk.table_name
+AND pk.column_name = fk.column_name
+WHERE pk.data_type <> fk.data_type;
+
+##################
+WITH pk_columns AS (
+    SELECT 
+        c.oid AS table_oid,
+        c.relname AS table_name,
+        n.nspname AS schema_name,
+        a.attname AS column_name,
+        format_type(a.atttypid, a.atttypmod) AS data_type
+    FROM pg_class c
+    JOIN pg_namespace n ON n.oid = c.relnamespace
+    JOIN pg_index i ON i.indrelid = c.oid AND i.indisprimary
+    JOIN pg_attribute a ON a.attrelid = c.oid AND a.attnum = ANY(i.indkey)
+    WHERE n.nspname = 'your_schema'  -- Change schema
+), fk_columns AS (
+    SELECT 
+        confnsp.nspname AS parent_schema,
+        confrel.relname AS parent_table,
+        confatt.attname AS parent_column,
+        format_type(confatt.atttypid, confatt.atttypmod) AS parent_data_type,
+        conrel.relname AS child_table,
+        conatt.attname AS child_column,
+        format_type(conatt.atttypid, conatt.atttypmod) AS child_data_type
+    FROM pg_constraint con
+    JOIN pg_class confrel ON con.confrelid = confrel.oid
+    JOIN pg_class conrel ON con.conrelid = conrel.oid
+    JOIN pg_namespace confnsp ON confrel.relnamespace = confnsp.oid
+    JOIN pg_namespace connsp ON conrel.relnamespace = connsp.oid
+    JOIN pg_attribute confatt ON confatt.attrelid = confrel.oid AND confatt.attnum = ANY(con.confkey)
+    JOIN pg_attribute conatt ON conatt.attrelid = conrel.oid AND conatt.attnum = ANY(con.conkey)
+    WHERE con.contype = 'f' AND confnsp.nspname = 'your_schema'  -- Change schema
+)
+SELECT 
+    fk.parent_schema,
+    fk.parent_table,
+    fk.parent_column,
+    fk.parent_data_type,
+    fk.child_table,
+    fk.child_column,
+    fk.child_data_type
+FROM fk_columns fk
+JOIN pk_columns pk 
+    ON fk.parent_schema = pk.schema_name 
+    AND fk.parent_table = pk.table_name 
+    AND fk.parent_column = pk.column_name
+WHERE fk.parent_data_type <> fk.child_data_type;
+
+
+
+################
+SELECT
+    conrelid::regclass AS table_name,
+    att1.attname AS column_name,
+    format_type(att1.atttypid, att1.atttypmod) AS column_type,
+    confrelid::regclass AS referenced_table,
+    att2.attname AS referenced_column,
+    format_type(att2.atttypid, att2.atttypmod) AS referenced_column_type
+FROM
+    pg_constraint AS con
+JOIN
+    pg_attribute AS att1 ON att1.attnum = con.conkey[1] AND att1.attrelid = con.conrelid
+JOIN
+    pg_attribute AS att2 ON att2.attnum = con.confkey[1] AND att2.attrelid = con.confrelid
+WHERE
+    con.contype = 'f'
+    AND att1.atttypid <> att2.atttypid
+    AND con.connamespace = 'your_schema'::regnamespace;
+
+
+
+############ Stored Function
+
+create function testFun(s varchar(255))
+returns varchar(255)
+ begin
+  return concat('Hello','s','!');
+ end
+
+Run-> select testFun('vasu');
+
+###### To Drop Function if already Exist
+drop function if exists testFun;
+
+#### To Drop Procedure if already Exist
+drop procedure if exists testProc
+
+############ Stored Procedure
+
+create procedure testProc(n varchar(24))
+ begin
+   select concat('hello, ', n , '!');
+ end
+
+Run- > Call testProc('vasu');
+
+Ex:
+create procedure vasu(param varchar(30))
+ begin
+   select a.artist as artist,
+   a.title as album
+   t.trackNo as trackNo
+   from track as t
+   join album as a
+    on a.id=t.albumId
+   where a.artist like param
+   order by artist, album, trackNo
+ end
+
+call vasu('%Lets Nacho%')
+
+
+######### Procedure with return
+create procedure totalDuration(param varchar(20), OUT outp varchar(30))
+  begin
+   select trackLen(SUM(duration)) into outp
+   from track
+   where albumId in (Select id from album where artist like param);
+  end
+
+call totalDuration('%vasu%', @dur);
+select @dur;
+
+
+
+
+######## To See all the Function and Procedure List ############
+show procedure status where definer like 'vasu%';
+show function status where definer like 'vasu%';
+
+
+########## To See Index detail on a table use below command ######
+show index from table_name;
+
+########## To create index explicitly on a table column use below command #########
+create table test(
+  id int unsigned not null auto_increment primary key,
+  string1 varchar(20) unique,
+  string2 varchar(20),
+  index i_str2 (string2)    or you can use unique index i_str2 (string2)
+);
+show index from test;
+
+######### To Create Index Seperately from Table ##############
+create index i_str2 on test(string2);
+        OR to create unique index
+create unique index i_str2 on test(string2)
+

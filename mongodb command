@@ -1,0 +1,40 @@
+# To Uninstall All Instancce of MongoDB use below Commands
+
+yum remove mongodb*
+yum clean all
+yum install mongodb-org
+
+# Now Install From MongoDb Docs
+
+
+
+# Spring Docs For Mongo DB
+https://docs.spring.io/spring-data/data-document/docs/current/reference/html/#d0e3309
+
+#Springboot Security with mongodb use below example
+https://github.com/didinj/springboot-mongodb-security
+https://www.baeldung.com/role-and-privilege-for-spring-security-registration
+http://www.mkyong.com/spring-security/spring-security-form-login-using-database/
+https://stackoverflow.com/questions/37615034/spring-security-spring-boot-how-to-set-roles-for-users
+https://javapointers.com/tutorial/spring-custom-userdetailsservice-example/
+https://www.google.com/search?q=userservicedetail+spring+boot&rlz=1C1CHBF_enIN741IN741&oq=userservicedetail+spring+boot&aqs=chrome..69i57.5304j0j9&sourceid=chrome&ie=UTF-8
+
+# for import collection use below command
+mongoimport --db dbName --collection collectionName --file C:\Users\rv\Desktop\SpringBot\JspDemo\databank\db\mongodb\ccc.json
+
+#For Export Collection to another collection
+mongoexport --db WRITE_YOUR_DB_NAME --collection COLLECTION_NAME --out C:\Users\rv\Desktop\d.json
+
+#For CrudOperation with Spring boot
+http://appsdeveloperblog.com/spring-boot-and-mongotemplate-tutorial-with-mongodb/
+
+#for simple search
+db.users_contacts.find( {birthdate:{$ne:null}} );
+
+#find with and command
+db.users_contacts.find({$and:[ {birthdate:{$ne:null}} , {createdBy:12} ]});
+
+#Find Only One Column Command
+var arr=[]
+db.pos_users.find({},{_id:1}).forEach(function(doc){arr.push(doc._id)})
+printjson(arr)

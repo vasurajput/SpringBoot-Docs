@@ -1,0 +1,784 @@
+                               ################ Feign Clinet #################
+                               
+use below dependency in pom.xml file
+======================================
+
+    <dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-feign</artifactId>
+			<version>1.4.7.RELEASE</version>
+		</dependency>
+    
+                        ####### Steps on 1st Project ######
+========================================================
+1- use @EnableFeignClients annotation on your main class
+=========================================================
+
+@EnableEurekaClient
+@SpringBootApplication
+@EnableFeignClients("com.example.demo")
+public class C1Application {
+
+	public static void main(String[] args) {
+		SpringApplication.run(C1Application.class, args);
+	}
+
+}
+
+======================================================
+2- Create an Interface and use @FeignClient annotation
+======================================================
+
+@FeignClient(name = "c2", url = "http://localhost:8082/")
+public interface RandomServiceProxy {
+	@GetMapping("client2")
+	public String test();	
+}
+
+Note: => Here C2 is the name of Project2  spring.application.name value and we hardcode the URL here
+=>@GetMapping("client2") is the URL used in 2nd Project
+
+====================================================
+3- Use This interface to call another MicroService
+====================================================
+
+@RestController
+public class Ccontroller {
+	@Autowired
+	private RandomServiceProxy proxy;
+
+	@GetMapping("/testFeign")
+	public String testFeignClient() {
+		String testFeign = proxy.test();
+		System.out.println("testFeign= "+testFeign);
+		return testFeign;
+	}
+}
+
+
+                ########### Steps on Project2 ########
+1- Create a Controller class
+=============================
+@RestController
+public class Ccontroller {
+	@GetMapping("client2")
+	public String test() {
+		return "C2 eureka service";
+	}
+}
+
+===========================
+2- application.properties
+===========================
+spring.application.name=c2
+server.port=8082
+eureka.client.service-url.default-zone=http://localhost:8761/eureka
+
+
+    ####################################### Client Side Load Balancing (Ribbon) ##############################
+ 
+ 1- Add below dependency in your pom.xml file
+ 
+               <dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-ribbon</artifactId>
+			<version>1.4.6.RELEASE</version>
+		</dependency>
+
+2- Enable ribbon using annotation in you Feign Proxy interface
+
+@FeignClient(name = "c2")
+@RibbonClient(name = "c2")
+public interface RandomServiceProxy {
+
+	@GetMapping("client2")
+	public String test();
+}
+
+NOTE:   While Using @RibbonClient we don't use {url=""} Property with @FeignClient annotation. we define list of all servers
+           in application.properties file
+
+======================
+3- application.properties
+======================
+spring.application.name=c1
+server.port=8081
+eureka.client.service-url.default-zone=http://localhost:8761/eureka
+c2.ribbon.listOfServers=http://localhost:8082,http://localhost:8084
+
+where c2 is the name of service whose two instances are running on 8082,8084 Port.
+
+
+     ##################################### API Gateway #############################################
+============================================
+1- Add below dependency in your pom.xml file
+============================================
+
+               <dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-netflix-zuul</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+		</dependency>
+
+======================================
+2- Enable ZullProxy in your main class
+======================================
+
+@EnableZuulProxy
+@EnableDiscoveryClient
+@SpringBootApplication
+public class ApiGatewayApplication {
+
+	public static void main(String[] args) {
+		SpringApplication.run(ApiGatewayApplication.class, args);
+	}
+
+}
+
+========================================
+3- Create a class and extends zullFilter
+========================================
+
+@Component
+public class ZullLoggingFilter extends ZuulFilter {
+
+	private static final Logger logger = LoggerFactory.getLogger(ZullLoggingFilter.class);
+
+	@Override
+	public boolean shouldFilter() {
+
+		return true;
+	}
+
+	@Override
+	public Object run() throws ZuulException {
+		HttpServletRequest request = RequestContext.getCurrentContext().getRequest();
+		logger.info("vvv::  request= " + request);
+		logger.info("vvv::  request URI= " + request.getRequestURI());
+		return null;
+	}
+
+	@Override
+	public String filterType() {
+
+		return "pre";
+	}
+
+	@Override
+	public int filterOrder() {
+
+		return 1;
+	}
+
+}
+
+========================
+4- Run the Application
+=========================
+Invoke Url Using below Syntax:
+
+http://localhost:8765/{application-name}/{endPoint}
+Eg:=> http://localhost:8765/c1/testFeign
+
+Note:- If you don't want to use Eureka Server then you have to hardcord the Url in application.propertirs file
+eg:   zuul.routes.student.url=http://localhost:8090       // where student is the name of microservice that runs on 8090
+
+Note: There are some property For Api gateway that you can use in application.properties
+====
+zuul.routes.employeeUI.serviceId=DASHBOARD-SERVICE
+zuul.host.socket-timeout-millis=30000
+
+Suppose i have a MiceroService A and there is a endPoiint http://localhost:8080/dashboard
+So when i hit api using API Gateway and any request come with prefix employeeUI then it will redirect to MicroService A
+Eg=
+http://localhost:8080/dashboard      is same as    http://localhost:8084/employeeUI/dashboard
+
+Link To Study Above Topic =>  https://dzone.com/articles/microservices-communication-zuul-api-gateway-1
+
+
+
+################################ RestTemplaet In Spring Boot ##################################
+We can't Autowired RestTemplate Directly in Spring Boot , To Autowired RestTemplate first we have to create a Ben for 
+RestTemplate using @Bean
+
+Eg:
+@Configuration
+public class Config {
+
+	@Bean
+	public RestTemplate template() {
+		HttpComponentsClientHttpRequestFactory httpRequestFactory = new HttpComponentsClientHttpRequestFactory();
+                httpRequestFactory.setConnectionRequestTimeout(4000);
+                httpRequestFactory.setConnectTimeout(4000);
+                httpRequestFactory.setReadTimeout(4000);
+		return new RestTemplate(httpRequestFactory);
+	}
+}
+
+@Autowired
+Private RestTemplate restTemplate;
+
+Post Using RestTemplate:
+=======================
+             private ResponseEntity<String> postURLData(String URL, String params, Long no) {
+                        HttpHeaders headers = new HttpHeaders();
+			headers.setContentType(MediaType.APPLICATION_JSON);
+			org.springframework.http.HttpEntity<String> s = new org.springframework.http.HttpEntity<String>(params,headers);
+			ResponseEntity<String> postResponse = restTemplate.postForEntity(URL, s, String.class);
+			}
+Delete Using RestTemplate:
+=========================
+                        HttpHeaders headers = new HttpHeaders();
+			headers.setContentType(MediaType.APPLICATION_JSON);
+			org.springframework.http.HttpEntity<String> s = new org.springframework.http.HttpEntity<String>(params,headers);
+			ResponseEntity<String> deleteResponse = restTemplate.exchange(URL, HttpMethod.DELETE, s, String.class);
+			
+Get Usign RestTemplate:
+=======================
+                        String response = restTemplate.getForObject(url, String.class);
+			
+Make Array As Params:-> eg: [8477013437]
+===================
+private String getJsonArrayString(Long value)
+	{
+		Gson gson = new Gson();
+		JsonArray jsonArray = new JsonArray();
+		jsonArray.add(new JsonPrimitive(value));
+		return gson.toJson(jsonArray);
+	}
+
+###################################   RestTemplate END #######################################################
+
+
+
+#################################### Communication bw MicroServices using API Gateway ################################
+1- give name of @FeignClient in proxy class to your API Gateway
+2- give complete URL to your method in proxy class Eg:=> serviceName/endPoint
+
+@FeignClient(name = "API-GATEWAY")      //Name of API-Gateway
+@RibbonClient(name = "c2")
+public interface RandomServiceProxy {
+	@GetMapping("c2/client2")
+	public String test();
+}
+
+
+#################################  Zipkin Server ############################################################
+
+1- Add the below dependency in pom.xml file
+
+	<!-- https://mvnrepository.com/artifact/io.zipkin.java/zipkin-server -->
+		<dependency>
+			<groupId>io.zipkin.java</groupId>
+			<artifactId>zipkin-server</artifactId>
+			<version>2.12.8</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/io.zipkin.java/zipkin-autoconfigure-ui -->
+		<dependency>
+			<groupId>io.zipkin.java</groupId>
+			<artifactId>zipkin-autoconfigure-ui</artifactId>
+			<version>2.12.8</version>
+		</dependency>
+		
+2- Enable Zipkini server in your main class
+
+@EnableZipkinServer
+@SpringBootApplication
+public class Z1Application extends SpringBootServletInitializer{
+	public static void main(String[] args) {
+		SpringApplication.run(Z1Application.class, args);
+	}
+}
+
+3- Add below properties in your properties file
+
+spring.main.web-application-type=none
+spring.application.name=zipkin-server
+server.port=9411
+
+
+#################################################### Hystrix ###################################################
+Basically we use Hystrix to provide custom Response of any third party do not provide response in a given period of time.
+
+1- For This we Have to include below dependency in our pom.xml file {simplly get from starter.spring.io no need of maven repo}
+======================================
+                <dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-netflix-hystrix</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-netflix-hystrix-dashboard</artifactId>
+		</dependency>
+		
+2- Enable Hystrix in your main class
+=====================================
+@SpringBootApplication
+@EnableHystrix
+public class Hystrix1Application {
+
+	public static void main(String[] args) {
+		SpringApplication.run(Hystrix1Application.class, args);
+	}
+}
+
+3- Define Hystix call back method for Rest Api to give custom Response
+======================================================================
+Description:=> Here we make a sleep of 3 second but we wait for 1 sec in our @HystrixCommand so we will get custom response after
+===========    1 sec.
+
+@RestController
+public class DemoController {
+
+	@GetMapping("/test")
+	@HystrixCommand(fallbackMethod = "fallback_hello", commandProperties = {
+			@HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "1000") })
+	public String test() {
+		try {
+			Thread.sleep(3000);
+			return "Nice Try";
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "Some Error";
+		}
+	}
+	private String fallback_hello() {
+		return "Request fails. It takes long time to response";
+	}
+}
+
+
+######################### Zuul Api Gateway ########################
+
+1- Add the below dependency in your pom.xml file
+                <dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-netflix-zuul</artifactId>
+		</dependency>
+		
+2- Enable zull using Annotation in your main class
+
+@EnableZuulProxy
+@EnableDiscoveryClient
+@SpringBootApplication
+public class ZullGatewayApplication {
+
+3- make below entry in your application.yml file
+
+spring:
+  application:
+    name: API-GATEWAY
+
+server:
+  port: 8080
+
+eureka:
+  client:
+    service-url:
+      default-zone: ${EUREKA_URI:http://localhost:8761/eureka}
+  instance:
+    prefer-ip-address: true
+
+zuul:
+  ignoredServices: '*'
+  prefix: /api
+  routes:
+    account-service:                           //Name of account appliation that written in application.yml file
+       path: /accounts/**                      //Write Anything that you want
+       serviceId: ACCOUNT-SERVICE              // Service Name of Account application that display on Eureka Server
+    web-application:
+       path: /webs/**
+       serviceId: WEB-APPLICATION
+  host:
+    socket-timeout-millis: 30000       
+
+
+4- Now Call Account Service URL using below url
+
+http://localhost:8080/api/accounts/account
+
+######################### Zuul Api Gateway END #############################
+
+
+######################### Common Logging in Microservice and Trace Log on Zipkin Server ###################
+if you want to trace log using Trace Id and Span Id then just add the below deependency in your pom.xml file
+
+                <dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-sleuth</artifactId>
+		</dependency>
+
+if you want to Trace log in your Zipkin server Then add above dependency as well as below dependecy
+
+               <dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-sleuth-zipkin</artifactId>
+			<version>2.1.3.RELEASE</version>
+		</dependency>
+		
+Download Zikin Server using Jar from there website and run 
+To Connect To Zipkin Server use below properties in your application.properties file
+
+spring.zipkin.base-url=http://localhost:9411/
+spring.sleuth.sampler.probability=100
+
+
+
+################################ Config Server In Spring Cloud ##################################
+1- Add Below dependency in your pom.xml file
+
+                <dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-config-server</artifactId>
+		</dependency>
+		
+2- Enable Config Server using annotation in your main class
+
+@EnableConfigServer
+@SpringBootApplication
+public class ConfigServerApplication {
+
+3- Create a folder and initialize git inside that and create a properties file inside that for eg 
+
+   vasu.properties
+   =================
+   
+vasu.minValue=1
+vasu.maxValue=99
+
+4- Make below entry in your application.properties file
+
+spring.application.name=config-server
+server.port=9091
+spring.cloud.config.server.git.uri=file:///home/vasurajput/Pictures/JavaDream/JavaDream_MicroServices/ConfigServer/GitinitializerFolder/
+
+5- Now Run application and hit below URl
+
+http://localhost:9091/vasu/default               // /vasu is same as name of our properties file eg: vasu.properties
+
+We Can Create file like profile in Git Serevr
+eg: create another properties file name vasu-dev.properties, vasu-qa.properties add them and commit them and hit the below URL
+
+http://localhost:9091/vasu/dev
+http://localhost:9091/vasu/qa
+
+
+############################################## Config client in Spring Boot #######################################
+1- First we have to add the below dependency in our pom.xml file
+   		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-config</artifactId>
+		</dependency>
+		
+2- Go to the application.properties file and add the below dependency there
+    spring.cloud.config.uri= http://localhost:9091       Note: The given url is the url of your config server
+    
+3- Now run your config client application and check the response it must be picked up from the Config Server Property files.
+In logs you see something like below
+Fetching config from server at : http://localhost:9091
+
+Note: If you get below exception while statring your config client application
+===== 
+org.springframework.cloud.commons.ConfigDataMissingEnvironmentPostProcessor$ImportException: No spring.config.import set
+
+So to Resolve this add the below dependency in your config-client application pom.xml file and run it 'll work fine
+
+		 <dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-bootstrap</artifactId>
+		</dependency>
+
+
+#######################################  CUSTOM EXCEPTION IN SPRING BOOT #########################################
+1- throw a Exception by Creating a class.
+for eg:
+===========
+ @RestController
+public class DemoController {
+	
+	static Map<Integer, String> dummyMap = new LinkedHashMap<Integer, String>();
+	
+	public DemoController() {
+		dummyMap.put(1, "Vasu Rajput");
+		dummyMap.put(2, "Vishu Rajput");
+		dummyMap.put(3, "Koku Rajput");
+		dummyMap.put(4, "Oshu Rajput");
+	}
+
+	@GetMapping("/test/{id}")
+	public String test(@PathVariable("id") Integer id) {
+		String name = dummyMap.get(id);
+		if(name == null) {
+			throw new UserNotFoundException("id- "+id);
+		}
+		return "Nice Try  "+name;
+	}
+}
+
+2-  Create a class UserNotFoundException that extends RunTimeException class
+eg:
+=====
+@ResponseStatus(HttpStatus.NOT_FOUND)
+public class UserNotFoundException extends RuntimeException {
+
+	public UserNotFoundException(String message) {
+		super(message);
+	}
+
+}
+
+3- Create a Class that define your Custom Response Standard
+eg:
+=====
+public class ExceptionResponse {
+
+	private Date timeStamp;
+	private String message;
+	private String detail;
+	//Constructor 
+	//getter setter
+	
+4- create a class CustomizedResponseEntityExceptionHandler that extends ResponseEntityExceptionHandler class
+for eg:
+=========
+@RestController
+@ControllerAdvice
+public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
+
+	@ExceptionHandler(Exception.class)
+	public final ResponseEntity<Object> handleAllExceptions(Exception ex, WebRequest request) throws Exception {
+		ExceptionResponse exceptionResponse = new ExceptionResponse(new Date(), ex.getMessage(),
+				request.getDescription(false));
+		return new ResponseEntity(exceptionResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+	
+	@ExceptionHandler(UserNotFoundException.class)
+	public final ResponseEntity<Object> handleUserNotFoundExceptions(Exception ex, WebRequest request) throws Exception {
+		ExceptionResponse exceptionResponse = new ExceptionResponse(new Date(), ex.getMessage(),
+				request.getDescription(false));
+		return new ResponseEntity(exceptionResponse, HttpStatus.NOT_FOUND);
+	}
+}
+
+
+
+## Spring boot application Monitoring 
+====================================
+1- First we have to install the prometheus and grafna
+2- Make sure we are using the actuator dependency in our pom.xml file and exposing the metrics and prometheus endpoint using below property in application.property
+   management.endpoints.web.exposure.include=health,info,metrics,prometheus
+3- Step to Install prometheus
+   1- Go to https://prometheus.io/download/   and download for windows
+   2- A Zip file 'll download extract that zip
+   3- Now open extracted folder and there is a file named prometheus.yml oepn this and put below lines at the end
+  - job_name: "spring-actuator"
+    metrics_path: "/actuator/prometheus"
+    scrape_interval: 5s
+    static_configs:
+    - targets: ["localhost:8080"]
+    
+    4- Now open cmd in the same folder and run prometheus.exe after that check on localhost:9090 port you 'll get the data from your actuator to prometheus dashboard
+    
+ 4- Step to install grafna
+     1- Go to https://grafana.com/grafana/download?platform=windows
+     2- Install the ZIP file and extract that
+     3- Go to the bin folder and open cmd and run the grafana-server.exe
+     4- Now go to localhost:3000 your grafna dashboard 'll display
+     5- By default userName and password is admin
+     
+  
+ #################################################################  Resilience4j in Spring boot for circuit breaker ###########################################
+ Doc Link- https://resilience4j.readme.io/docs/getting-started-3
+ 
+ 1- Add the below dependency in your pom.xml file ( Note: it is must to use aop and actuator dependency with resilience4j )
+    
+     		<dependency>
+			<groupId>io.github.resilience4j</groupId>
+			<artifactId>resilience4j-spring-boot2</artifactId>
+			<version>1.7.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-aop</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
+		
+ 2- Now Suppose you are using Spring Reactive means Spring WebFlux and if you want to use resilience4j with above dependency then it 'll not Work. So you have to add 
+ additional dependecy for reactive resilence4j
+ 
+ 		<dependency>
+			<groupId>io.github.resilience4j</groupId>
+			<artifactId>resilience4j-reactor</artifactId>
+			<version>1.7.0</version>
+		</dependency>
+		
+ 3- In resilience4j we got many modules like Retry, CircuitBreaker, Bulkhead, RateLimiter, TimeLimiter.
+ 4- We are going to use Retry and CircuitBreaker only for others you can follow the above doc link for resilience4j.
+ 5- In your Service class annotate your method with below annotations.
+     
+        @CircuitBreaker(name = "vasu", fallbackMethod = "testFallback")             // Note: Just concentrate on name property here because it 'll be use in application.properties files
+	@Retry(name = "vasu") // No need to add fallbackMethod property here because it will go to the fallbackMethod due to
+	public String test() {                // @CircuitBreaker but if you are not using @CircuitBreaker then you can define fallBackMethod in @Retry
+	    ResponseEntity<String> forEntity = new RestTemplate().getForEntity("http://localhost:9090/dummy", String.class);
+	    return forEntity.getBody();
+	}
+	@CircuitBreaker(name = "reactive-api" , fallbackMethod = "testReactiveFallback")
+	@Retry(name = "reactive-api")
+	public Mono<String> testReactive(){
+		System.out.println("Insida test Reactive");
+		Mono<String> bodyToMono = myWebClient.get().uri("dummy").retrieve().bodyToMono(String.class);
+		return bodyToMono;
+	}
+In above method we are calling a invalid api so we want that our method retry calling this api 3 times and if it still fails then return a fallback method response.
+So for this we have to go to our application.yaml or application. properties file and have to add below property there.
+
+  resilience4j.circuitbreaker:
+    instances:
+        vasu:                                      //This is the same name which we are using with name in our annotation @Retry(name = "vasu") above 
+            registerHealthIndicator: true
+            slidingWindowSize: 100
+        reactive-api:                             //This is the same name which we are using with name in our annotation @Retry(name = " reactive-api") above 
+            registerHealthIndicator: true
+            slidingWindowSize: 10
+   configs:
+     default:
+       registerHealthIndicator: true 
+       
+For Retry Below property should be 
+
+  resilience4j.retry:
+    instances:
+        vasu:
+            maxAttempts: 3
+            waitDuration: 10s
+            enableExponentialBackoff: true
+            exponentialBackoffMultiplier: 2
+#            retryExceptions:
+#                - org.springframework.web.client.HttpServerErrorException
+#                - java.io.IOException
+#            ignoreExceptions:
+#                - io.github.robwin.exception.BusinessException
+        reactive-api:
+            maxAttempts: 3
+            waitDuration: 10s
+            enableExponentialBackoff: true
+            exponentialBackoffMultiplier: 2
+#            retryExceptions:
+#                - org.springframework.web.client.HttpServerErrorException
+#                - java.io.IOException
+#            ignoreExceptions:
+#                - io.github.robwin.exception.BusinessException
+
+Now Suppose you want to see the complete status of the circuitBreaker then add below property and after that hit the url ( http://localhost:8080/actuator/health)
+       
+  management:
+   health:
+    circuitbreakers:
+      enabled: true
+#    ratelimiters:
+#      enabled: true
+#   endpoints:
+#     web:
+#      exposure:
+#        include: health,info,metrics,env,mappings,beans,shutdown,circuitbreakers,circuitbreakerevents
+   endpoint:
+     health:
+       show-details: always
+
+Note: If you run the programe with @Retry and @CircuitBreaker you 'll observe that @Retry will not work only @CircuitBreaker work. Means if some issue occurs
+=====        
+it 'll not retry for given count period it directlly fallback to method. The reason it there is some priorty and @circuitBreaker 'll execute before @Retry if you want 
+to start @Retry before @circuitBreaker you have to add the below property. The higher the priority that 'll execute first.
+
+resilience4j:
+  circuitbreaker:
+    circuitBreakerAspectOrder: 1
+  retry:
+    retryAspectOrder: 2
+    
+Now Run and Test your application and for CircuitBreaker status you can check it on ( http://localhost:8080/actuator/health ) url.
+
+Now Suppose you are using this annotation on Reactive method then it works same but after retry you 'll not get fallback response you 'll get something like 503
+async call issue. So to resolve this add below property 
+
+spring:
+  mvc:
+    async:
+      request-timeout: -1
+      
+ Now it willwork fine.
+ 
+ Reactive Method
+ @CircuitBreaker(name = "reactive-api" , fallbackMethod = "testReactiveFallback")
+	@Retry(name = "reactive-api")
+	public Mono<String> testReactive(){
+		System.out.println("Insida test Reactive");
+		Mono<String> bodyToMono = myWebClient.get().uri("dummy").retrieve().bodyToMono(String.class);
+			return bodyToMono;
+	}
+	
+	
+############################################################  Web Client in Spring Boot #################################################
+1- You have to add below dependency in your pom.xml file
+		 <dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-webflux</artifactId>
+		</dependency>
+2- Now Create a configuration class and paste below code
+
+package com.javadream.configuration;
+import java.time.Duration;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.http.client.reactive.ReactorClientHttpConnector;
+import org.springframework.web.reactive.function.client.WebClient;
+
+import io.netty.channel.ChannelOption;
+import reactor.netty.http.client.HttpClient;
+
+@Configuration
+public class WebclientConfig {
+
+	@Bean
+	public WebClient myWebClient() {
+//		HttpClient httpClient = HttpClient.create()
+//				.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 500)
+//				.responseTimeout(Duration.ofMillis(500));
+		return WebClient.builder()
+						.baseUrl("http://localhost:8081/")
+						//.clientConnector(new ReactorClientHttpConnector(httpClient))
+						.build();
+	}
+}
+
+3- Now go to the service class and autowired the above beand and use the webclient like below
+
+   @Autowired
+   private WebClient myWebClient;
+   
+   @CircuitBreaker(name = "reactive-api" , fallbackMethod = "testReactiveFallback")
+	@Retry(name = "reactive-api")
+	public Mono<String> testReactive(){
+		System.out.println("Insida test Reactive");
+		Mono<String> bodyToMono = myWebClient.get().uri("dummy").retrieve().bodyToMono(String.class);
+		return bodyToMono;
+	}
+
+
+
+

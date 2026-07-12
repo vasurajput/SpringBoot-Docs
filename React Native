@@ -1,0 +1,323 @@
+# Install Tailwind css in react
+first use these command to delete node_module and package.lock.json
+Remove-Item -Recurse -Force node_modules
+Remove-Item -Force package-lock.json
+npm install
+npm install -D tailwindcss
+npx tailwindcss init
+
+# Install Specific tailwind version
+npm install -D tailwindcss@3.4.6
+npm install -D tailwindcss@3.4.6 postcss@8.4.38 autoprefixer@10.4.19
+npx tailwindcss init -p
+"./src/**/*.{js,jsx,ts,tsx}"
+
+if you face any issue change tailwindversion in your package.json then run above commands "tailwindcss": "^3.4.13"
+
+Download Android Studio and Visual Studio along with latest Node version
+
+#Command to create react native project
+npx @react-native-community/cli init MyApp
+
+
+===================== Create Component Shortcut ========================
+1- Install below plugin in visual studio code
+     ES7+ React/Redux/React-Native/JS snippets
+2- After this install just type 
+     rnfe + tab
+========================================================================
+
+================= Step to generete APK file in React native ========================
+✅ Step 1: Generate a Release Keystore (only once)
+Run this command in your terminal (inside your project folder):
+keytool -genkeypair -v -storetype PKCS12 -keystore my-release-key.keystore -alias my-key-alias -keyalg RSA -keysize 2048 -validity 10000
+
+Above command create a file Move this file to your_project/android/app/
+
+✅ Step 2: Add Keystore Info
+Edit android/gradle.properties and add:
+MYAPP_UPLOAD_STORE_FILE=my-release-key.keystore
+MYAPP_UPLOAD_KEY_ALIAS=my-key-alias
+MYAPP_UPLOAD_STORE_PASSWORD=your-password
+MYAPP_UPLOAD_KEY_PASSWORD=your-password
+
+✅ Step 3: Configure Gradle
+In android/app/build.gradle, add inside android { signingConfigs { ... } }:
+
+signingConfigs {
+    release {
+        storeFile file(MYAPP_UPLOAD_STORE_FILE)
+        storePassword MYAPP_UPLOAD_STORE_PASSWORD
+        keyAlias MYAPP_UPLOAD_KEY_ALIAS
+        keyPassword MYAPP_UPLOAD_KEY_PASSWORD
+    }
+}
+buildTypes {
+    release {
+        signingConfig signingConfigs.release
+        minifyEnabled false
+        shrinkResources false
+        proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+    }
+}
+
+✅ Step 4: Build the APK
+Run this in terminal:
+cd android
+./gradlew assembleRelease
+
+✅ Step 5: Find Your APK
+After building, your APK will be here:
+your_project/android/app/build/outputs/apk/release/app-release.apk
+
+⚡ Quick Tips
+If you just want a debug APK (no signing needed):
+cd android
+./gradlew assembleDebug
+
+You’ll find it at:
+android/app/build/outputs/apk/debug/app-debug.apk
+
+
+=================  Use Bootsplash for splash screen in react native. ===============================
+1- Run npm package for bootsplash
+	 npm install react-native-bootsplash
+2- run this command it 'll automatically create the neccessary files
+         npx react-native generate-bootsplash assets/vasupic.png --logo-width=100 --assets-output=assets --platforms=android,ios --background=#000000
+3- run the project
+	 npx react-native run-android
+====================================================================================================
+
+=======================  Step to use Bottom Navigation along with Stack Navigation =====================
+1- Install the below package
+  	npm install @react-navigation/bottom-tabs
+2- Create a component and defint the Bottom Bavigation there
+    	import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+	import HomeScreen from "./HomeScreen";
+	import ProfileScreen from "./ProfileScreen";
+
+	const BottomTabs = () => {
+		const Tab = createBottomTabNavigator();                               // Use to declate the Bottom Tab like we declare for stack navigation
+		return (
+       		<Tab.Navigator screenOptions={{headerShown: false}}>                  // Here we are using the headerShown as false else you see the header while getting the screen
+            		<Tab.Screen name="Profile" component={ProfileScreen} />
+           		<Tab.Screen name="Home" component={HomeScreen} />
+        	</Tab.Navigator>
+   	 )
+	}
+	export default BottomTabs;
+
+3- In your Main Navigation [ stack navigation ] use it as a Stack.screen
+		function App(): React.JSX.Element {
+ 		const Stack = createNativeStackNavigator();
+  		return (
+    		<NavigationContainer>
+      		<Stack.Navigator initialRouteName='Login'>
+       		 <Stack.Screen name='Home' component={HomeScreen} />
+       		 <Stack.Screen name='Profile' component={ProfileScreen} />
+        	 <Stack.Screen name='Login' component={LoginScreen} />
+       		 <Stack.Screen name='ForgotPassword' component={ForgotPasswordScreen} />
+       		 <Stack.Screen name='MainApp' component={BottomTabs} />                    // Include bottom tab like this
+     		 </Stack.Navigator>
+    		</NavigationContainer>
+  );
+}
+=====================================================================================================
+
+======================= Steps to use Stack Navigation in React Native ==============================================
+1- Install below npm package
+   npm install @react-navigation/native
+   npm install @react-navigation/native-stack
+   npm install react-native-screens react-native-safe-area-context react-native-gesture-handler react-native-reanimated
+
+2- In your App.tsx file define a const variable and create stack navigatior and after that return like below
+
+    const Stack = createNativeStackNavigator();
+   return (
+    <NavigationContainer>
+    <Stack.Navigator initialRouteName='Home'>
+      <Stack.Screen name='Home' component={HomeScreen} />
+      <Stack.Screen name='Profile' component={ProfileScreen} />
+    </Stack.Navigator>
+    </NavigationContainer>
+  );
+
+3- Create HomeScreen and Profile Screen tsx file And add a button to navigate
+HomeScreen.tsx
+    	import { Button, Text, View } from "react-native"
+
+	const HomeScreen = ( {navigation}  ) => {
+    	return (
+        <View>
+            <Text>Home Screen</Text>
+            <Button title="Profile" onPress={() => navigation.navigate('Profile')} />
+        </View>
+    	)
+	}
+	export default HomeScreen;
+
+ProfileScreen.tsx
+	import { Text, View } from "react-native"
+
+	const ProfileScreen = () => {
+   	 return (
+        <View>
+            <Text>Profile Screen</Text>
+        </View>
+  	  )
+	}
+
+	export default ProfileScreen;
+
+Note:   If you want to hide the screen header on stack nvaigation there are two ways
+=====
+a)  - Hide header globally (for all screens)
+<Stack.Navigator screenOptions={{ headerShown: false }}>
+  <Stack.Screen name="Home" component={HomeScreen} />
+  <Stack.Screen name="Details" component={DetailsScreen} />
+</Stack.Navigator>
+b) -  Hide header for a specific screen
+<Stack.Navigator>
+  <Stack.Screen
+    name="Home"
+    component={HomeScreen}
+    options={{ headerShown: false }}
+  />
+  <Stack.Screen name="Details" component={DetailsScreen} />
+</Stack.Navigator>
+
+4-  List of Navigation Functions
+Available via props.navigation or useNavigation():
+
+Function			Description
+navigate(name, params?)		Navigate to a screen
+goBack()			Go back to the previous screen
+push(name, params?)		Push another instance onto the stack
+pop(count)			Pop screens from the stack
+replace(name, params?)		Replace current screen
+reset(config)			Reset entire stack
+setParams(params)		Update params for current screen
+
+5-  Screen Options (Navigation UI)
+Pass these in options or screenOptions:
+
+Option			Type							Description
+title			string							Title in header
+headerShown		boolean							Hide/show header
+headerBackTitle		string							Custom back button label
+headerRight		function						Custom right-side header view
+headerLeft		function						Custom left-side header view
+animation		'default' | 'fade' | 'slide_from_right' | ...		Transition animation
+
+eg: 	<Stack.Screen
+  	name="Profile"
+  	component={ProfileScreen}
+  	options={{
+   	 title: 'User Profile',
+  	  headerRight: () => <Button title="Info" onPress={() => alert('Info')} />,
+ 	 }}
+	/>
+
+6- Stack.Navigator Props
+Used to wrap your screens. Main props include:
+
+Prop			Type					Description
+initialRouteName	string					First screen to render
+screenOptions		object or ({ route }) => object		Default options for all screens
+id			string					Optional ID for nested navigators
+
+eg: 	<Stack.Navigator initialRouteName="Home" screenOptions={{ headerShown: false }}>
+
+7- Stack.Screen Props
+Used to define a screen in the navigator.
+
+Prop		Type					Description
+name		string					Unique screen name
+component	React.ComponentType			Component to render
+options	object or ({ route, navigation }) => object	Custom options per screen
+
+eg: <Stack.Screen name="Home" component={HomeScreen} options={{ title: "Welcome" }} />
+
+================================================
+
+======================== Use Styled component in React Native for styling like CSS ==================================
+
+#Process to use the Stled component in react native
+1- Install the styled package using below command
+   npm install styled-components --legacy-peer-deps
+2- Import the below package wherever you want to use
+    import styled from 'styled-components/native';
+3- Now create sheet like below at bottom of your file
+    const ButtonText = styled.Text`   => Left hand side you can give any name right side should follow th pattern like Text, View etc
+    color: red;
+    font-size: 18px;
+    `;
+4- Now you can use it something like this
+    <ButtonText>Vasu Rajput is a good boy</ButtonText>    => Tag should be same as that you defined above 
+
+============================================================
+
+=========================  Commands and step to use Icons  ===============================
+  1- Install below npm package for icons
+		npm install react-native-vector-icons --legacy-peer-deps
+  2- Then import below package 
+		import Icon from 'react-native-vector-icons/Ionicons';
+  3- Go inside android/app/build.gradle and add the below line there
+		apply from: "../../node_modules/react-native-vector-icons/fonts.gradle"
+Note: If you are using .js file then above import works fine. But if you are using .tsx file you get the error. So to resolve that error in .tsx file follow below step:
+		1- Create a file with name react-native-vector-icons.d.tsx and put the below context there
+			declare module 'react-native-vector-icons/Ionicons';
+		2- Now run the TypeScript server using given below steps
+  
+# Restart TypeScript Server
+	If you're using VS Code, do this:
+	Press Ctrl + Shift + P
+	Type: TypeScript: Restart TS Server
+	Hit Enter
+==========================================================================================
+
+
+====== If ever face build issue due to previous linking while uninstalling and installing npm package use below commands ======
+	rd /s /q node_modules
+	del package-lock.json
+	npm install --legacy-peer-deps
+	
+	cd android
+	rd /s /q .cxx
+	rd /s /q app\build
+	rd /s /q build
+	
+	cd android
+	gradlew clean
+	cd ..
+	npx react-native run-android
+===============================================================================================================================
+
+#Command to open environment variable. Type window + R and enter this command
+sysdm.cpl
+
+# set following on system variable [ click on path and add as new ]
+C:\Users\vasu\AppData\Local\Android\Sdk\emulator
+C:\Users\vasu\AppData\Local\Android\Sdk\platform-tools
+C:\Users\vasu\AppData\Local\Android\Sdk\tools
+C:\Users\vasu\AppData\Local\Android\Sdk\tools\bin
+
+# Add below path as ANDROID_HOME in system variable
+C:\Users\vasu\AppData\Local\Android\Sdk
+
+# Make sure your JAVA_HOME set with below path
+C:\Program Files\Java\jdk-17
+
+
+# After setting env variable run below command to check which android emulator is running
+emulator -list-avds
+
+# Command to run react-native application
+npx react-native start
+npx react-native run-android
+
+# To open device Manager without opening the Android Studio use the below steps:
+Goto C:\Users\vasu\AppData\Local\Android\Sdk\emulator
+run "emulator -list-avds" command to see all available devices list
+above command return a list of devices. Use below command with any of the device given by above command
+"emulator -avd Pixel_API_30" Run this command it 'll open the device manager. Pixel_API_30 is the name of the device

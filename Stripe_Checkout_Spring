@@ -1,0 +1,68 @@
+1- First You have to create a stripe account and get Your Api Key From There
+
+2- Add Below dependency in pom.xml file
+==========================================
+
+       <dependency>
+            <groupId>com.stripe</groupId>
+            <artifactId>stripe-java</artifactId>
+            <version>7.14.0</version>
+        </dependency>
+         <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>jstl</artifactId>
+            <version>1.2</version>
+        </dependency>
+
+3- Create a controller and add below code
+=========================================
+
+@GetMapping("/")
+    public String test(Model model) {
+        model.addAttribute("amount", 2);
+        model.addAttribute("data_name", "Vasu Rajput Payments");
+        model.addAttribute("description", "Testing Payments");
+        return "index";
+}
+
+4- create a file name index.jsp like below
+===========================================
+
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>Stripe Payment Gateway</title>
+    </head>
+    <body>
+        <h1>Stripe Gateway</h1>
+        <form action="vasuCheckOut" method="POST">
+            <script
+                src="https://checkout.stripe.com/checkout.js" class="stripe-button"
+                data-key="Your Public Key Come Here Not Secret Key Copy From Stripe Dashboard"
+                data-amount="${amount}"
+                data-name= "${data_name}"
+                data-description= "${description}"
+                data-image="https://stripe.com/img/documentation/checkout/marketplace.png"
+                data-locale="auto"
+                data-zip-code="true">
+            </script>
+        </form>
+    </body>
+</html>
+
+
+5- Make a controller with post mapping that can handle your form data like below
+===============================================================================
+
+@PostMapping("/vasuCheckOut")
+    public String checkOut(@RequestBody String payload) {
+        System.out.println("My Custom Checkout");
+        System.out.println("Payload is");
+        System.out.println(payload);
+        return "success";
+    }
+
+

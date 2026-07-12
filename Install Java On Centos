@@ -1,0 +1,29 @@
+1)- For Install Java First check if you have any instance already install or not using
+
+rpm -aq | grep -i jre
+rpm -aq | grep -i jdk
+
+2)- if yes then remove this first
+
+yum remove jre1.8-1.8.0_191-fcs.i586
+
+3) Now Install jdk on your root get link from given url
+https://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html
+
+wget --no-cookies --no-check-certificate --header "Cookie: gpw_e24=http%3A%2F%2Fwww.oracle.com%2F; oraclelicense=accept-securebackup-cookie" "https://download.oracle.com/otn-pub/java/jdk/8u191-b12/2787e4a523244c269598db4e85c51e0c/jdk-8u191-linux-x64.rpm"
+
+4) now install this rpm package
+
+rpm -ivh jdk-8u191-linux-x64.rpm
+
+5) now check version
+
+java -version
+
+############################## FOR UBUNTU ###############################
+=> Install Any Version in Ubuntu use below link
+https://stackoverflow.com/questions/55920389/e-package-oracle-java8-installer-has-no-installation-candidate
+
+=> remove Java from ubuntu use below link
+https://novicestuffs.wordpress.com/2017/04/25/how-to-uninstall-java-from-linux/
+

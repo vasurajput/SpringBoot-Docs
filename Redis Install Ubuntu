@@ -1,0 +1,43 @@
+To Install redis server in ubuntu use follow command
+====================================================
+Link - https://redis.io/download
+
+1- Create a folder with name Redis at any location in your system
+2- Go to Redis folder and execute below commands
+
+        wget http://download.redis.io/releases/redis-5.0.7.tar.gz
+        tar xzf redis-5.0.7.tar.gz
+        cd redis-5.0.7
+        make
+        make install ( We run this command so we can run redis-server from anywhere we don't need to go src folder every time)
+        
+ 3- To run redis server go to src folder and run redis-server command
+ 4- To run redis client go to src folder and run redis-cli command
+        
+        
+        
+  
+=========================================================================
+                # Set , Get , Delete keys in Redis
+    =====================================================
+    
+    1- Set keys
+    
+          set name vasu
+          set age 24
+          
+    2- show all keys use below command
+    
+          keys *
+          
+    3- Get key value use below command
+    
+           get name
+           get age
+           
+    4- Delete key use below command
+    
+            del name
+            del age
+        
+        

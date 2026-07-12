@@ -1,0 +1,284 @@
+Simple Login Example
+==============================
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        Button btn = (Button) findViewById(R.id.loginBtn);
+        final EditText userName = (EditText) findViewById(R.id.userName);
+        final EditText password = (EditText) findViewById(R.id.password);
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(getBaseContext(), "Your userName is "+ userName.getText().toString() + " and Password is "+ password.getText().toString() , Toast.LENGTH_SHORT ).show();
+            }
+        });
+    }
+    
+    
+    
+    
+    # List view Example
+    =====================
+    
+    1- First go to Design tab and go to container and choose ListView
+    2- Now go to MainActivity.Java inside onCreate method and get instance of ListView using Id and create a list that you want to show in ListView
+    
+         ListView listView = (ListView)findViewById(R.id.myListView);
+
+        List<String> myFriend  = new ArrayList<String>();
+        myFriend.add("konika");
+        myFriend.add("oshika");
+        myFriend.add("Ayush");
+        myFriend.add("Neelam");
+        
+    3- Now Add this List to your ListView Using ArrayAdapter like below
+    
+        ArrayAdapter<String> arrAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1,myFriend);
+        listView.setAdapter(arrAdapter);
+        
+    4- Now run your application.
+    5- If you want to do some task on click these items then use below code
+    
+      listView.setOnItemClickListener(
+                new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        Log.i("My Friend Is",myFriend.get(position));
+                        Toast.makeText(getApplicationContext(),"My Friend is "+ myFriend.get(position), Toast.LENGTH_SHORT).show();
+
+                    }
+                }
+        );
+        
+        
+        
+        
+        
+        ################################################ Recycle View In Android #######################################
+        For Recycler View we have to follow the below steps:
+        
+        1- WE have to create a layout that we want to use and define our design on that layout
+        2- Create a class that extends RecyclerView.Adapter. This is a generic adapter that accepts ViewHolder so our class will be like
+        public class CarAdapter extends RecyclerView.Adapter<CarAdapter.CarViewHolder> {
+
+       3- The above adapter have 3 unimplemented method so just implement them.
+       
+       CarAdapter.Java
+       =================================
+       package com.example.guptacars;
+
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class CarAdapter extends RecyclerView.Adapter<CarAdapter.CarViewHolder> {
+
+
+    List<CarBean> myList = new ArrayList<>();
+
+    public CarAdapter(List<CarBean> myList) {
+        this.myList = myList;
+    }
+
+    @NonNull
+    @Override
+    public CarViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+        View view = inflater.inflate(R.layout.list_item_layout, parent, false);
+        return new CarViewHolder(view);
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull CarViewHolder holder, int position) {
+        CarBean c =  myList.get(position);
+        holder.textView.setText(c.getName());
+    }
+
+    @Override
+    public int getItemCount() {
+        return myList.size();
+    }
+
+    public class CarViewHolder extends RecyclerView.ViewHolder {
+        ImageView imageView;
+        TextView textView;
+        public CarViewHolder(@NonNull View itemView) {
+            super(itemView);
+            imageView = (ImageView) itemView.findViewById(R.id.imgIcon);
+            textView = (TextView) itemView.findViewById(R.id.textTitle);
+        }
+    }
+}
+
+
+
+CarBean.java
+================
+package com.example.guptacars;
+
+public class CarBean {
+
+
+    private String name;
+    private String route;
+
+    public CarBean() {
+    }
+
+    public CarBean(String name, String route) {
+        this.name = name;
+        this.route = route;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getRoute() {
+        return route;
+    }
+
+    public void setRoute(String route) {
+        this.route = route;
+    }
+
+
+}
+
+
+MainActivity.java
+=========================
+package com.example.guptacars;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import android.os.Bundle;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class MainActivity extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        RecyclerView vv = (RecyclerView) findViewById((R.id.programmingList));
+        vv.setLayoutManager(new LinearLayoutManager(this));
+        List<CarBean> bean = new ArrayList<>();
+        CarBean b = new CarBean("vasu","rajput");
+        CarBean b1 = new CarBean("vasu","rajput");
+        CarBean b2 = new CarBean("vasu","rajput");
+        CarBean b3 = new CarBean("vasu","rajput");
+        CarBean b4 = new CarBean("vasu","rajput");
+        CarBean b5 = new CarBean("vasu","rajput");
+        CarBean b6 = new CarBean("vasu","rajput");
+        CarBean b7 = new CarBean("vasu","rajput");
+        CarBean b8 = new CarBean("vasu","rajput");
+        CarBean b9 = new CarBean("vasu","rajput");
+        CarBean b10 = new CarBean("vasu","rajput");
+        CarBean b11 = new CarBean("vasu","rajput");
+        CarBean b12 = new CarBean("vasu","rajput");
+
+        bean.add(b);
+        bean.add(b1);
+        bean.add(b2);
+        bean.add(b3);
+        bean.add(b4);
+        bean.add(b5);
+        bean.add(b6);
+        bean.add(b7);
+        bean.add(b8);
+        bean.add(b9);
+        bean.add(b10);
+        bean.add(b11);
+        bean.add(b12);
+        vv.setAdapter(new CarAdapter(bean));
+    }
+}
+
+activity_main.xml
+=======================
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.recyclerview.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/programmingList"
+    tools:context=".MainActivity">
+
+</androidx.recyclerview.widget.RecyclerView>
+
+
+list_item_layout.xml
+=======================
+
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="8dp">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imgIcon"
+        android:src="@mipmap/ic_launcher" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:textSize="24sp"
+        android:layout_weight="1"
+        android:paddingLeft="16dp"
+        android:id="@+id/textTitle"
+        android:text="@string/app_name"/>
+
+</androidx.appcompat.widget.LinearLayoutCompat>
+
+       
+    
+    
+    ###### Volley Api Call #######################
+    1. Add below gradle dependency
+    implementation 'com.android.volley:volley:1.2.1'
+    
+    2. open MainActivity.java and paste the below code
+        private static final String url = "Give Any URl here";
+        
+         StringRequest request = new StringRequest(url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                System.out.print("vasu");
+                TextView tx = (TextView)findViewById(R.id.text1);
+                tx.setText(response.toString());
+                Log.d("RESPONSE", response);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(MainActivity.this, "Something Went Wrong", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        RequestQueue queue = Volley.newRequestQueue(this);
+        queue.add(request);

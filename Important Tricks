@@ -1,0 +1,56 @@
+/home/vasurajput/.subversion/config
+gnome-keyring
+-DUSSD_HOME=/home/vasurajput/vishu/ussd-platform/resources
+
+========== SAGA Pattern Link ==========
+https://www.vinsguru.com/architectural-pattern-orchestration-saga-pattern-implementation-using-kafka/
+https://www.google.com/search?sxsrf=ALeKk03udzKKg9Pj1EbcAIkQoffnrnKe7A:1606030692551&q=saga+pattern+kafka&sa=X&ved=2ahUKEwiH7LXH0pXtAhUJfSsKHXdvB0gQ1QIoAXoECAYQAg
+
+============================ SCP Command ================================
+scp -P1980 webserver.pem root@serverIp:/usr/local/dada/
+
+On windows if you get error like port 8080 is already running then you can kill the process using following command
+=================================================================================================================
+
+1)  netstat -ano | findstr :8080
+2)  taskkill /PID 2336 /F
+
+
+If You cant get permission for download or upload file from centos mobxtrem because of permission use command
+===========================
+sudo chmod 755 directoryName
+
+JAVA LINUX PATH
+==================
+/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.131-0.b11.el6_9.x86_64/jre/lib/security/
+
+Maven Jar in Eclipse Available at
+===================================
+C:\YOUR_PROJECT_NAME\.metadata\.plugins\org.eclipse.wst.server.core\tmp0\wtpwebapps\YOUR_PROJECT_NAME\WEB-INF\
+
+FCM DATA PAYLOAD LINK
+=======================
+https://stackoverflow.com/questions/37711082/how-to-handle-notification-when-app-in-background-in-firebase
+
+FOR SSL SERVER JAVA LINK
+===============
+https://www.pixelstech.net/article/1445603357-A-HTTPS-client-and-HTTPS-server-demo-in-Java
+https://docs.oracle.com/javase/10/security/sample-code-illustrating-secure-socket-connection-client-and-server.htm#JSSEC-GUID-1B7038DC-7564-4EE6-A1DF-6B1445077E2E
+
+
+
+For open tomcat manager make sure to Edit /conf/tomcat-user.xml file and do following entry in that
+============================================================================================
+
+<role rolename="manager-gui"/>
+<user password="tomcat" roles="manager-gui" username="tomcat"/>
+
+For Facebook authentication useful link 
+==============================================
+https://developers.facebook.com/docs/facebook-login/access-tokens/debugging-and-error-handling
+
+https://stackoverflow.com/questions/8605703/how-to-verify-facebook-access-token
+
+
+=============== Split using pattern in java 8 ============
+Pattern.compile(">").splitAsStream(breadCrumb).collect(Collectors.toList());

@@ -1,0 +1,37 @@
+1- Go to apache tomcat website and copy the tar version link
+
+wget http://www-eu.apache.org/dist/tomcat/tomcat-7/v7.0.85/bin/apache-tomcat-7.0.85.tar.gz
+
+2- Now Extract This jar
+
+tar -xvf apache-tomcat-7.0.85.tar.gz
+
+3- go to /usr/local/tomcat/apache-tomcat-8.5.37/bin and start tomcat using
+
+sh startup.sh
+
+NOTE:-    Some time you are not able to access manager of tomcat if you use fresh Centos so you have to make a new file inside
+/usr/local/tomcat/apache-tomcat-8/conf/Catilina/localhost
+
+Name it manager.xml and make following entry
+
+<Context privileged="true" antiResourceLocking="false" 
+         docBase="${catalina.home}/webapps/manager">
+    <Valve className="org.apache.catalina.valves.RemoteAddrValve" allow="^.*$" />
+</Context>
+
+
+If You get 
+Cannot find /usr/local/tomcat9/bin/setclasspath.sh
+Error while start or stop tomcat just use
+
+unset CATALINA_HOME command 
+
+########## Download Tomcat in ubuntu #############
+1- got to tomcat website
+2- download tar and extract it
+3- move all jars to specific location /opt/tomcat
+4- go to bin folder and run command
+
+                   or follow given link
+https://www.liquidweb.com/kb/how-to-install-apache-tomcat-7-on-ubuntu-14-04/
